@@ -336,6 +336,7 @@
         let totalTerms = 0;
         let currentQuizLevel = null;
         let currentQuizTheme = null;
+        let uniqueThemes = new Set();
 
 
         // --- UTILITY FUNCTIONS ---
@@ -410,8 +411,7 @@
                     const cleanName = filename.substring(0, filename.lastIndexOf('.')).replace(/\.(?=[^.]*$)/, ''); // Remove extension
                     const firstUnderscoreIndex = cleanName.indexOf('_');
                     
-                    // Use "Others" as the theme if the naming convention is not strictly followed
-                    let theme = 'Others';
+                    let theme = 'Others'; // Default theme if no underscore is found
                     let term = cleanName;
 
                     if (firstUnderscoreIndex !== -1) {
@@ -427,6 +427,7 @@
                     }
 
                     const url = BASE_IMAGE_URL + filename;
+                    uniqueThemes.add(theme); // Collect all unique themes
 
                     return {
                         filename,
@@ -484,15 +485,19 @@
             const container = document.getElementById('theme-buttons-container');
             container.innerHTML = '';
 
-            const themes = {};
+            const themeCounts = {};
             let mediumCount = 0;
             let expertCount = 0;
 
-            // 1. Group terms by theme and count levels
+            // 1. Initialize counts for all known themes to 0
+            uniqueThemes.forEach(theme => {
+                themeCounts[theme] = 0;
+            });
+
+            // 2. Count terms by level and theme
             gameData.forEach(item => {
-                // IMPORTANT: Only count items if they have a theme and are 'New'
                 if (item.level === 'New' && item.theme && item.theme.length > 0) {
-                    themes[item.theme] = (themes[item.theme] || 0) + 1;
+                    themeCounts[item.theme] = (themeCounts[item.theme] || 0) + 1;
                 } else if (item.level === 'Medium') {
                     mediumCount++;
                 } else if (item.level === 'Expert') {
@@ -500,21 +505,19 @@
                 }
             });
 
-            // 2. Inject Theme Buttons
-            Object.entries(themes)
+            // 3. Inject Theme Buttons (including those with a count of 0)
+            Object.entries(themeCounts)
                 .sort(([themeA], [themeB]) => themeA.localeCompare(themeB))
                 .forEach(([theme, count]) => {
-                    if (count > 0) {
-                        const button = document.createElement('button');
-                        button.className = 'theme-button';
-                        button.textContent = `${theme} (${count})`;
-                        button.onclick = () => startQuiz('New', theme);
-                        button.disabled = count === 0; 
-                        container.appendChild(button);
-                    }
+                    const button = document.createElement('button');
+                    button.className = 'theme-button';
+                    button.textContent = `${theme} (${count})`;
+                    button.onclick = () => startQuiz('New', theme);
+                    button.disabled = count === 0; // Disabled if count is 0
+                    container.appendChild(button);
                 });
 
-            // 3. Add Separator and Level Buttons
+            // 4. Add Separator and Level Buttons
             const separator = document.createElement('hr');
             separator.style.margin = '20px 0';
             container.appendChild(separator);
@@ -564,6 +567,7 @@
             if (level === 'Medium') {
                 timerContainer.style.display = 'block';
             } else {
+                clearInterval(timer); // Ensure timer is stopped if switching to non-timed quiz
                 timerContainer.style.display = 'none';
             }
 
@@ -694,10 +698,8 @@
             document.querySelector('.continue-button-container').style.display = 'block';
 
 
-            // Show demote button (only for Medium/Expert)
-            const demoteBtn = document.getElementById('demote-button');
-            demoteBtn.style.display = 'block'; 
-            demoteBtn.textContent = "Study this again";
+            // HIDE demote button (It's expert review, not a failure)
+            document.getElementById('demote-button').style.display = 'none'; 
 
             switchScreen('feedback-screen');
         }
@@ -800,13 +802,14 @@
             document.getElementById('question-feedback-image').src = question.url;
             document.getElementById('question-feedback-term').textContent = question.term;
             
-            // 3. Demote Button (Only for Medium/Expert)
+            // 3. Demote Button (STRICT CONDITION: Only Medium level AND wrong answer)
             const demoteBtn = document.getElementById('demote-button');
-            if (question.level === 'Expert' || question.level === 'Medium') {
+            
+            if (question.level === 'Medium' && !isCorrect) {
                 demoteBtn.style.display = 'block';
                 demoteBtn.textContent = "Study this again";
             } else {
-                demoteBtn.style.display = 'none'; // Not shown for New level
+                demoteBtn.style.display = 'none'; // Hide if correct, New, or Expert
             }
 
             // 4. Distractor Details 
