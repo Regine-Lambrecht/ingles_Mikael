@@ -13,11 +13,63 @@ Colours_Purple.png
 Colours_Red.png
 Colours_White.png
 Colours_Yellow.png
+Food_Bread.jpg
 Food_Ice cream.png
+Food_Meal.jpg
+Food_Salt.png
+Food_Water.jpg
 House_Door.jpg
 Objects_Ball.jpg
+Objects_Book.jpg
+Objects_Chair.jpg
+Objects_Fork.jpg
 Objects_Glass.jpg
+Objects_Key.jpg
 Objects_Pencil.jpg
+Objects_Plate.png
+Objects_Spoon.jpg
+Objects_Sword.jpg
 Objects_Table.png
 Objects_Watch.jpg
 Others_Birthday.jpg
+Opposites_Bad.png
+Opposites_Cheap.png
+Opposites_Cold.png
+Opposites_Day.png
+Opposites_Empty.png
+Opposites_Expensive.png
+Opposites_Fast.jpg
+Opposites_Fat.png
+Opposites_Full.png
+Opposites_Future.png
+Opposites_Go down.png
+Opposites_Go up.jpg
+Opposites_Good.png
+Opposites_Happy.png
+Opposites_Heavy.png
+Opposites_High.png
+Opposites_Hot.png
+Opposites_Left.png
+Opposites_Light.jpg
+Opposites_Low.png
+Opposites_Next.png
+Opposites_Night.png
+Opposites_Old.png
+Opposites_Past.png
+Opposites_Previous.png
+Opposites_Right.png
+Opposites_Sad.png
+Opposites_Slow.jpg
+Opposites_Start.png
+Opposites_Stop.png
+Opposites_Thin.png
+Opposites_Turn off.png
+Opposites_Turn on.png
+Opposites_Wrong.png
+Opposites_Young.png
+Others_Birthday.jpg
+Opposites_Small.png
+Opposites_Tall.png
+Time_Monday.png
+Time_Tuesday.png
+Time_Wednesday.png
