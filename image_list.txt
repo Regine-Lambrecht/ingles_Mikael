@@ -1,0 +1,23 @@
+Animals_Cat.png
+Animals_Chicken.png
+Animals_Fish.png
+Clothes_Hat.jpg
+Clothes_Shoes.png
+Colours_Black.png
+Colours_Dark blue.png
+Colours_Green.png
+Colours_Light blue.png
+Colours_Orange.png
+Colours_Pink.png
+Colours_Purple.png
+Colours_Red.png
+Colours_White.png
+Colours_Yellow.png
+Food_Ice cream.png
+House_Door.jpg
+Objects_Ball.jpg
+Objects_Glass.jpg
+Objects_Pencil.jpg
+Objects_Table.png
+Objects_Watch.jpg
+Others_Birthday.jpg
