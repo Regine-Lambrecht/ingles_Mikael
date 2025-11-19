@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikael Mastery Quiz</title>
+    <title>Mastery Quiz</title>
     <style>
         /* --- CSS STYLES (Mobile-First Responsive Design) --- */
         :root {
@@ -230,7 +230,7 @@
 
         <div id="login-screen" class="screen">
             <h2>Enter Your ID</h2>
-            <input type="text" id="username-input" placeholder="Your name (must be Mikael)">
+            <input type="text" id="username-input" placeholder="Enter your ID">
             <button onclick="attemptLogin()">Start Game</button>
             <p id="login-message" style="color: var(--color-wrong);"></p>
         </div>
@@ -288,8 +288,9 @@
         /* --- JAVASCRIPT LOGIC --- */
 
         // --- CONFIGURATION ---
-        const MIKAEL_ID = "Mikael";
-        const STORAGE_KEY = `MikaelMasteryQuiz_State`;
+        const VALID_IDS = ["Mikael", "Regine"]; // Updated: Now allows "Mikael" or "Regine"
+        let CURRENT_USER_ID = null; // Will store the currently logged-in user ID
+        const STORAGE_PREFIX = `MasteryQuiz_State_`; // Prefix state key with user ID for segregation
         const LIST_URL = "https://regine-lambrecht.github.io/ingles_Mikael/image_list.txt";
         const BASE_IMAGE_URL = "https://regine-lambrecht.github.io/ingles_Mikael/images/";
         const MEDIUM_TIMER_SECONDS = 5;
@@ -319,6 +320,8 @@
          * Loads the game state from localStorage.
          */
         function loadState() {
+            if (!CURRENT_USER_ID) return;
+            const STORAGE_KEY = STORAGE_PREFIX + CURRENT_USER_ID;
             try {
                 const storedState = localStorage.getItem(STORAGE_KEY);
                 if (storedState) {
@@ -343,6 +346,8 @@
          * Saves the game state to localStorage.
          */
         function saveState() {
+            if (!CURRENT_USER_ID) return;
+            const STORAGE_KEY = STORAGE_PREFIX + CURRENT_USER_ID;
             try {
                 const stateToSave = gameData.map(item => ({
                     term: item.term,
@@ -350,7 +355,7 @@
                     correctCount: item.correctCount
                 }));
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
-                console.log("State saved successfully.");
+                console.log("State saved successfully for " + CURRENT_USER_ID);
             } catch (e) {
                 console.error("Could not save state:", e);
                 alert("Warning: Could not save progress! Please check browser storage settings.");
@@ -391,7 +396,7 @@
                 }).filter(item => item !== null);
                 
                 totalTerms = gameData.length;
-                loadState(); // Apply saved state after initial parsing
+                // Do NOT load state yet, as we need the user ID first
                 switchScreen('login-screen');
             } catch (error) {
                 console.error("Error loading or parsing image list:", error);
@@ -405,20 +410,22 @@
             const input = document.getElementById('username-input').value.trim();
             const message = document.getElementById('login-message');
 
-            if (input === MIKAEL_ID) {
+            if (VALID_IDS.includes(input)) {
+                CURRENT_USER_ID = input;
+                loadState(); // Load state after successful login
                 goToHome();
                 message.textContent = "";
             } else {
-                message.textContent = "Access denied. Please enter the correct ID.";
+                message.textContent = `Access denied. Valid IDs are: ${VALID_IDS.join(', ')}`;
             }
         }
 
         function logout() {
-            // Optional: You could add a confirmation dialog here
+            saveState(); // Ensure last state is saved
+            CURRENT_USER_ID = null;
             switchScreen('login-screen');
             document.getElementById('username-input').value = '';
-            document.getElementById('login-message').textContent = 'Progress saved for Mikael.';
-            // Do not clear localStorage, just switch screens
+            document.getElementById('login-message').textContent = 'Progress saved.';
         }
 
         // --- GAME FLOW / NAVIGATION ---
@@ -541,7 +548,7 @@
                 );
             } else if (level === 'Medium') {
                 // Distractors from all 'New' terms across ALL themes
-                distractorPool = gameData.filter(item => item.level === 'New');
+                distractorPool = gameData.filter(item => item.level === 'New' && item.term !== currentQuestion.term);
             }
 
             // Select 2 unique distractors (ensure enough items exist)
@@ -549,18 +556,25 @@
             const availableTerms = distractorPool.slice(); // Copy the pool
             while (distractors.length < 2 && availableTerms.length > 0) {
                 const randomIndex = Math.floor(Math.random() * availableTerms.length);
-                distractors.push(availableTerms[randomIndex]);
+                
+                // Ensure the selected distractor is not the current question
+                if (availableTerms[randomIndex].term !== currentQuestion.term) {
+                    distractors.push(availableTerms[randomIndex]);
+                }
                 availableTerms.splice(randomIndex, 1);
             }
             
-            // Fallback: If not enough in pool, use any other terms not in Expert
+            // Fallback: If not enough in pool, use any other terms not in Expert or Medium
             if (distractors.length < 2) {
                  const fallbackPool = gameData.filter(item => 
-                    item.level !== 'Expert' && item.term !== currentQuestion.term && !distractors.includes(item)
+                    item.level === 'New' && item.term !== currentQuestion.term && !distractors.includes(item)
                  );
                  while (distractors.length < 2 && fallbackPool.length > 0) {
                     const randomIndex = Math.floor(Math.random() * fallbackPool.length);
-                    distractors.push(fallbackPool[randomIndex]);
+                    // Double check to prevent duplicates if possible
+                    if (!distractors.some(d => d.term === fallbackPool[randomIndex].term)) {
+                        distractors.push(fallbackPool[randomIndex]);
+                    }
                     fallbackPool.splice(randomIndex, 1);
                  }
             }
@@ -635,6 +649,9 @@
 
         function submitAnswer(chosenItem, distractors) {
             clearInterval(timer);
+            // Disable buttons to prevent multiple clicks
+            document.querySelectorAll('.choice-button').forEach(btn => btn.disabled = true);
+
             const isCorrect = chosenItem && chosenItem.term === currentQuestion.term;
             
             processProgress(isCorrect);
@@ -654,17 +671,22 @@
                 if (item.level === 'New' && item.correctCount >= 3) {
                     item.level = 'Medium';
                     item.correctCount = 0;
+                    // Find the term in gameData and update its level and count
+                    const index = gameData.findIndex(d => d.term === item.term);
+                    if (index !== -1) gameData[index].level = 'Medium';
                     alert(`✅ Term '${item.term}' advanced to Medium!`);
                 } else if (item.level === 'Medium' && item.correctCount >= 3) {
                     item.level = 'Expert';
                     item.correctCount = 0;
+                    // Find the term in gameData and update its level and count
+                    const index = gameData.findIndex(d => d.term === item.term);
+                    if (index !== -1) gameData[index].level = 'Expert';
                     alert(`⭐ Term '${item.term}' advanced to Expert!`);
                 }
             } else {
                 item.correctCount = 0; // Reset count on wrong answer
             }
-            // Update the quiz pool reference (important for Medium/Expert promotion)
-            quizPool = quizPool.filter(q => q.level === item.level);
+            // Note: quizPool tracking is handled in loadQuestion/startQuiz to reflect dynamic pool changes
         }
         
         function demoteTerm() {
@@ -680,6 +702,13 @@
                 alert(`⬇️ Term '${item.term}' demoted back to its theme in the New level!`);
             }
             
+            // Update the main gameData array
+            const index = gameData.findIndex(d => d.term === item.term);
+            if (index !== -1) {
+                gameData[index].level = item.level;
+                gameData[index].correctCount = 0;
+            }
+
             saveState();
             goToHome();
         }
