@@ -35,7 +35,6 @@
             box-sizing: border-box;
             background-color: white;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            position: relative; /* Needed for absolute positioning of exit button */
         }
 
         /* --- Screens --- */
@@ -50,10 +49,6 @@
         }
 
         /* --- Login Screen --- */
-        #login-screen h1 {
-            font-size: 2em;
-            color: var(--color-primary);
-        }
         #login-screen input[type="text"],
         #login-screen button {
             padding: 10px;
@@ -106,17 +101,6 @@
         }
 
         /* --- Quiz Screen --- */
-        .exit-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: var(--color-wrong);
-            z-index: 10;
-        }
         #question-screen h3 {
             margin-bottom: 0;
         }
@@ -165,7 +149,7 @@
             font-weight: bold;
             padding: 10px;
             border-radius: 5px;
-            margin-bottom: 10px; /* Reduced margin */
+            margin-bottom: 20px;
         }
         .feedback-correct {
             color: var(--color-secondary);
@@ -173,68 +157,51 @@
         .feedback-wrong {
             color: var(--color-wrong);
         }
-        
-        .main-question-area {
-            margin-bottom: 15px;
+        .question-detail {
+            margin-bottom: 20px;
         }
-        .main-question-area img {
+        .question-detail img {
             max-width: 100%;
             max-height: 150px;
             margin: 10px 0;
             border: 3px solid var(--color-secondary);
             border-radius: 5px;
         }
-        .main-question-area .term {
+        .question-detail .term {
             font-size: 1.2em;
             font-weight: bold;
-        }
-        
-        .distractor-area-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start; /* Align top */
-            gap: 15px;
         }
         
         .distractor-details {
             display: flex;
             justify-content: space-around;
-            flex-grow: 1; /* Takes up space between main question and continue button */
+            width: 100%;
+            margin-top: 15px;
             gap: 10px;
         }
-
         .distractor-item {
             flex: 1;
-            padding: 5px;
+            padding: 10px;
             border: 1px dashed var(--color-gray);
             border-radius: 5px;
         }
         .distractor-item img {
             max-width: 100%;
-            max-height: 80px; /* Smaller images for vertical space */
+            max-height: 100px;
             width: auto;
             height: auto;
             display: block;
             margin: 5px auto;
         }
-        
-        /* New Continue Button (Right Arrow) Style */
-        .continue-button-container {
-            flex-shrink: 0;
-            align-self: flex-end; /* Align to the bottom of its container */
-        }
         .next-button {
-            padding: 15px 25px;
+            padding: 10px 20px;
             background-color: var(--color-primary);
             color: var(--color-light-text);
             border: none;
             border-radius: 5px;
-            font-size: 1.5em; /* Larger arrow */
             cursor: pointer;
-            margin-left: 15px;
+            margin-top: 20px;
         }
-        
         .study-again-button {
             padding: 8px 15px;
             background-color: var(--color-wrong);
@@ -262,8 +229,8 @@
         </div>
 
         <div id="login-screen" class="screen">
-            <h1>Let's learn English! 🇬🇧</h1>
-            <input type="text" id="username-input" placeholder="What's your name?">
+            <h2>Enter Your ID</h2>
+            <input type="text" id="username-input" placeholder="Enter your ID">
             <button onclick="attemptLogin()">Start Game</button>
             <p id="login-message" style="color: var(--color-wrong);"></p>
         </div>
@@ -279,8 +246,7 @@
         </div>
 
         <div id="question-screen" class="screen">
-            <button class="exit-button" onclick="goToHome()">❌</button>
-            <h2 id="quiz-title">What is this?</h2>
+            <h2 id="quiz-title"></h2>
             <div class="timer-container" id="timer-container" style="display:none;">
                 <div id="timer-bar"></div>
             </div>
@@ -290,32 +256,30 @@
         </div>
 
         <div id="feedback-screen" class="screen">
-            <button class="exit-button" onclick="goToHome()">❌</button>
             <h2 class="feedback-message" id="feedback-message"></h2>
+            <p id="feedback-progress"></p>
             
-            <div class="main-question-area">
+            <div class="question-detail">
+                <h3>Question was:</h3>
                 <img id="question-feedback-image" src="" alt="Original Question Image">
                 <div class="term" id="question-feedback-term"></div>
                 <button class="study-again-button" id="demote-button" onclick="demoteTerm()">Study this again</button>
             </div>
 
-            <div class="distractor-area-wrapper">
-                <div class="distractor-details">
-                    <div class="distractor-item">
-                        <img id="distractor1-image" src="" alt="Distractor 1 Image">
-                        <div id="distractor1-term"></div>
-                    </div>
-                    <div class="distractor-item">
-                        <img id="distractor2-image" src="" alt="Distractor 2 Image">
-                        <div id="distractor2-term"></div>
-                    </div>
+            <div class="distractor-details">
+                <div class="distractor-item">
+                    <h4>Distractor 1:</h4>
+                    <img id="distractor1-image" src="" alt="Distractor 1 Image">
+                    <div id="distractor1-term"></div>
                 </div>
-                <div class="continue-button-container">
-                    <button class="next-button" onclick="loadQuestion()">▶️</button>
+                <div class="distractor-item">
+                    <h4>Distractor 2:</h4>
+                    <img id="distractor2-image" src="" alt="Distractor 2 Image">
+                    <div id="distractor2-term"></div>
                 </div>
             </div>
 
-            <button id="hidden-home-button" style="display:none;" onclick="goToHome()"></button>
+            <button class="next-button" onclick="goToHome()">Continue</button>
         </div>
 
     </div>
@@ -338,9 +302,6 @@
         let currentQuestion = null;
         let timer = null;
         let totalTerms = 0;
-        let currentQuizLevel = null;
-        let currentQuizTheme = null;
-
 
         // --- UTILITY FUNCTIONS ---
 
@@ -397,7 +358,7 @@
                 console.log("State saved successfully for " + CURRENT_USER_ID);
             } catch (e) {
                 console.error("Could not save state:", e);
-                // No need for alert as per new rule (silently fail)
+                alert("Warning: Could not save progress! Please check browser storage settings.");
             }
         }
 
@@ -471,7 +432,6 @@
 
         function goToHome() {
             updateHomeCounters();
-            clearInterval(timer); // Stop any running timer
             switchScreen('home-screen');
         }
 
@@ -502,7 +462,7 @@
                 button.className = 'theme-button';
                 button.textContent = `${theme} (${count})`;
                 button.onclick = () => startQuiz('New', theme);
-                button.disabled = count === 0; // Disabled if count is 0
+                button.disabled = count === 0;
                 container.appendChild(button);
             });
 
@@ -531,10 +491,6 @@
         // --- QUIZ SETUP AND START ---
 
         function startQuiz(level, theme = null) {
-            currentQuizLevel = level;
-            currentQuizTheme = theme;
-
-            // Rebuild the quiz pool based on the CURRENT state of gameData
             quizPool = gameData.filter(item => {
                 if (level === 'New') {
                     return item.level === 'New' && item.theme === theme;
@@ -543,8 +499,7 @@
             });
 
             if (quizPool.length === 0) {
-                // This shouldn't happen if buttons are disabled correctly, but as a safeguard
-                alert(`No terms currently in the '${level}' pool for this selection.`);
+                alert(`No terms in the '${level}' pool for this selection.`);
                 goToHome();
                 return;
             }
@@ -552,9 +507,7 @@
             // Shuffle the pool to randomize question order
             quizPool.sort(() => Math.random() - 0.5);
             currentQuizIndex = 0;
-            
-            // Replaced quiz title with generic "What is this?"
-            document.getElementById('quiz-title').textContent = `What is this?`; 
+            document.getElementById('quiz-title').textContent = `Level: ${level} ${theme ? ' - ' + theme : ''}`;
             
             // Set up timer visibility
             const timerContainer = document.getElementById('timer-container');
@@ -571,16 +524,8 @@
         // --- QUESTION HANDLING ---
 
         function loadQuestion() {
-            // Check the pool again, in case the last question was promoted out of the pool
             if (currentQuizIndex >= quizPool.length) {
-                // End the quiz session
-                goToHome();
-                return;
-            }
-            
-            // Re-shuffle if we finished a round, but we need to stay in the theme/group
-            if (currentQuizIndex >= quizPool.length) {
-                // The quiz is technically over, go home
+                alert("Quiz finished! Returning to home.");
                 goToHome();
                 return;
             }
@@ -588,24 +533,13 @@
             currentQuestion = quizPool[currentQuizIndex];
             const level = currentQuestion.level;
 
-            // 1. Check if item was promoted/demoted out of the current group since setup
-            if ((level === 'New' && level !== currentQuizLevel) || 
-                (level === 'Medium' && level !== currentQuizLevel) || 
-                (level === 'Expert' && level !== currentQuizLevel)) 
-            {
-                // If it was promoted/demoted, skip this item, and move to the next.
-                currentQuizIndex++;
-                loadQuestion();
-                return;
-            }
-            
-            // Expert level is just review (moved inside switch to allow exit)
+            // Expert level is just review
             if (level === 'Expert') {
                 showExpertReview();
                 return;
             }
 
-            // 2. Get Distractors
+            // 1. Get Distractors
             let distractorPool;
             if (level === 'New') {
                 // Distractors from other 'New' terms within the SAME theme
@@ -621,23 +555,23 @@
             const distractors = [];
             const availableTerms = distractorPool.slice(); // Copy the pool
             while (distractors.length < 2 && availableTerms.length > 0) {
-                const randomIndex = Math.floor(R*availableTerms.length);
-                const selectedItem = availableTerms[randomIndex];
+                const randomIndex = Math.floor(Math.random() * availableTerms.length);
                 
-                // Ensure the selected distractor is not the current question and is not already selected
-                if (selectedItem.term !== currentQuestion.term && !distractors.some(d => d.term === selectedItem.term)) {
-                    distractors.push(selectedItem);
+                // Ensure the selected distractor is not the current question
+                if (availableTerms[randomIndex].term !== currentQuestion.term) {
+                    distractors.push(availableTerms[randomIndex]);
                 }
                 availableTerms.splice(randomIndex, 1);
             }
             
-            // Fallback for very small pools: use any New level items not already picked
+            // Fallback: If not enough in pool, use any other terms not in Expert or Medium
             if (distractors.length < 2) {
                  const fallbackPool = gameData.filter(item => 
-                    item.level === 'New' && item.term !== currentQuestion.term && !distractors.some(d => d.term === item.term)
+                    item.level === 'New' && item.term !== currentQuestion.term && !distractors.includes(item)
                  );
                  while (distractors.length < 2 && fallbackPool.length > 0) {
-                    const randomIndex = Math.floor(R*fallbackPool.length);
+                    const randomIndex = Math.floor(Math.random() * fallbackPool.length);
+                    // Double check to prevent duplicates if possible
                     if (!distractors.some(d => d.term === fallbackPool[randomIndex].term)) {
                         distractors.push(fallbackPool[randomIndex]);
                     }
@@ -646,11 +580,11 @@
             }
 
 
-            // 3. Prepare Choices
+            // 2. Prepare Choices
             const choices = [currentQuestion, ...distractors];
-            choices.sort(() => R - 0.5); // Randomize button order
+            choices.sort(() => Math.random() - 0.5); // Randomize button order
 
-            // 4. Render Quiz
+            // 3. Render Quiz
             document.getElementById('question-image').src = currentQuestion.url;
             const choicesContainer = document.getElementById('choices-container');
             choicesContainer.innerHTML = '';
@@ -663,22 +597,20 @@
                 choicesContainer.appendChild(button);
             });
 
-            // 5. Start Timer if Medium
+            // 4. Start Timer if Medium
             if (level === 'Medium') {
                 startTimer();
             } else {
                 clearInterval(timer);
             }
-            
-            // Re-activate question screen in case coming from feedback
-            switchScreen('question-screen');
         }
         
         function showExpertReview() {
             clearInterval(timer);
             
-            document.getElementById('feedback-message').textContent = "Review: Expert";
+            document.getElementById('feedback-message').textContent = "Expert Review";
             document.getElementById('feedback-message').className = 'feedback-message';
+            document.getElementById('feedback-progress').textContent = `Term: ${currentQuestion.term} (Expert)`;
 
             // Display question details
             document.getElementById('question-feedback-image').src = currentQuestion.url;
@@ -686,13 +618,11 @@
             
             // Hide distractor details as there was no quiz
             document.querySelector('.distractor-details').style.display = 'none';
-            document.querySelector('.continue-button-container').style.display = 'block';
 
-
-            // Show demote button (only for Medium/Expert)
+            // Show demote button
             const demoteBtn = document.getElementById('demote-button');
-            demoteBtn.style.display = 'block'; 
-            demoteBtn.textContent = "Study this again";
+            demoteBtn.style.display = 'block';
+            demoteBtn.textContent = "Study this again (Demote to Medium)";
 
             switchScreen('feedback-screen');
         }
@@ -712,7 +642,7 @@
 
                 if (timeRemaining <= 0) {
                     clearInterval(timer);
-                    submitAnswer(null, []); // Time's up
+                    submitAnswer(null, []); // Time's up, submit wrong answer (no distractors needed for feedback)
                 }
             }, 100);
         }
@@ -741,21 +671,22 @@
                 if (item.level === 'New' && item.correctCount >= 3) {
                     item.level = 'Medium';
                     item.correctCount = 0;
-                    // Note: Removed alert message here as per rule
+                    // Find the term in gameData and update its level and count
+                    const index = gameData.findIndex(d => d.term === item.term);
+                    if (index !== -1) gameData[index].level = 'Medium';
+                    alert(`✅ Term '${item.term}' advanced to Medium!`);
                 } else if (item.level === 'Medium' && item.correctCount >= 3) {
                     item.level = 'Expert';
                     item.correctCount = 0;
-                    // Note: Removed alert message here as per rule
+                    // Find the term in gameData and update its level and count
+                    const index = gameData.findIndex(d => d.term === item.term);
+                    if (index !== -1) gameData[index].level = 'Expert';
+                    alert(`⭐ Term '${item.term}' advanced to Expert!`);
                 }
             } else {
                 item.correctCount = 0; // Reset count on wrong answer
             }
-            // Update the main gameData array
-            const index = gameData.findIndex(d => d.term === item.term);
-            if (index !== -1) {
-                gameData[index].level = item.level;
-                gameData[index].correctCount = item.correctCount;
-            }
+            // Note: quizPool tracking is handled in loadQuestion/startQuiz to reflect dynamic pool changes
         }
         
         function demoteTerm() {
@@ -764,9 +695,11 @@
             if (item.level === 'Expert') {
                 item.level = 'Medium';
                 item.correctCount = 0;
+                alert(`⬇️ Term '${item.term}' demoted to Medium for more study!`);
             } else if (item.level === 'Medium') {
-                item.level = 'New'; 
+                item.level = 'New'; // Returns to New (and its original theme)
                 item.correctCount = 0;
+                alert(`⬇️ Term '${item.term}' demoted back to its theme in the New level!`);
             }
             
             // Update the main gameData array
@@ -789,28 +722,33 @@
             messageElement.textContent = isCorrect ? "You are right! 🎉" : "You are wrong! 😞";
             messageElement.className = `feedback-message ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
 
-            // Handle Time's up message (Simplified)
-            if (!isCorrect && !chosenItem) {
-                 messageElement.textContent = "Time's up! 😞";
+            // 2. Progress text
+            let progressText = `Current Level: ${question.level}. Correct answers: ${question.correctCount}/3 needed for promotion.`;
+            if (!isCorrect && chosenItem) {
+                 progressText = `You chose '${chosenItem.term}'. ${progressText}`;
+            } else if (!isCorrect && !chosenItem) {
+                 progressText = `Time's up! The correct answer was '${question.term}'. ${progressText}`;
             }
+            document.getElementById('feedback-progress').textContent = progressText;
 
-            // 2. Question Detail (Always Shown)
+            // 3. Question Detail (Always Shown)
             document.getElementById('question-feedback-image').src = question.url;
             document.getElementById('question-feedback-term').textContent = question.term;
             
-            // 3. Demote Button (Only for Medium/Expert)
+            // 4. Demote Button
             const demoteBtn = document.getElementById('demote-button');
-            if (question.level === 'Expert' || question.level === 'Medium') {
+            if (question.level === 'Expert') {
                 demoteBtn.style.display = 'block';
-                demoteBtn.textContent = "Study this again"; // Removed demote reference
+                demoteBtn.textContent = "Study this again (Demote to Medium)";
+            } else if (question.level === 'Medium') {
+                demoteBtn.style.display = 'block';
+                demoteBtn.textContent = "Study this again (Demote to New)";
             } else {
-                demoteBtn.style.display = 'none'; // Not shown for New level
+                demoteBtn.style.display = 'none'; // No demotion from New
             }
 
-            // 4. Distractor Details 
+            // 5. Distractor Details (Only shown if a quiz was run)
             const distractorDetailsContainer = document.querySelector('.distractor-details');
-            document.querySelector('.continue-button-container').style.display = 'block';
-
             if (distractors && distractors.length === 2) {
                 distractorDetailsContainer.style.display = 'flex';
                 
@@ -820,11 +758,8 @@
                 document.getElementById('distractor2-image').src = distractors[1].url;
                 document.getElementById('distractor2-term').textContent = distractors[1].term;
             } else {
-                 // Hide distractors if no quiz was run (e.g., time out)
                  distractorDetailsContainer.style.display = 'none';
             }
-            
-            // Hide progress text (Removed label #feedback-progress)
             
             switchScreen('feedback-screen');
         }
