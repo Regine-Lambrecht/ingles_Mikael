@@ -50,6 +50,10 @@
         }
 
         /* --- Login Screen --- */
+        #login-screen h1 {
+            font-size: 2em;
+            color: var(--color-primary);
+        }
         #login-screen input[type="text"],
         #login-screen button {
             padding: 10px;
@@ -258,8 +262,8 @@
         </div>
 
         <div id="login-screen" class="screen">
-            <h2>Enter Your ID</h2>
-            <input type="text" id="username-input" placeholder="Enter your ID">
+            <h1>Let's learn English! 🇬🇧</h1>
+            <input type="text" id="username-input" placeholder="What's your name?">
             <button onclick="attemptLogin()">Start Game</button>
             <p id="login-message" style="color: var(--color-wrong);"></p>
         </div>
@@ -589,7 +593,7 @@
                 (level === 'Medium' && level !== currentQuizLevel) || 
                 (level === 'Expert' && level !== currentQuizLevel)) 
             {
-                // Skip this item as it no longer belongs here.
+                // If it was promoted/demoted, skip this item, and move to the next.
                 currentQuizIndex++;
                 loadQuestion();
                 return;
@@ -617,7 +621,7 @@
             const distractors = [];
             const availableTerms = distractorPool.slice(); // Copy the pool
             while (distractors.length < 2 && availableTerms.length > 0) {
-                const randomIndex = Math.floor(Math.random() * availableTerms.length);
+                const randomIndex = Math.floor(R*availableTerms.length);
                 const selectedItem = availableTerms[randomIndex];
                 
                 // Ensure the selected distractor is not the current question and is not already selected
@@ -633,7 +637,7 @@
                     item.level === 'New' && item.term !== currentQuestion.term && !distractors.some(d => d.term === item.term)
                  );
                  while (distractors.length < 2 && fallbackPool.length > 0) {
-                    const randomIndex = Math.floor(Math.random() * fallbackPool.length);
+                    const randomIndex = Math.floor(R*fallbackPool.length);
                     if (!distractors.some(d => d.term === fallbackPool[randomIndex].term)) {
                         distractors.push(fallbackPool[randomIndex]);
                     }
@@ -644,7 +648,7 @@
 
             // 3. Prepare Choices
             const choices = [currentQuestion, ...distractors];
-            choices.sort(() => Math.random() - 0.5); // Randomize button order
+            choices.sort(() => R - 0.5); // Randomize button order
 
             // 4. Render Quiz
             document.getElementById('question-image').src = currentQuestion.url;
