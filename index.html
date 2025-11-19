@@ -410,13 +410,22 @@
                     const cleanName = filename.substring(0, filename.lastIndexOf('.')).replace(/\.(?=[^.]*$)/, ''); // Remove extension
                     const firstUnderscoreIndex = cleanName.indexOf('_');
                     
-                    if (firstUnderscoreIndex === -1) {
-                         console.warn(`Filename ${filename} does not contain an underscore. Skipping.`);
-                         return null;
+                    // Use "Others" as the theme if the naming convention is not strictly followed
+                    let theme = 'Others';
+                    let term = cleanName;
+
+                    if (firstUnderscoreIndex !== -1) {
+                        theme = cleanName.substring(0, firstUnderscoreIndex).trim().replace(/_/g, ' ');
+                        term = cleanName.substring(firstUnderscoreIndex + 1).trim().replace(/_/g, ' ');
+                    } else {
+                         console.warn(`Filename ${filename} does not contain an underscore. Assigned to 'Others'.`);
+                    }
+                    
+                    if (!theme || theme.length === 0) {
+                        // Fallback in case theme parsing results in empty string
+                        theme = 'Others';
                     }
 
-                    const theme = cleanName.substring(0, firstUnderscoreIndex).trim().replace(/_/g, ' ');
-                    const term = cleanName.substring(firstUnderscoreIndex + 1).trim().replace(/_/g, ' ');
                     const url = BASE_IMAGE_URL + filename;
 
                     return {
@@ -427,10 +436,9 @@
                         level: 'New', // Default
                         correctCount: 0 // Default
                     };
-                }).filter(item => item !== null);
+                });
                 
                 totalTerms = gameData.length;
-                // Do NOT load state yet, as we need the user ID first
                 switchScreen('login-screen');
             } catch (error) {
                 console.error("Error loading or parsing image list:", error);
@@ -482,7 +490,8 @@
 
             // 1. Group terms by theme and count levels
             gameData.forEach(item => {
-                if (item.level === 'New') {
+                // IMPORTANT: Only count items if they have a theme and are 'New'
+                if (item.level === 'New' && item.theme && item.theme.length > 0) {
                     themes[item.theme] = (themes[item.theme] || 0) + 1;
                 } else if (item.level === 'Medium') {
                     mediumCount++;
@@ -492,14 +501,18 @@
             });
 
             // 2. Inject Theme Buttons
-            Object.entries(themes).sort(([themeA], [themeB]) => themeA.localeCompare(themeB)).forEach(([theme, count]) => {
-                const button = document.createElement('button');
-                button.className = 'theme-button';
-                button.textContent = `${theme} (${count})`;
-                button.onclick = () => startQuiz('New', theme);
-                button.disabled = count === 0; // Disabled if count is 0
-                container.appendChild(button);
-            });
+            Object.entries(themes)
+                .sort(([themeA], [themeB]) => themeA.localeCompare(themeB))
+                .forEach(([theme, count]) => {
+                    if (count > 0) {
+                        const button = document.createElement('button');
+                        button.className = 'theme-button';
+                        button.textContent = `${theme} (${count})`;
+                        button.onclick = () => startQuiz('New', theme);
+                        button.disabled = count === 0; 
+                        container.appendChild(button);
+                    }
+                });
 
             // 3. Add Separator and Level Buttons
             const separator = document.createElement('hr');
@@ -530,7 +543,6 @@
             currentQuizTheme = theme;
 
             // Rebuild the quiz pool based on the CURRENT state of gameData
-            // This is the pool we will draw from repeatedly until the user exits
             quizPool = gameData.filter(item => {
                 if (level === 'New') {
                     return item.level === 'New' && item.theme === theme;
@@ -562,90 +574,73 @@
         // --- QUESTION HANDLING ---
 
         function loadQuestion() {
-            // 1. Check if the current pool item is still valid
-            let itemIndex = currentQuizIndex % quizPool.length;
-            
-            // Re-check the item in case it was promoted/demoted by a previous answer
-            // We use the term to find the absolute state in gameData
-            if (quizPool.length > 0) {
-                 currentQuestion = gameData.find(item => item.term === quizPool[itemIndex].term);
-
-                 // If the question's level/theme no longer matches the current quiz mode, skip it.
-                 // This ensures the quiz only runs on items still belonging to the selected level/theme.
+            // 1. Filter the quiz pool to remove promoted/demoted items
+            quizPool = quizPool.filter(item => {
+                 const currentState = gameData.find(d => d.term === item.term);
                  let isValid = false;
-                 if (currentQuizLevel === 'New' && currentQuestion.level === 'New' && currentQuestion.theme === currentQuizTheme) {
+                 if (currentQuizLevel === 'New' && currentState.level === 'New' && currentState.theme === currentQuizTheme) {
                      isValid = true;
-                 } else if (currentQuizLevel === 'Medium' && currentQuestion.level === 'Medium') {
+                 } else if (currentQuizLevel === 'Medium' && currentState.level === 'Medium') {
                      isValid = true;
-                 } else if (currentQuizLevel === 'Expert' && currentQuestion.level === 'Expert') {
+                 } else if (currentQuizLevel === 'Expert' && currentState.level === 'Expert') {
                      isValid = true;
                  }
-                 
-                 if (!isValid) {
-                     // Remove the invalid item from the pool for this session
-                     quizPool.splice(itemIndex, 1);
-                     if (quizPool.length === 0) {
-                         goToHome();
-                         return;
-                     }
-                     // Since an item was removed, we don't increment currentQuizIndex, we just try again
-                     loadQuestion();
-                     return;
-                 }
-            } else {
-                // Quiz pool is empty (finished all items)
+                 return isValid;
+            });
+
+            if (quizPool.length === 0) {
                 goToHome();
                 return;
             }
+
+            // Select the next question
+            let itemIndex = currentQuizIndex % quizPool.length;
+            currentQuestion = gameData.find(item => item.term === quizPool[itemIndex].term);
+
 
             const level = currentQuestion.level;
 
             // 2. Expert level is just review
             if (level === 'Expert') {
                 showExpertReview();
-                currentQuizIndex++; // Advance the index for the next rotation
+                currentQuizIndex++; 
                 return;
             }
 
             // 3. Get Distractors
             let distractorPool;
             if (level === 'New') {
-                // Distractors from other 'New' terms within the SAME theme
+                // Default: Distractors from other 'New' terms within the SAME theme
                 distractorPool = gameData.filter(item => 
                     item.level === 'New' && item.theme === currentQuestion.theme && item.term !== currentQuestion.term
                 );
             } else if (level === 'Medium') {
-                // Distractors from all 'New' terms across ALL themes
+                // Medium: Distractors from all 'New' terms across ALL themes
                 distractorPool = gameData.filter(item => item.level === 'New' && item.term !== currentQuestion.term);
             }
 
             // Select 2 unique distractors (ensure enough items exist)
             const distractors = [];
-            const availableTerms = distractorPool.slice(); // Copy the pool
+            let availableTerms = distractorPool.slice(); // Copy the pool
+            
+            // FALLBACK LOGIC: If the primary pool is too small, use all 'New' terms as a fallback for distractors
+            if (availableTerms.length < 2) {
+                // Overwrite the availableTerms pool with ALL 'New' items, excluding the current question
+                availableTerms = gameData.filter(item => item.level === 'New' && item.term !== currentQuestion.term);
+            }
+
             while (distractors.length < 2 && availableTerms.length > 0) {
                 const randomIndex = Math.floor(Math.random() * availableTerms.length);
                 const selectedItem = availableTerms[randomIndex];
                 
-                // Ensure the selected distractor is not the current question and is not already selected
-                if (selectedItem.term !== currentQuestion.term && !distractors.some(d => d.term === selectedItem.term)) {
+                // Ensure the selected distractor is unique
+                if (!distractors.some(d => d.term === selectedItem.term)) {
                     distractors.push(selectedItem);
                 }
+                // Remove the term so it's not picked again
                 availableTerms.splice(randomIndex, 1);
             }
-            
-            // Fallback for very small pools: use any New level items not already picked
-            if (distractors.length < 2) {
-                 const fallbackPool = gameData.filter(item => 
-                     item.level === 'New' && item.term !== currentQuestion.term && !distractors.some(d => d.term === item.term)
-                 );
-                 while (distractors.length < 2 && fallbackPool.length > 0) {
-                     const randomIndex = Math.floor(Math.random() * fallbackPool.length);
-                     if (!distractors.some(d => d.term === fallbackPool[randomIndex].term)) {
-                         distractors.push(fallbackPool[randomIndex]);
-                     }
-                     fallbackPool.splice(randomIndex, 1);
-                 }
-            }
+            // Note: If, even with the fallback, fewer than 2 distractors exist, the quiz will proceed with 0 or 1.
 
 
             // 4. Prepare Choices
@@ -738,7 +733,6 @@
             showFeedback(isCorrect, currentQuestion, distractors, chosenItem);
 
             saveState(); // Save progress after every question
-            // currentQuizIndex is now managed in loadQuestion for infinite theme loop
         }
 
         // --- PROGRESS MANAGEMENT ---
@@ -819,6 +813,7 @@
             const distractorDetailsContainer = document.querySelector('.distractor-details');
             document.querySelector('.continue-button-container').style.display = 'block';
 
+            // Only show distractor details if we actually found 2 distractors
             if (distractors && distractors.length === 2) {
                 distractorDetailsContainer.style.display = 'flex';
                 
@@ -828,7 +823,7 @@
                 document.getElementById('distractor2-image').src = distractors[1].url;
                 document.getElementById('distractor2-term').textContent = distractors[1].term;
             } else {
-                 // Hide distractors if no quiz was run (e.g., time out) or only one available
+                 // Hide distractors if fewer than 2 were found
                  distractorDetailsContainer.style.display = 'none';
             }
             
