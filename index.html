@@ -1,4 +1,4 @@
-<!DOCTYPE TML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,6 +14,8 @@
             --color-text: #2c3e50;
             --color-light-text: #fefefe;
             --color-gray: #bdc3c7;
+            --border-radius-small: 5px;
+            --border-radius-large: 12px; /* New: Softer, larger corner radius */
         }
 
         body {
@@ -34,8 +36,9 @@
             padding: 20px;
             box-sizing: border-box;
             background-color: white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            position: relative; /* Needed for absolute positioning of exit button */
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); /* Softer shadow */
+            border-radius: var(--border-radius-large); /* Rounded app container */
+            position: relative;
         }
 
         /* --- Screens --- */
@@ -57,7 +60,7 @@
             width: 100%;
             max-width: 300px;
             box-sizing: border-box;
-            border-radius: 5px;
+            border-radius: var(--border-radius-small);
         }
         #login-screen input[type="text"] {
             border: 1px solid var(--color-gray);
@@ -67,6 +70,7 @@
             color: var(--color-light-text);
             border: none;
             cursor: pointer;
+            border-radius: var(--border-radius-large); /* Larger round for buttons */
         }
 
         /* --- Home Screen --- */
@@ -82,11 +86,14 @@
             background-color: var(--color-primary);
             color: var(--color-light-text);
             border: none;
-            border-radius: 5px;
+            border-radius: var(--border-radius-large); /* Rounded corners */
             font-size: 1.1em;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, transform 0.1s;
         }
+        .theme-button:active {
+            transform: scale(0.99); /* Click feedback */
+        }
         .theme-button:hover:not(:disabled) {
             background-color: #2980b9;
         }
@@ -104,8 +111,8 @@
         /* --- Quiz Screen / Feedback Screen Common --- */
         .exit-button {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 15px;
+            left: 15px;
             background: none;
             border: none;
             font-size: 1.5em;
@@ -113,6 +120,13 @@
             color: var(--color-wrong);
             z-index: 10;
         }
+        .exit-button::before {
+            content: "\274C"; /* Unicode for Heavy Multiplication X (nicer X icon) */
+            font-family: sans-serif;
+        }
+        .exit-button > * {
+            display: none; /* Hide the original ❌ text */
+        }
         #question-screen h3 {
             margin-bottom: 0;
         }
@@ -124,6 +138,7 @@
             margin: 20px 0;
             border: 1px solid var(--color-gray);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-small);
         }
         .choice-button {
             width: 100%;
@@ -132,7 +147,7 @@
             background-color: var(--color-primary);
             color: var(--color-light-text);
             border: none;
-            border-radius: 5px;
+            border-radius: var(--border-radius-large); /* Rounded corners */
             font-size: 1em;
             cursor: pointer;
             transition: background-color 0.2s;
@@ -151,7 +166,7 @@
             width: 100%;
             background-color: var(--color-gray);
             margin-bottom: 10px;
-            border-radius: 5px;
+            border-radius: var(--border-radius-small);
             overflow: hidden;
         }
 
@@ -160,7 +175,7 @@
             font-size: 2em;
             font-weight: bold;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: var(--border-radius-small);
             margin-bottom: 10px;
         }
         .feedback-correct {
@@ -178,7 +193,7 @@
             max-height: 150px;
             margin: 10px 0;
             border: 3px solid var(--color-secondary);
-            border-radius: 5px;
+            border-radius: var(--border-radius-small);
         }
         .main-question-area .term {
             font-size: 1.2em;
@@ -204,7 +219,7 @@
             flex: 1;
             padding: 5px;
             border: 1px dashed var(--color-gray);
-            border-radius: 5px;
+            border-radius: var(--border-radius-small);
         }
         .distractor-item img {
             max-width: 100%;
@@ -213,30 +228,38 @@
             height: auto;
             display: block;
             margin: 5px auto;
+            border-radius: var(--border-radius-small);
         }
         
         /* New Continue Button (Right Arrow) Style */
         .continue-button-container {
             flex-shrink: 0;
-            align-self: flex-end; /* Align to the bottom of its container */
+            align-self: flex-end;
         }
         .next-button {
             padding: 15px 25px;
             background-color: var(--color-primary);
             color: var(--color-light-text);
             border: none;
-            border-radius: 5px;
-            font-size: 1.5em; /* Larger arrow */
+            border-radius: var(--border-radius-large); /* Rounded corners */
+            font-size: 1.5em; 
             cursor: pointer;
             margin-left: 15px;
         }
+        .next-button::before {
+            content: "\27A1\FE0F"; /* Unicode for Heavy Black Rightwards Arrow */
+            font-family: sans-serif;
+        }
+        .next-button > * {
+            display: none; /* Hide the original ▶️ text */
+        }
         
         .study-again-button {
             padding: 8px 15px;
             background-color: var(--color-wrong);
             color: var(--color-light-text);
             border: none;
-            border-radius: 5px;
+            border-radius: var(--border-radius-small); /* Small rounded corners */
             cursor: pointer;
             margin-top: 10px;
         }
@@ -275,7 +298,7 @@
         </div>
 
         <div id="question-screen" class="screen">
-            <button class="exit-button" onclick="goToHome()">❌</button>
+            <button class="exit-button" onclick="goToHome()"><span>❌</span></button>
             <h2 id="quiz-title">What is this?</h2>
             <div class="timer-container" id="timer-container" style="display:none;">
                 <div id="timer-bar"></div>
@@ -286,7 +309,7 @@
         </div>
 
         <div id="feedback-screen" class="screen">
-            <button class="exit-button" onclick="goToHome()">❌</button>
+            <button class="exit-button" onclick="goToHome()"><span>❌</span></button>
             <h2 class="feedback-message" id="feedback-message"></h2>
             
             <div class="main-question-area">
@@ -307,7 +330,7 @@
                     </div>
                 </div>
                 <div class="continue-button-container">
-                    <button class="next-button" onclick="loadQuestion()">▶️</button>
+                    <button class="next-button" onclick="loadQuestion()"><span>▶️</span></button>
                 </div>
             </div>
 
@@ -606,46 +629,44 @@
             // 2. Expert level is just review
             if (level === 'Expert') {
                 showExpertReview();
-                
                 currentQuizIndex++; 
-                if (currentQuizIndex >= quizPool.length) {
-                    // Re-shuffle and reset index if we've cycled through all available questions
-                    quizPool.sort(() => Math.random() - 0.5);
-                    currentQuizIndex = 0;
-                }
                 return;
             }
 
             // 3. Get Distractors
             let distractorPool;
             if (level === 'New') {
-                // New: Try to get distractors from other 'New' terms within the SAME theme
+                // Default: Distractors from other 'New' terms within the SAME theme
                 distractorPool = gameData.filter(item => 
                     item.level === 'New' && item.theme === currentQuestion.theme && item.term !== currentQuestion.term
                 );
-                // Fallback: If not enough, use all 'New' terms
-                if (distractorPool.length < 2) {
-                    distractorPool = gameData.filter(item => item.level === 'New' && item.term !== currentQuestion.term);
-                }
             } else if (level === 'Medium') {
                 // Medium: Distractors from all 'New' terms across ALL themes
                 distractorPool = gameData.filter(item => item.level === 'New' && item.term !== currentQuestion.term);
-            } else {
-                distractorPool = [];
             }
 
-            // Select 2 unique distractors from the prepared pool
+            // Select 2 unique distractors (ensure enough items exist)
             const distractors = [];
-            let availableTerms = distractorPool.slice(); // Copy the final pool
+            let availableTerms = distractorPool.slice(); // Copy the pool
             
+            // FALLBACK LOGIC: If the primary pool is too small, use all 'New' terms as a fallback for distractors
+            if (availableTerms.length < 2) {
+                // Overwrite the availableTerms pool with ALL 'New' items, excluding the current question
+                availableTerms = gameData.filter(item => item.level === 'New' && item.term !== currentQuestion.term);
+            }
+
             while (distractors.length < 2 && availableTerms.length > 0) {
                 const randomIndex = Math.floor(Math.random() * availableTerms.length);
                 const selectedItem = availableTerms[randomIndex];
                 
-                distractors.push(selectedItem);
+                // Ensure the selected distractor is unique
+                if (!distractors.some(d => d.term === selectedItem.term)) {
+                    distractors.push(selectedItem);
+                }
                 // Remove the term so it's not picked again
                 availableTerms.splice(randomIndex, 1);
             }
+            // Note: If, even with the fallback, fewer than 2 distractors exist, the quiz will proceed with 0 or 1.
 
 
             // 4. Prepare Choices
@@ -674,7 +695,7 @@
             
             // Advance the index for the next question (handles wrapping around the pool)
             currentQuizIndex++; 
-            if (currentQuizIndex >= quizPool.length) {
+            if (currentQuizIndex >= quizPool.length && quizPool.length > 0) {
                 // Re-shuffle and reset index if we've cycled through all available questions
                 quizPool.sort(() => Math.random() - 0.5);
                 currentQuizIndex = 0;
