@@ -1,6 +1,29 @@
+Animals_Bird.png
 Animals_Cat.png
 Animals_Chicken.png
+Animals_Cow.png
+Animals_Dog.jpg
+Animals_Duck.jpg
+Animals_Elephant.jpg
 Animals_Fish.png
+Animals_Frog.jpg
+Animals_Horse.jpg
+Animals_Lion.jpg
+Animals_Monkey.jpg
+Animals_Pig.jpg
+Animals_Rabbit.jpg
+Animals_Snake.jpg
+Animals_Turtle.jpg
+Body_Chest.png
+Body_Ear.png
+Body_Eye.png
+Body_Foot.png
+Body_Hair.png
+Body_Hand.png
+Body_Knee.png
+Body_Mouth.png
+Body_Neck.png
+Body_Nose.png
 Clothes_Hat.jpg
 Clothes_Shoes.png
 Colours_Black.png
@@ -13,14 +36,47 @@ Colours_Purple.png
 Colours_Red.png
 Colours_White.png
 Colours_Yellow.png
+Family_Brother.png
+Family_Father.png
+Family_Grand-father.png
+Family_Grand-mother.png
+Family_Mother.png
+Family_Sister.png
+Food_Apple.jpg
+Food_Banana.png
 Food_Bread.jpg
+Food_Carrot.png
+Food_Cherry.png
+Food_Chocolate.png
+Food_Grapes.jpg
 Food_Ice cream.png
+Food_Lemon.jpg
 Food_Meal.jpg
+Food_Oil.jpg
+Food_Onion.png
+Food_Orange.png
+Food_Orange juice.png
+Food_Pear.png
+Food_Pepper.png
+Food_Potato.jpg
+Food_Rice.jpg
+Food_Salad.png
 Food_Salt.png
+Food_Strawberry.jpg
+Food_Tomato.jpg
 Food_Water.jpg
+House_Bathroom.png
+House_Bedroom.png
+House_Dining room.png
 House_Door.jpg
+House_Kitchen.png
+House_Living room.png
+House_Office.png
+House_Toilet.png
+House_Window.jpg
 Objects_Ball.jpg
 Objects_Book.jpg
+Objects_Bowl.jpg
 Objects_Chair.jpg
 Objects_Fork.jpg
 Objects_Glass.jpg
@@ -70,6 +126,29 @@ Opposites_Young.png
 Others_Birthday.jpg
 Opposites_Small.png
 Opposites_Tall.png
+Others_Bank.png
+Others_Behind.jpg
+Others_Between.jpg
+Others_Box.png
+Others_Brazil.jpg
+Others_Car.jpg
+Others_Church.png
+Others_Cinema.jpg
+Others_Football.png
+Others_Guitar.png
+Others_Home.jpg
+Others_Hospital.png
+Others_In.jpg
+Others_In front of.jpg
+Others_Next to.jpg
+Others_On.jpg
+Others_Restaurant.jpg
+Others_School.jpg
+Others_Station.jpg
+Others_Supermarket.jpg
+Others_Swimming pool.png
+Others_Train.jpg
+Others_Under.jpg
 Time_Monday.png
 Time_Tuesday.png
 Time_Wednesday.png
