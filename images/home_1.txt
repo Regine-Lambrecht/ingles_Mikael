@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastery Quiz</title>
+    <style>
+        /* --- CSS STYLES (Mobile-First Responsive Design) --- */
+        :root {
+            --color-primary: #3498db;
+            --color-secondary: #2ecc71;
+            --color-wrong: #e74c3c;
+            --color-bg: #ecf0f1;
+            --color-text: #2c3e50;
+            --color-light-text: #fefefe;
+            --color-gray: #bdc3c7;
+        }
+
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #app {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Screens --- */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .screen.active {
+            display: flex;
+        }
+
+        /* --- Login Screen --- */
+        #login-screen input[type="text"],
+        #login-screen button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 300px;
+            box-sizing: border-box;
+            border-radius: 5px;
+        }
+        #login-screen input[type="text"] {
+            border: 1px solid var(--color-gray);
+        }
+        #login-screen button {
+            background-color: var(--color-primary);
+            color: var(--color-light-text);
+            border: none;
+            cursor: pointer;
+        }
+
+        /* --- Home Screen --- */
+        .home-title {
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        .theme-button {
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            background-color: var(--color-primary);
+            color: var(--color-light-text);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .theme-button:hover:not(:disabled) {
+            background-color: #2980b9;
+        }
+        .theme-button:disabled {
+            background-color: var(--color-gray);
+            cursor: not-allowed;
+        }
+        .medium-button, .expert-button {
+            background-color: var(--color-secondary);
+        }
+        .medium-button:hover:not(:disabled), .expert-button:hover:not(:disabled) {
+            background-color: #27ae60;
+        }
+
+        /* --- Quiz Screen --- */
+        #question-screen h3 {
+            margin-bottom: 0;
+        }
+        #question-image {
+            max-width: 90%;
+            max-height: 200px;
+            width: auto;
+            height: auto;
+            margin: 20px 0;
+            border: 1px solid var(--color-gray);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .choice-button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background-color: var(--color-primary);
+            color: var(--color-light-text);
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .choice-button:hover {
+            background-color: #2980b9;
+        }
+        #timer-bar {
+            width: 100%;
+            height: 10px;
+            background-color: var(--color-wrong);
+            transition: width 0.1s linear;
+            margin-bottom: 15px;
+        }
+        .timer-container {
+            width: 100%;
+            background-color: var(--color-gray);
+            margin-bottom: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        /* --- Feedback Screen --- */
+        #feedback-screen .feedback-message {
+            font-size: 2em;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .feedback-correct {
+            color: var(--color-secondary);
+        }
+        .feedback-wrong {
+            color: var(--color-wrong);
+        }
+        .question-detail {
+            margin-bottom: 20px;
+        }
+        .question-detail img {
+            max-width: 100%;
+            max-height: 150px;
+            margin: 10px 0;
+            border: 3px solid var(--color-secondary);
+            border-radius: 5px;
+        }
+        .question-detail .term {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .distractor-details {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 15px;
+            gap: 10px;
+        }
+        .distractor-item {
+            flex: 1;
+            padding: 10px;
+            border: 1px dashed var(--color-gray);
+            border-radius: 5px;
+        }
+        .distractor-item img {
+            max-width: 100%;
+            max-height: 100px;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: 5px auto;
+        }
+        .next-button {
+            padding: 10px 20px;
+            background-color: var(--color-primary);
+            color: var(--color-light-text);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .study-again-button {
+            padding: 8px 15px;
+            background-color: var(--color-wrong);
+            color: var(--color-light-text);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        /* --- Loading Screen --- */
+        #loading-screen {
+            font-size: 1.5em;
+            color: var(--color-primary);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        
+        <div id="loading-screen" class="screen active">
+            Loading data... Please wait.
+        </div>
+
+        <div id="login-screen" class="screen">
+            <h2>Enter Your ID</h2>
+            <input type="text" id="username-input" placeholder="Enter your ID">
+            <button onclick="attemptLogin()">Start Game</button>
+            <p id="login-message" style="color: var(--color-wrong);"></p>
+        </div>
+
+        <div id="home-screen" class="screen">
+            <h1 class="home-title">Let's study!</h1>
+            <div id="theme-buttons-container" style="width: 100%;">
+                <hr style="margin: 20px 0;">
+                <button id="medium-button" class="theme-button medium-button" onclick="startQuiz('Medium')">Medium (<span id="medium-counter">0</span>)</button>
+                <button id="expert-button" class="theme-button expert-button" onclick="startQuiz('Expert')">Expert (<span id="expert-counter">0/0</span>)</button>
+            </div>
+            <button id="logout-button" class="study-again-button" style="background-color: var(--color-gray); margin-top: 20px;" onclick="logout()">Log Out</button>
+        </div>
+
+        <div id="question-screen" class="screen">
+            <h2 id="quiz-title"></h2>
+            <div class="timer-container" id="timer-container" style="display:none;">
+                <div id="timer-bar"></div>
+            </div>
+            <img id="question-image" src="" alt="Quiz Image">
+            <div id="choices-container" style="width: 100%;">
+                </div>
+        </div>
+
+        <div id="feedback-screen" class="screen">
+            <h2 class="feedback-message" id="feedback-message"></h2>
+            <p id="feedback-progress"></p>
+            
+            <div class="question-detail">
+                <h3>Question was:</h3>
+                <img id="question-feedback-image" src="" alt="Original Question Image">
+                <div class="term" id="question-feedback-term"></div>
+                <button class="study-again-button" id="demote-button" onclick="demoteTerm()">Study this again</button>
+            </div>
+
+            <div class="distractor-details">
+                <div class="distractor-item">
+                    <h4>Distractor 1:</h4>
+                    <img id="distractor1-image" src="" alt="Distractor 1 Image">
+                    <div id="distractor1-term"></div>
+                </div>
+                <div class="distractor-item">
+                    <h4>Distractor 2:</h4>
+                    <img id="distractor2-image" src="" alt="Distractor 2 Image">
+                    <div id="distractor2-term"></div>
+                </div>
+            </div>
+
+            <button class="next-button" onclick="goToHome()">Continue</button>
+        </div>
+
+    </div>
+
+    <script>
+        /* --- JAVASCRIPT LOGIC --- */
+
+        // --- CONFIGURATION ---
+        const VALID_IDS = ["Mikael", "Regine"]; // Updated: Now allows "Mikael" or "Regine"
+        let CURRENT_USER_ID = null; // Will store the currently logged-in user ID
+        const STORAGE_PREFIX = `MasteryQuiz_State_`; // Prefix state key with user ID for segregation
+        const LIST_URL = "https://regine-lambrecht.github.io/ingles_Mikael/image_list.txt";
+        const BASE_IMAGE_URL = "https://regine-lambrecht.github.io/ingles_Mikael/images/";
+        const MEDIUM_TIMER_SECONDS = 5;
+
+        // --- STATE VARIABLES ---
+        let gameData = []; // Main array of all terms
+        let quizPool = []; // Terms for the current quiz session
+        let currentQuizIndex = 0;
+        let currentQuestion = null;
+        let timer = null;
+        let totalTerms = 0;
+
+        // --- UTILITY FUNCTIONS ---
+
+        /**
+         * Switches the active screen.
+         * @param {string} screenId - The ID of the screen to activate.
+         */
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        /**
+         * Loads the game state from localStorage.
+         */
+        function loadState() {
+            if (!CURRENT_USER_ID) return;
+            const STORAGE_KEY = STORAGE_PREFIX + CURRENT_USER_ID;
+            try {
+                const storedState = localStorage.getItem(STORAGE_KEY);
+                if (storedState) {
+                    const savedData = JSON.parse(storedState);
+                    // Merge saved state into current data structure
+                    gameData = gameData.map(item => {
+                        const savedItem = savedData.find(s => s.term === item.term);
+                        if (savedItem) {
+                            return { ...item, level: savedItem.level || 'New', correctCount: savedItem.correctCount || 0 };
+                        }
+                        return item;
+                    });
+                }
+            } catch (e) {
+                console.error("Could not load state:", e);
+                // Reset state to initial if loading fails
+                gameData.forEach(item => { item.level = 'New'; item.correctCount = 0; });
+            }
+        }
+
+        /**
+         * Saves the game state to localStorage.
+         */
+        function saveState() {
+            if (!CURRENT_USER_ID) return;
+            const STORAGE_KEY = STORAGE_PREFIX + CURRENT_USER_ID;
+            try {
+                const stateToSave = gameData.map(item => ({
+                    term: item.term,
+                    level: item.level,
+                    correctCount: item.correctCount
+                }));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+                console.log("State saved successfully for " + CURRENT_USER_ID);
+            } catch (e) {
+                console.error("Could not save state:", e);
+                alert("Warning: Could not save progress! Please check browser storage settings.");
+            }
+        }
+
+        /**
+         * Initializes the game data by fetching the list.
+         */
+        async function initializeData() {
+            try {
+                const response = await fetch(LIST_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const text = await response.text();
+                const filenames = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+                gameData = filenames.map(filename => {
+                    const cleanName = filename.substring(0, filename.lastIndexOf('.')).replace(/\.(?=[^.]*$)/, ''); // Remove extension
+                    const firstUnderscoreIndex = cleanName.indexOf('_');
+                    
+                    if (firstUnderscoreIndex === -1) {
+                         console.warn(`Filename ${filename} does not contain an underscore. Skipping.`);
+                         return null;
+                    }
+
+                    const theme = cleanName.substring(0, firstUnderscoreIndex).trim().replace(/_/g, ' ');
+                    const term = cleanName.substring(firstUnderscoreIndex + 1).trim().replace(/_/g, ' ');
+                    const url = BASE_IMAGE_URL + filename;
+
+                    return {
+                        filename,
+                        url,
+                        theme,
+                        term,
+                        level: 'New', // Default
+                        correctCount: 0 // Default
+                    };
+                }).filter(item => item !== null);
+                
+                totalTerms = gameData.length;
+                // Do NOT load state yet, as we need the user ID first
+                switchScreen('login-screen');
+            } catch (error) {
+                console.error("Error loading or parsing image list:", error);
+                document.getElementById('loading-screen').innerHTML = `Error loading data: ${error.message}. Check the console for details.`;
+            }
+        }
+        
+        // --- LOGIN / SESSION MANAGEMENT ---
+
+        function attemptLogin() {
+            const input = document.getElementById('username-input').value.trim();
+            const message = document.getElementById('login-message');
+
+            if (VALID_IDS.includes(input)) {
+                CURRENT_USER_ID = input;
+                loadState(); // Load state after successful login
+                goToHome();
+                message.textContent = "";
+            } else {
+                message.textContent = `Access denied. Valid IDs are: ${VALID_IDS.join(', ')}`;
+            }
+        }
+
+        function logout() {
+            saveState(); // Ensure last state is saved
+            CURRENT_USER_ID = null;
+            switchScreen('login-screen');
+            document.getElementById('username-input').value = '';
+            document.getElementById('login-message').textContent = 'Progress saved.';
+        }
+
+        // --- GAME FLOW / NAVIGATION ---
+
+        function goToHome() {
+            updateHomeCounters();
+            switchScreen('home-screen');
+        }
+
+        // --- HOME SCREEN LOGIC ---
+
+        function updateHomeCounters() {
+            const container = document.getElementById('theme-buttons-container');
+            container.innerHTML = '';
+
+            const themes = {};
+            let mediumCount = 0;
+            let expertCount = 0;
+
+            // 1. Group terms by theme and count levels
+            gameData.forEach(item => {
+                if (item.level === 'New') {
+                    themes[item.theme] = (themes[item.theme] || 0) + 1;
+                } else if (item.level === 'Medium') {
+                    mediumCount++;
+                } else if (item.level === 'Expert') {
+                    expertCount++;
+                }
+            });
+
+            // 2. Inject Theme Buttons
+            Object.entries(themes).sort(([themeA], [themeB]) => themeA.localeCompare(themeB)).forEach(([theme, count]) => {
+                const button = document.createElement('button');
+                button.className = 'theme-button';
+                button.textContent = `${theme} (${count})`;
+                button.onclick = () => startQuiz('New', theme);
+                button.disabled = count === 0;
+                container.appendChild(button);
+            });
+
+            // 3. Add Separator and Level Buttons
+            const separator = document.createElement('hr');
+            separator.style.margin = '20px 0';
+            container.appendChild(separator);
+
+            const mediumButton = document.createElement('button');
+            mediumButton.id = 'medium-button';
+            mediumButton.className = 'theme-button medium-button';
+            mediumButton.textContent = `Medium (${mediumCount})`;
+            mediumButton.onclick = () => startQuiz('Medium');
+            mediumButton.disabled = mediumCount === 0;
+            container.appendChild(mediumButton);
+
+            const expertButton = document.createElement('button');
+            expertButton.id = 'expert-button';
+            expertButton.className = 'theme-button expert-button';
+            expertButton.textContent = `Expert (${expertCount}/${totalTerms})`;
+            expertButton.onclick = () => startQuiz('Expert');
+            expertButton.disabled = expertCount === 0;
+            container.appendChild(expertButton);
+        }
+
+        // --- QUIZ SETUP AND START ---
+
+        function startQuiz(level, theme = null) {
+            quizPool = gameData.filter(item => {
+                if (level === 'New') {
+                    return item.level === 'New' && item.theme === theme;
+                }
+                return item.level === level;
+            });
+
+            if (quizPool.length === 0) {
+                alert(`No terms in the '${level}' pool for this selection.`);
+                goToHome();
+                return;
+            }
+
+            // Shuffle the pool to randomize question order
+            quizPool.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            document.getElementById('quiz-title').textContent = `Level: ${level} ${theme ? ' - ' + theme : ''}`;
+            
+            // Set up timer visibility
+            const timerContainer = document.getElementById('timer-container');
+            if (level === 'Medium') {
+                timerContainer.style.display = 'block';
+            } else {
+                timerContainer.style.display = 'none';
+            }
+
+            switchScreen('question-screen');
+            loadQuestion();
+        }
+
+        // --- QUESTION HANDLING ---
+
+        function loadQuestion() {
+            if (currentQuizIndex >= quizPool.length) {
+                alert("Quiz finished! Returning to home.");
+                goToHome();
+                return;
+            }
+
+            currentQuestion = quizPool[currentQuizIndex];
+            const level = currentQuestion.level;
+
+            // Expert level is just review
+            if (level === 'Expert') {
+                showExpertReview();
+                return;
+            }
+
+            // 1. Get Distractors
+            let distractorPool;
+            if (level === 'New') {
+                // Distractors from other 'New' terms within the SAME theme
+                distractorPool = gameData.filter(item => 
+                    item.level === 'New' && item.theme === currentQuestion.theme && item.term !== currentQuestion.term
+                );
+            } else if (level === 'Medium') {
+                // Distractors from all 'New' terms across ALL themes
+                distractorPool = gameData.filter(item => item.level === 'New' && item.term !== currentQuestion.term);
+            }
+
+            // Select 2 unique distractors (ensure enough items exist)
+            const distractors = [];
+            const availableTerms = distractorPool.slice(); // Copy the pool
+            while (distractors.length < 2 && availableTerms.length > 0) {
+                const randomIndex = Math.floor(Math.random() * availableTerms.length);
+                
+                // Ensure the selected distractor is not the current question
+                if (availableTerms[randomIndex].term !== currentQuestion.term) {
+                    distractors.push(availableTerms[randomIndex]);
+                }
+                availableTerms.splice(randomIndex, 1);
+            }
+            
+            // Fallback: If not enough in pool, use any other terms not in Expert or Medium
+            if (distractors.length < 2) {
+                 const fallbackPool = gameData.filter(item => 
+                    item.level === 'New' && item.term !== currentQuestion.term && !distractors.includes(item)
+                 );
+                 while (distractors.length < 2 && fallbackPool.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * fallbackPool.length);
+                    // Double check to prevent duplicates if possible
+                    if (!distractors.some(d => d.term === fallbackPool[randomIndex].term)) {
+                        distractors.push(fallbackPool[randomIndex]);
+                    }
+                    fallbackPool.splice(randomIndex, 1);
+                 }
+            }
+
+
+            // 2. Prepare Choices
+            const choices = [currentQuestion, ...distractors];
+            choices.sort(() => Math.random() - 0.5); // Randomize button order
+
+            // 3. Render Quiz
+            document.getElementById('question-image').src = currentQuestion.url;
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.innerHTML = '';
+
+            choices.forEach(item => {
+                const button = document.createElement('button');
+                button.className = 'choice-button';
+                button.textContent = item.term;
+                button.onclick = () => submitAnswer(item, distractors);
+                choicesContainer.appendChild(button);
+            });
+
+            // 4. Start Timer if Medium
+            if (level === 'Medium') {
+                startTimer();
+            } else {
+                clearInterval(timer);
+            }
+        }
+        
+        function showExpertReview() {
+            clearInterval(timer);
+            
+            document.getElementById('feedback-message').textContent = "Expert Review";
+            document.getElementById('feedback-message').className = 'feedback-message';
+            document.getElementById('feedback-progress').textContent = `Term: ${currentQuestion.term} (Expert)`;
+
+            // Display question details
+            document.getElementById('question-feedback-image').src = currentQuestion.url;
+            document.getElementById('question-feedback-term').textContent = currentQuestion.term;
+            
+            // Hide distractor details as there was no quiz
+            document.querySelector('.distractor-details').style.display = 'none';
+
+            // Show demote button
+            const demoteBtn = document.getElementById('demote-button');
+            demoteBtn.style.display = 'block';
+            demoteBtn.textContent = "Study this again (Demote to Medium)";
+
+            switchScreen('feedback-screen');
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            const totalTime = MEDIUM_TIMER_SECONDS * 1000;
+            let timeRemaining = totalTime;
+            const bar = document.getElementById('timer-bar');
+
+            bar.style.width = '100%';
+
+            timer = setInterval(() => {
+                timeRemaining -= 100;
+                const percentage = (timeRemaining / totalTime) * 100;
+                bar.style.width = percentage + '%';
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    submitAnswer(null, []); // Time's up, submit wrong answer (no distractors needed for feedback)
+                }
+            }, 100);
+        }
+
+        function submitAnswer(chosenItem, distractors) {
+            clearInterval(timer);
+            // Disable buttons to prevent multiple clicks
+            document.querySelectorAll('.choice-button').forEach(btn => btn.disabled = true);
+
+            const isCorrect = chosenItem && chosenItem.term === currentQuestion.term;
+            
+            processProgress(isCorrect);
+            showFeedback(isCorrect, currentQuestion, distractors, chosenItem);
+
+            saveState(); // Save progress after every question
+            currentQuizIndex++;
+        }
+
+        // --- PROGRESS MANAGEMENT ---
+
+        function processProgress(isCorrect) {
+            const item = currentQuestion;
+
+            if (isCorrect) {
+                item.correctCount++;
+                if (item.level === 'New' && item.correctCount >= 3) {
+                    item.level = 'Medium';
+                    item.correctCount = 0;
+                    // Find the term in gameData and update its level and count
+                    const index = gameData.findIndex(d => d.term === item.term);
+                    if (index !== -1) gameData[index].level = 'Medium';
+                    alert(`✅ Term '${item.term}' advanced to Medium!`);
+                } else if (item.level === 'Medium' && item.correctCount >= 3) {
+                    item.level = 'Expert';
+                    item.correctCount = 0;
+                    // Find the term in gameData and update its level and count
+                    const index = gameData.findIndex(d => d.term === item.term);
+                    if (index !== -1) gameData[index].level = 'Expert';
+                    alert(`⭐ Term '${item.term}' advanced to Expert!`);
+                }
+            } else {
+                item.correctCount = 0; // Reset count on wrong answer
+            }
+            // Note: quizPool tracking is handled in loadQuestion/startQuiz to reflect dynamic pool changes
+        }
+        
+        function demoteTerm() {
+            const item = currentQuestion;
+            
+            if (item.level === 'Expert') {
+                item.level = 'Medium';
+                item.correctCount = 0;
+                alert(`⬇️ Term '${item.term}' demoted to Medium for more study!`);
+            } else if (item.level === 'Medium') {
+                item.level = 'New'; // Returns to New (and its original theme)
+                item.correctCount = 0;
+                alert(`⬇️ Term '${item.term}' demoted back to its theme in the New level!`);
+            }
+            
+            // Update the main gameData array
+            const index = gameData.findIndex(d => d.term === item.term);
+            if (index !== -1) {
+                gameData[index].level = item.level;
+                gameData[index].correctCount = 0;
+            }
+
+            saveState();
+            goToHome();
+        }
+
+        // --- FEEDBACK SCREEN ---
+
+        function showFeedback(isCorrect, question, distractors, chosenItem) {
+            
+            // 1. Message
+            const messageElement = document.getElementById('feedback-message');
+            messageElement.textContent = isCorrect ? "You are right! 🎉" : "You are wrong! 😞";
+            messageElement.className = `feedback-message ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
+
+            // 2. Progress text
+            let progressText = `Current Level: ${question.level}. Correct answers: ${question.correctCount}/3 needed for promotion.`;
+            if (!isCorrect && chosenItem) {
+                 progressText = `You chose '${chosenItem.term}'. ${progressText}`;
+            } else if (!isCorrect && !chosenItem) {
+                 progressText = `Time's up! The correct answer was '${question.term}'. ${progressText}`;
+            }
+            document.getElementById('feedback-progress').textContent = progressText;
+
+            // 3. Question Detail (Always Shown)
+            document.getElementById('question-feedback-image').src = question.url;
+            document.getElementById('question-feedback-term').textContent = question.term;
+            
+            // 4. Demote Button
+            const demoteBtn = document.getElementById('demote-button');
+            if (question.level === 'Expert') {
+                demoteBtn.style.display = 'block';
+                demoteBtn.textContent = "Study this again (Demote to Medium)";
+            } else if (question.level === 'Medium') {
+                demoteBtn.style.display = 'block';
+                demoteBtn.textContent = "Study this again (Demote to New)";
+            } else {
+                demoteBtn.style.display = 'none'; // No demotion from New
+            }
+
+            // 5. Distractor Details (Only shown if a quiz was run)
+            const distractorDetailsContainer = document.querySelector('.distractor-details');
+            if (distractors && distractors.length === 2) {
+                distractorDetailsContainer.style.display = 'flex';
+                
+                document.getElementById('distractor1-image').src = distractors[0].url;
+                document.getElementById('distractor1-term').textContent = distractors[0].term;
+                
+                document.getElementById('distractor2-image').src = distractors[1].url;
+                document.getElementById('distractor2-term').textContent = distractors[1].term;
+            } else {
+                 distractorDetailsContainer.style.display = 'none';
+            }
+            
+            switchScreen('feedback-screen');
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeData();
+        });
+    </script>
+</body>
+</html>
