@@ -142,17 +142,32 @@ Others_In.jpg
 Others_In front of.jpg
 Others_Next to.jpg
 Others_On.jpg
+Others_Raining.jpg
 Others_Restaurant.jpg
 Others_School.jpg
 Others_Station.jpg
+Others_Snowing.jpg
+Others_Sunny.jpg
 Others_Supermarket.jpg
 Others_Swimming pool.png
 Others_Train.jpg
 Others_Under.jpg
+Others_Wendy.jpg
 Time_Monday.png
 Time_Tuesday.png
 Time_Wednesday.png
 Time_Thursday.png
 Time_Friday.png
 Time_Saturday.png
-Time_Sunday.png
+Time_January.png
+Time_February.png
+Time_March.png
+Time_April.png
+Time_May.png
+Time_June.png
+Time_July.png
+Time_August.png
+Time_September.png
+Time_October.png
+Time_November.png
+Time_December.png
