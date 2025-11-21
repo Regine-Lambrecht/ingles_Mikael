@@ -152,3 +152,7 @@ Others_Under.jpg
 Time_Monday.png
 Time_Tuesday.png
 Time_Wednesday.png
+Time_Thursday.png
+Time_Friday.png
+Time_Saturday.png
+Time_Sunday.png
