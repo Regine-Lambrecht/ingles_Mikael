@@ -75,6 +75,18 @@
             margin-bottom: 20px;
             font-size: 1.8em;
         }
+        
+        /* New Avatar Styling */
+        #user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid var(--color-primary);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
         .theme-button {
             width: 100%;
             padding: 15px;
@@ -321,6 +333,9 @@
         </div>
 
         <div id="home-screen" class="screen">
+            <h2 id="user-greeting" style="color: var(--color-text); margin-bottom: 5px;"></h2>
+            <img id="user-avatar" src="" alt="User Avatar" style="display: none;">
+            
             <h1 class="home-title">Let's study!</h1>
             <div id="theme-buttons-container" style="width: 100%;">
                 <hr style="margin: 20px 0;">
@@ -555,6 +570,8 @@
                 loadState(); // Load state after successful login (uses ID)
                 goToHome();
                 message.textContent = "";
+                // Console warning about local storage limitation
+                console.warn("PROGRESS NOTE: Progress is saved locally in this browser only. It will not transfer to other devices or browsers.");
             } else {
                 message.textContent = `Access denied. Valid IDs are: ${VALID_IDS.join(', ')}`;
             }
@@ -571,6 +588,21 @@
         // --- GAME FLOW / NAVIGATION ---
 
         function goToHome() {
+            // 1. Set Greeting and Avatar visibility
+            const greetingElement = document.getElementById('user-greeting');
+            const avatarElement = document.getElementById('user-avatar');
+            
+            // Set Greeting for all users
+            greetingElement.textContent = `Hello ${CURRENT_USER_ID}!`;
+
+            if (CURRENT_USER_ID === 'Mikael') {
+                avatarElement.src = BASE_IMAGE_URL + "Mikael.png";
+                avatarElement.style.display = 'block';
+            } else {
+                avatarElement.style.display = 'none';
+                avatarElement.src = ''; // Clear source
+            }
+            
             updateHomeCounters();
             clearInterval(timer); // Stop any running timer
             switchScreen('home-screen');
