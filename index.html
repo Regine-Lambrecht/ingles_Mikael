@@ -405,7 +405,7 @@
         let currentQuestion = null;
         let timer = null;
         let totalTerms = 0;
-        let currentQuizLevel = null;
+        let currentQuizLevel = null; // Stores the level selected (New, Medium, Advanced, Expert)
         let currentQuizTheme = null;
         let uniqueThemes = new Set();
 
@@ -607,7 +607,12 @@
 
             // 3. Inject Theme Buttons (New Level)
             Object.entries(themeCounts)
-                .sort(([themeA], [themeB]) => themeA.localeCompare(themeB))
+                .sort(([themeA], [themeB]) => {
+                    // Logic to put 'Others' last
+                    if (themeA === 'Others') return 1;
+                    if (themeB === 'Others') return -1;
+                    return themeA.localeCompare(themeB); // Alphabetical sort for all others
+                })
                 .forEach(([theme, count]) => {
                     const button = document.createElement('button');
                     button.className = 'theme-button';
@@ -691,7 +696,7 @@
             
             // Set up timer visibility
             const timerContainer = document.getElementById('timer-container');
-            // MODIFIED: Only Medium level uses the timer now
+            // Only Medium level uses the timer now
             const timerShouldBeActive = (level === 'Medium'); 
 
             if (timerShouldBeActive) {
@@ -784,7 +789,7 @@
 
 
             // 5. Start Timer
-            // MODIFIED: Only Medium level starts the timer here
+            // Only Medium level starts the timer here
             if (level === 'Medium') {
                 startTimer();
             } else {
@@ -936,7 +941,7 @@
                 slots[i].style.borderBottomColor = isCorrect ? 'var(--color-secondary)' : 'var(--color-wrong)';
             }
 
-            // Submit with an empty distractor array, as they are not relevant to feedback here
+            // Submit with an empty distractor array. Chosen item is null if incorrect.
             submitAnswer(isCorrect ? currentQuestion : null, []); 
         }
 
@@ -987,8 +992,6 @@
                         // For Medium, submit wrong answer (null chosen item)
                         submitAnswer(null, getDistractors(currentQuizLevel, currentQuestion));
                     }
-                    // Advanced level timeout will be handled by checkAnswer if triggered by last click
-                    // or will remain in the incomplete state if timer runs out before any click.
                 }
             }, 100);
         }
@@ -1087,9 +1090,13 @@
             messageElement.textContent = isCorrect ? "You are right! 🎉" : "You are wrong! 😞";
             messageElement.className = `feedback-message ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
 
-            // Handle Time's up message (Simplified)
+            // Only show "Time's up" if the quiz was running at Medium level and failed 
+            // due to null answer (timeout). Advanced level's null answer is a wrong submission.
             if (!isCorrect && !chosenItem) {
-                 messageElement.textContent = "Time's up! 😞";
+                 if (currentQuizLevel === 'Medium') {
+                     messageElement.textContent = "Time's up! 😞";
+                 }
+                 // If it's Advanced, the message remains "You are wrong! 😞", which is correct.
             }
 
             // 2. Question Detail (Always Shown)
