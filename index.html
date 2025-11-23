@@ -288,6 +288,14 @@
             cursor: pointer;
             margin-top: 10px;
         }
+
+        /* Container for reset/logout buttons */
+        .home-actions-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
         
         /* --- Loading Screen --- */
         #loading-screen {
@@ -317,7 +325,15 @@
             <div id="theme-buttons-container" style="width: 100%;">
                 <hr style="margin: 20px 0;">
                 </div>
-            <button id="logout-button" class="study-again-button" style="background-color: var(--color-gray); margin-top: 20px;" onclick="logout()">Log Out</button>
+            
+            <div class="home-actions-container">
+                <button id="reset-button" class="study-again-button" onclick="resetProgress()">
+                    Study all over again 🔄
+                </button>
+                <button id="logout-button" class="study-again-button" style="background-color: var(--color-gray);" onclick="logout()">
+                    Log Out
+                </button>
+            </div>
         </div>
 
         <div id="question-screen" class="screen">
@@ -369,7 +385,8 @@
         /* --- JAVASCRIPT LOGIC --- */
 
         // --- CONFIGURATION ---
-        const VALID_IDS = ["Mikael", "Regine"]; // Updated: Now allows "Mikael" or "Regine"
+        // UPDATED: Added Marcia and Mariane
+        const VALID_IDS = ["Mikael", "Regine", "Marcia", "Mariane"]; 
         let CURRENT_USER_ID = null; // Will store the currently logged-in user ID
         const STORAGE_PREFIX = `MasteryQuiz_State_`; // Prefix state key with user ID for segregation
         const LIST_URL = "https://regine-lambrecht.github.io/ingles_Mikael/image_list.txt";
@@ -420,16 +437,13 @@
                     gameData = gameData.map(item => {
                         const savedItem = savedData.find(s => s.term === item.term);
                         if (savedItem) {
-                            // Ensure 'Advanced' level is supported when loading old states
                             let savedLevel = savedItem.level || 'New';
-                            if (savedLevel === 'Expert' && !gameData.some(d => d.term === item.term && d.level === 'Advanced')) {
-                                // If loading an old Expert item, keep it Expert
-                            } else if (savedLevel === 'Expert') {
-                                // Transition old Expert to Advanced if necessary (optional, but ensures migration)
-                                // We keep it Expert for now, promotion rules will handle the rest.
-                            }
-                            
-                            return { ...item, level: savedLevel, correctCount: savedItem.correctCount || 0 };
+                            return { 
+                                ...item, 
+                                level: savedLevel, 
+                                correctCount: savedItem.correctCount || 0,
+                                failCount: savedItem.failCount || 0 // Load fail count for Advanced demotion
+                            };
                         }
                         return item;
                     });
@@ -437,7 +451,7 @@
             } catch (e) {
                 console.error("Could not load state:", e);
                 // Reset state to initial if loading fails
-                gameData.forEach(item => { item.level = 'New'; item.correctCount = 0; });
+                gameData.forEach(item => { item.level = 'New'; item.correctCount = 0; item.failCount = 0; });
             }
         }
 
@@ -451,7 +465,8 @@
                 const stateToSave = gameData.map(item => ({
                     term: item.term,
                     level: item.level,
-                    correctCount: item.correctCount
+                    correctCount: item.correctCount,
+                    failCount: item.failCount || 0 // Save fail count
                 }));
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
                 console.log("State saved successfully for " + CURRENT_USER_ID);
@@ -516,7 +531,8 @@
                         theme,
                         term,
                         level: 'New', // Default
-                        correctCount: 0 // Default
+                        correctCount: 0, // Default
+                        failCount: 0 // Default
                     };
                 });
                 
@@ -536,7 +552,7 @@
 
             if (VALID_IDS.includes(input)) {
                 CURRENT_USER_ID = input;
-                loadState(); // Load state after successful login
+                loadState(); // Load state after successful login (uses ID)
                 goToHome();
                 message.textContent = "";
             } else {
@@ -545,7 +561,7 @@
         }
 
         function logout() {
-            saveState(); // Ensure last state is saved
+            saveState(); // Ensure last state is saved (uses ID)
             CURRENT_USER_ID = null;
             switchScreen('login-screen');
             document.getElementById('username-input').value = '';
@@ -635,6 +651,21 @@
             container.appendChild(expertButton);
         }
 
+        /**
+         * Resets all terms back to the 'New' level.
+         */
+        function resetProgress() {
+            if (confirm("Are you sure you want to reset all progress? All terms will be set back to the 'New' level.")) {
+                gameData.forEach(item => {
+                    item.level = 'New';
+                    item.correctCount = 0;
+                    item.failCount = 0; // Reset fail count
+                });
+                saveState(); // Save the reset state
+                goToHome(); // Refresh the home screen counters
+            }
+        }
+
         // --- QUIZ SETUP AND START ---
 
         function startQuiz(level, theme = null) {
@@ -660,12 +691,13 @@
             
             // Set up timer visibility
             const timerContainer = document.getElementById('timer-container');
-            const timerShouldBeActive = (level === 'Medium' || level === 'Advanced');
+            // MODIFIED: Only Medium level uses the timer now
+            const timerShouldBeActive = (level === 'Medium'); 
 
             if (timerShouldBeActive) {
                 timerContainer.style.display = 'block';
             } else {
-                clearInterval(timer); // Ensure timer is stopped if switching to non-timed quiz
+                clearInterval(timer); // Ensure timer is stopped
                 timerContainer.style.display = 'none';
             }
 
@@ -723,19 +755,24 @@
 
             // Show/Hide elements based on level
             if (level === 'Advanced') {
+                // Advanced Level: Interactive Spelling
                 questionImage.style.display = 'block';
                 questionImage.src = currentQuestion.url;
                 choicesContainer.style.display = 'none';
+                slotsContainer.style.display = 'flex';
+                letterContainer.style.display = 'flex';
                 document.getElementById('quiz-title').textContent = "Spell the word:";
 
                 // Start the Interactive Spelling Game
                 renderSpellingGame(currentQuestion);
 
             } else {
-                // New / Medium Level (Standard Multiple Choice)
+                // New / Medium Level: Standard Multiple Choice
                 questionImage.style.display = 'block';
                 questionImage.src = currentQuestion.url;
                 choicesContainer.style.display = 'block';
+                slotsContainer.style.display = 'none';
+                letterContainer.style.display = 'none';
                 document.getElementById('quiz-title').textContent = "What is this?";
 
                 // 3. Get Distractors (only needed for New/Medium)
@@ -747,7 +784,8 @@
 
 
             // 5. Start Timer
-            if (level === 'Medium' || level === 'Advanced') {
+            // MODIFIED: Only Medium level starts the timer here
+            if (level === 'Medium') {
                 startTimer();
             } else {
                 clearInterval(timer);
@@ -890,6 +928,13 @@
             const userAnswer = currentAnswer.join('');
             const correctAnswer = correctTermLetters.join('');
             const isCorrect = userAnswer === correctAnswer;
+            
+            // Visually mark slots green/red (optional but helpful)
+            const slots = document.getElementById('answer-slots-container').children;
+            for(let i = 0; i < slots.length; i++) {
+                slots[i].style.color = isCorrect ? 'var(--color-secondary)' : 'var(--color-wrong)';
+                slots[i].style.borderBottomColor = isCorrect ? 'var(--color-secondary)' : 'var(--color-wrong)';
+            }
 
             // Submit with an empty distractor array, as they are not relevant to feedback here
             submitAnswer(isCorrect ? currentQuestion : null, []); 
@@ -937,13 +982,13 @@
                     // Disable letters/choices on timeout
                     document.querySelectorAll('.letter-button, .choice-button').forEach(btn => btn.disabled = true);
                     
-                    // If Advanced level, submit wrong answer
-                    if (currentQuizLevel === 'Advanced') {
-                        submitAnswer(null, []);
-                    } else {
-                        // For New/Medium, submit wrong answer (null chosen item)
+                    // Only Medium level needs special handling for timeout submission
+                    if (currentQuizLevel === 'Medium') {
+                        // For Medium, submit wrong answer (null chosen item)
                         submitAnswer(null, getDistractors(currentQuizLevel, currentQuestion));
                     }
+                    // Advanced level timeout will be handled by checkAnswer if triggered by last click
+                    // or will remain in the incomplete state if timer runs out before any click.
                 }
             }, 100);
         }
@@ -970,6 +1015,8 @@
 
             if (isCorrect) {
                 item.correctCount++;
+                item.failCount = 0; // Reset fail count on success
+                
                 if (currentLevel === 'New' && item.correctCount >= 3) {
                     item.level = 'Medium';
                     item.correctCount = 0;
@@ -982,14 +1029,18 @@
                 }
             } else {
                 // Wrong answer / Time's up
-                item.correctCount++; // Increment count of fails
+                item.correctCount = 0; // Reset correct count immediately
                 
-                // Demotion Rule: If Advanced and failed 3 times
-                if (currentLevel === 'Advanced' && item.correctCount >= 3) {
-                    item.level = 'Medium'; // Demote Advanced to Medium
-                    item.correctCount = 0;
+                if (currentLevel === 'Advanced') {
+                    item.failCount = (item.failCount || 0) + 1; // Track consecutive fails
+                    
+                    if (item.failCount >= 3) {
+                        item.level = 'Medium'; // Demote Advanced to Medium
+                        item.failCount = 0;
+                    }
                 } else {
-                    item.correctCount = 0; // Reset consecutive correct count for other levels
+                    // Reset fail count for other levels if not used for demotion
+                    item.failCount = 0;
                 }
             }
             // Update the main gameData array
@@ -997,6 +1048,7 @@
             if (index !== -1) {
                 gameData[index].level = item.level;
                 gameData[index].correctCount = item.correctCount;
+                gameData[index].failCount = item.failCount || 0; 
             }
         }
         
@@ -1019,6 +1071,7 @@
             if (index !== -1) {
                 gameData[index].level = item.level;
                 gameData[index].correctCount = 0;
+                gameData[index].failCount = 0; // Reset fail count on manual demotion
             }
 
             saveState();
@@ -1050,22 +1103,27 @@
             const demoteBtn = document.getElementById('demote-button');
             const currentLevel = question.level;
             
-            // NOTE: The game logic updates the level *before* showing feedback if a promotion/demotion happened.
+            // The logic here is based on the state *before* any promotion/demotion that might have just happened.
+            // We need to find the item's current state in the gameData array, as it may have been promoted/demoted already.
+            const updatedItem = gameData.find(d => d.term === question.term);
+            const updatedLevel = updatedItem ? updatedItem.level : currentLevel;
             
-            // If the user was on Advanced and failed (correctCount >= 3), they are already demoted to Medium. 
-            // In that specific case, we hide the demote button on the feedback screen because the failure already resulted in demotion.
-
-            if (currentLevel === 'Expert') {
+            // Demote button is available only if the *updated* level is not 'New' AND the answer was wrong.
+            // It's also available for Expert review.
+            if (updatedLevel === 'Expert') {
                  demoteBtn.style.display = 'block';
                  demoteBtn.textContent = "Demote to Advanced";
-            } else if (currentLevel === 'Advanced' && !isCorrect) {
+            } else if (updatedLevel === 'Advanced' && !isCorrect) {
                  demoteBtn.style.display = 'block';
                  demoteBtn.textContent = "Study this again (Demote to Medium)";
-            } else if (currentLevel === 'Medium' && !isCorrect) {
+            } else if (updatedLevel === 'Medium' && !isCorrect) {
                  demoteBtn.style.display = 'block';
                  demoteBtn.textContent = "Study this again (Demote to New)";
+            } else if (currentLevel === 'New' && !isCorrect) {
+                 // Manual demotion is not applicable on 'New' items, but we keep the button hidden.
+                 demoteBtn.style.display = 'none';
             } else {
-                 demoteBtn.style.display = 'none'; // Hide if correct or New level
+                 demoteBtn.style.display = 'none'; // Hide if correct or the level changed below the point of manual demotion
             }
             
             // 4. Distractor Details 
@@ -1076,8 +1134,7 @@
             if (currentLevel === 'New' || currentLevel === 'Medium') {
                 distractorDetailsContainer.style.display = 'flex';
                 
-                // Note: We cannot rely on the 'distractors' parameter passed to this function 
-                // in the event of a timeout on the New/Medium level. Re-fetching is safer.
+                // Get distractors again for the display
                 const relevantDistractors = getDistractors(currentLevel, question);
 
                 // Set Distractor 1
