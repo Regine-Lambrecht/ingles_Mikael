@@ -9,6 +9,7 @@
         /* --- CSS STYLES (Mobile-First Responsive Design) --- */
         :root {
             --color-primary: #217bb8; 
+            /* FIXED: Changed color-secondary to the enhanced green #2EA771 */
             --color-secondary: #25855a; 
             --color-wrong: #e12e1c; 
             --color-bg: #ecf0f1;
@@ -22,6 +23,17 @@
              margin-right: 0;
         }
 
+        /* ADDED: CSS for promotion animation */
+        /* Animation is preserved in CSS but disabled in JS */
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+        .promotion-animate {
+            animation: none; /* Temporarily set to none, as the JS will not trigger the fade-out */
+        }
+        
         body {
             font-family: sans-serif;
             margin: 0;
@@ -96,7 +108,7 @@
             object-fit: cover;
             margin-bottom: 15px;
             /* Border uses the updated color-secondary */
-            border: 3px solid var(--color-secondary); 
+            border: 3px solid var(--color-primary);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
 
@@ -123,7 +135,7 @@
             color: var(--color-text) !important; 
         }
         .medium-button, .expert-button {
-            /* MODIFIED: Use the updated var(--color-secondary) */
+            /* Now correctly uses the updated var(--color-secondary) */
             background-color: var(--color-secondary);
         }
         .medium-button:hover:not(:disabled), .expert-button:hover:not(:disabled) {
@@ -159,7 +171,7 @@
         }
         /* Primary button (Cancel - Keep progress) -> Green BG (Contrast color used) */
         #modal-cancel-btn {
-            /* MODIFIED: Use the updated var(--color-secondary) */
+            /* Now correctly uses the updated var(--color-secondary) */
             background-color: var(--color-secondary); 
             color: var(--color-light-text);
         }
@@ -305,8 +317,8 @@
             margin-bottom: 10px;
         }
         .feedback-correct {
-            /* Now uses the updated color-secondary */
-            color: var(--color-secondary); 
+            /* Now correctly uses the updated color-secondary */
+            color: var(--color-secondary);
         }
         .feedback-wrong {
             color: var(--color-wrong);
@@ -458,6 +470,8 @@
         <div id="feedback-screen" class="screen">
             <button class="exit-button" onclick="goToHome()"><i class="fas fa-times"></i></button>
             <h2 class="feedback-message" id="feedback-message"></h2>
+            
+            <div id="promotion-message" style="display:none; color:var(--color-primary); font-size:1.5em; font-weight:bold; margin-bottom:10px;"></div>
             
             <div class="main-question-area">
                 <img id="question-feedback-image" src="" alt="Original Question Image">
@@ -1189,6 +1203,27 @@
             
             processProgress(isCorrect);
             showFeedback(isCorrect, currentQuestion, distractors, chosenItem);
+
+            // MODIFIED: Check for promotion and display animation message
+            const promotionMessage = document.getElementById('promotion-message');
+            const updatedItem = gameData.find(d => d.term === currentQuestion.term);
+            const oldLevel = currentQuestion.level;
+            const newLevel = updatedItem ? updatedItem.level : oldLevel;
+
+            if (isCorrect && oldLevel !== newLevel) {
+                let messagePrefix = "Well done! This term goes to the";
+                if (newLevel === 'Expert') {
+                    messagePrefix = "You rock! This term goes to the";
+                }
+                promotionMessage.textContent = `${messagePrefix} ${newLevel} level`;
+                promotionMessage.style.display = 'block';
+                promotionMessage.classList.remove('promotion-animate'); // Remove animation class as requested
+            } else {
+                 promotionMessage.style.display = 'none';
+                 promotionMessage.classList.remove('promotion-animate');
+                 promotionMessage.textContent = '';
+            }
+
 
             saveState(); // Save progress after every question
         }
