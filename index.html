@@ -133,35 +133,20 @@
             /* MODIFIED: Change font color to var(--color-text) (#2c3e50) for better contrast */
             color: var(--color-text) !important; 
         }
-        
-        /* MODIFIED: MEDIUM BUTTON STYLE */
-        .medium-button {
-            /* MODIFIED: Use dark text color (#2c3e50) as background */
-            background-color: var(--color-text);
+        .medium-button, .expert-button {
+            /* Now correctly uses the updated var(--color-secondary) */
+            background-color: var(--color-secondary);
         }
-        .medium-button:hover:not(:disabled) {
-            /* Adjusted hover state for dark gray */
-            background-color: #1c2b3d;
+        .medium-button:hover:not(:disabled), .expert-button:hover:not(:disabled) {
+            background-color: #27ae60;
         }
-        
-        /* MODIFIED: EXPERT BUTTON STYLE (Purple) */
-        /* Expert and Medium styles were previously grouped, now Expert is separated/redefined */
-        .expert-button {
-            background-color: #8e44ad;
-        }
-        .expert-button:hover:not(:disabled) {
-            background-color: #793397;
-        }
-        
-        /* MODIFIED: ADVANCED BUTTON STYLE (Green) */
         .advanced-button {
-            /* MODIFIED: Use the updated var(--color-secondary) */
-            background-color: var(--color-secondary); 
+            background-color: #8e44ad; /* Purple for Advanced */
         }
         .advanced-button:hover:not(:disabled) {
-             background-color: #166939;
+            background-color: #793397;
         }
-        
+
         /* MODIFIED: New styling for the logout button */
         .logout-button-styled {
             background-color: var(--color-light-text) !important; /* White BG */
@@ -251,34 +236,37 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
-        /* Anagram Game Specific Styles */
+        /* MODIFIED: Anagram Game Specific Styles (Bigger letters and space) */
         .answer-slots, .letter-choices {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             margin: 10px 0;
-            gap: 5px;
+            /* Increased gap between letters */
+            gap: 8px; 
         }
         .letter-slot {
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
+            /* Increased size */
+            width: 40px; 
+            height: 40px; 
+            line-height: 40px;
             border-bottom: 2px solid var(--color-text);
-            margin: 0 2px;
-            font-size: 1.2em;
+            margin: 0 4px; /* Increased margin */
+            font-size: 1.5em; /* Bigger font */
             font-weight: bold;
             color: var(--color-text);
         }
         .letter-button {
-            padding: 8px 12px;
+            /* Increased padding/size */
+            padding: 10px 15px; 
             background-color: var(--color-primary);
             color: var(--color-light-text);
             border: none;
             border-radius: 5px;
-            font-size: 1.1em;
+            font-size: 1.3em; /* Bigger font */
             cursor: pointer;
             transition: background-color 0.2s;
-            margin: 2px;
+            margin: 4px; /* Increased margin */
         }
         .letter-button:hover:not(:disabled) {
             background-color: #2980b9;
@@ -288,6 +276,7 @@
             cursor: not-allowed;
             opacity: 0.6;
         }
+        /* END MODIFIED ANAGRAM STYLES */
 
         /* Standard Choice Buttons (Used for New/Medium levels) */
         .choice-button {
@@ -474,6 +463,10 @@
                 <div id="timer-bar"></div>
             </div>
             <img id="question-image" src="" alt="Quiz Image">
+
+            <button id="reset-spelling-button" class="exit-button" onclick="resetSpelling()" style="position: absolute; top: 20px; right: 20px; color: var(--color-primary); z-index: 10; display: none;">
+                <i class="fas fa-redo-alt"></i>
+            </button>
 
             <div id="answer-slots-container" class="answer-slots"></div>
             <div id="letter-choices-container" class="letter-choices"></div>
@@ -959,6 +952,14 @@
             letterContainer.innerHTML = '';
             choicesContainer.innerHTML = '';
             currentAnswer = [];
+            
+            // Show/Hide refresh button for Advanced level only
+            const refreshButton = document.getElementById('reset-spelling-button');
+            if (level === 'Advanced') {
+                 refreshButton.style.display = 'block';
+            } else {
+                 refreshButton.style.display = 'none';
+            }
 
 
             // 2. Expert level is just review
@@ -1113,6 +1114,27 @@
                 letterContainer.appendChild(button);
             });
         }
+        
+        /**
+         * ADDED: Resets the current spelling attempt in the Advanced level.
+         */
+        function resetSpelling() {
+            // Re-enable all letter buttons
+            document.querySelectorAll('#letter-choices-container .letter-button').forEach(btn => {
+                btn.disabled = false;
+            });
+            
+            // Clear all answer slots visually and clear the logic array
+            document.querySelectorAll('#answer-slots-container .letter-slot').forEach(slot => {
+                slot.textContent = '';
+                // Ensure default color is restored if checkAnswer was run previously
+                slot.style.color = 'var(--color-text)';
+                slot.style.borderBottomColor = 'var(--color-text)'; 
+            });
+            currentAnswer = [];
+            
+            // If timer was running (which it isn't for Advanced), it would need restarting here.
+        }
 
         /**
          * Handles the user clicking a letter button.
@@ -1130,9 +1152,11 @@
                 
                 // 2. Disable the clicked button
                 button.disabled = true;
-
+                
                 // 3. Check if the word is complete
                 if (currentAnswer.length === correctTermLetters.length) {
+                    // Hide the refresh button once submission is complete
+                    document.getElementById('reset-spelling-button').style.display = 'none';
                     clearInterval(timer);
                     checkAnswer();
                 }
@@ -1214,6 +1238,7 @@
             clearInterval(timer);
             // Disable all buttons immediately after submission or timeout
             document.querySelectorAll('.letter-button, .choice-button').forEach(btn => btn.disabled = true);
+            document.getElementById('reset-spelling-button').style.display = 'none'; // Hide refresh button on submission
 
             // Determine if the answer was correct (handles both standard quiz and spelling)
             const isCorrect = chosenItem && chosenItem.term === currentQuestion.term;
