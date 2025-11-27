@@ -9,7 +9,6 @@
         /* --- CSS STYLES (Mobile-First Responsive Design) --- */
         :root {
             --color-primary: #217bb8; 
-            /* FIXED: Changed color-secondary to the enhanced green #2EA771 */
             --color-secondary: #25855a; 
             --color-wrong: #e12e1c; 
             --color-bg: #ecf0f1;
@@ -134,20 +133,37 @@
             /* MODIFIED: Change font color to var(--color-text) (#2c3e50) for better contrast */
             color: var(--color-text) !important; 
         }
-        .medium-button, .expert-button {
-            /* Now correctly uses the updated var(--color-secondary) */
-            background-color: var(--color-secondary);
+
+        /* MODIFIED: MEDIUM BUTTON STYLE */
+        .medium-button {
+            /* MODIFIED: Use dark text color (#2c3e50) as background */
+            background-color: var(--color-text);
         }
-        .medium-button:hover:not(:disabled), .expert-button:hover:not(:disabled) {
-            background-color: #27ae60;
+        .medium-button:hover:not(:disabled) {
+            /* Adjusted hover state */
+            background-color: #1c2b3d;
         }
-        .advanced-button {
-            background-color: #8e44ad; /* Purple for Advanced */
+        
+        /* MODIFIED: EXPERT BUTTON STYLE */
+        .expert-button {
+            /* MODIFIED: Use purple (#8e44ad) as background */
+            background-color: #8e44ad;
         }
-        .advanced-button:hover:not(:disabled) {
+        .expert-button:hover:not(:disabled) {
+            /* Use the original hover color for the purple button */
             background-color: #793397;
         }
-
+        
+        /* MODIFIED: ADVANCED BUTTON STYLE */
+        .advanced-button {
+            /* MODIFIED: Use green color-secondary as background */
+            background-color: var(--color-secondary); 
+        }
+        .advanced-button:hover:not(:disabled) {
+             /* Use the hover color defined for the previous secondary button */
+            background-color: #27ae60;
+        }
+        
         /* MODIFIED: New styling for the logout button */
         .logout-button-styled {
             background-color: var(--color-light-text) !important; /* White BG */
@@ -522,7 +538,8 @@
         const STORAGE_PREFIX = `MasteryQuiz_State_`; // Prefix state key with user ID for segregation
         const LIST_URL = "https://regine-lambrecht.github.io/ingles_Mikael/image_list.txt";
         const BASE_IMAGE_URL = "https://regine-lambrecht.github.io/ingles_Mikael/images/";
-        const MEDIUM_TIMER_SECONDS = 5;
+        // NOTE: Timer remains 5 seconds as requested. Change this value to adjust duration.
+        const MEDIUM_TIMER_SECONDS = 5; 
 
         // --- ADVANCED LEVEL STATE ---
         let currentAnswer = []; // Stores letters clicked by user
@@ -1320,6 +1337,7 @@
 
             // 2. Question Detail (Always Shown)
             document.getElementById('question-feedback-image').src = question.url;
+            document.getElementById('question-feedback-image').style.display = 'block';
             document.getElementById('question-feedback-term').textContent = question.term;
             
             // Show image if it was hidden for Advanced level
