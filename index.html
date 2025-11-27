@@ -58,13 +58,14 @@
         }
 
         /* --- Login Screen --- */
-        /* MODIFIED: Updated styles for the new select field */
+        /* MODIFIED: Updated styles for the new select field and button (reduced max-width) */
         #login-screen select,
         #login-screen button {
             padding: 10px;
             margin: 10px 0;
             width: 100%;
-            max-width: 300px;
+            /* MODIFIED: Reduced max-width for smaller size */
+            max-width: 200px; 
             box-sizing: border-box;
             border-radius: 5px;
             /* Added margin-bottom to separate from the button */
@@ -808,33 +809,30 @@
             separator.style.margin = '20px 0';
             container.appendChild(separator);
 
-            // Medium Button - MODIFIED: Add trophy icon
+            // Medium Button - MODIFIED: Add trophy icon (using fas for reliability)
             const mediumButton = document.createElement('button');
             mediumButton.id = 'medium-button';
             mediumButton.className = 'theme-button medium-button';
-            // Corrected: Using innerHTML to insert icon
-            mediumButton.innerHTML = `Medium (${mediumCount}) <i class="far fa-trophy"></i>`;
+            mediumButton.innerHTML = `Medium (${mediumCount}) <i class="fas fa-trophy"></i>`;
             mediumButton.onclick = () => startQuiz('Medium');
             mediumButton.disabled = mediumCount === 0;
             container.appendChild(mediumButton);
             
-            // Advanced Button - MODIFIED: Add two trophy icons
+            // Advanced Button - MODIFIED: Add two trophy icons (using fas for reliability)
             const advancedButton = document.createElement('button');
             advancedButton.id = 'advanced-button';
             advancedButton.className = 'theme-button advanced-button';
-            // Corrected: Using innerHTML to insert icons
-            advancedButton.innerHTML = `Advanced (${advancedCount}) <i class="far fa-trophy"></i><i class="far fa-trophy"></i>`;
+            advancedButton.innerHTML = `Advanced (${advancedCount}) <i class="fas fa-trophy"></i><i class="fas fa-trophy"></i>`;
             advancedButton.onclick = () => startQuiz('Advanced');
             advancedButton.disabled = advancedCount === 0;
             container.appendChild(advancedButton);
 
 
-            // Expert Button - MODIFIED: Add award icon
+            // Expert Button - MODIFIED: Add award icon (using fas for reliability)
             const expertButton = document.createElement('button');
             expertButton.id = 'expert-button';
             expertButton.className = 'theme-button expert-button';
-            // Corrected: Using innerHTML to insert icon
-            expertButton.innerHTML = `Expert (${expertCount}/${totalTerms}) <i class="far fa-award"></i>`;
+            expertButton.innerHTML = `Expert (${expertCount}/${totalTerms}) <i class="fas fa-award"></i>`;
             expertButton.onclick = () => startQuiz('Expert');
             expertButton.disabled = expertCount === 0;
             container.appendChild(expertButton);
