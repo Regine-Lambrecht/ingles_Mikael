@@ -405,9 +405,9 @@
         let CURRENT_USER_ID = null; // Will store the currently logged-in user ID
         const STORAGE_PREFIX = `MasteryQuiz_State_`; // Prefix state key with user ID for segregation
         
-        // !!! FIX: CHANGED TO RELATIVE PATHS FOR LOCAL/STATIC HOSTING !!!
-        const LIST_URL = "image_list.txt";
-        const BASE_IMAGE_URL = "images/";
+        // !!! FIX: CHANGED TO ROOT-RELATIVE PATHS FOR GITHUB PAGES HOSTING !!!
+        const LIST_URL = "/ingles_Mikael/image_list.txt";
+        const BASE_IMAGE_URL = "/ingles_Mikael/images/";
         
         const MEDIUM_TIMER_SECONDS = 5;
 
@@ -865,7 +865,7 @@
             // SECONDARY POOL: All 'New' terms globally.
             if (level === 'Medium' || availableTerms.length < 2) {
                 const globalPool = gameData.filter(item => 
-                    item.term !== question.term && item.level === 'New'
+    1                    item.term !== question.term && item.level === 'New'
                 );
                 
                 availableTerms = globalPool.slice(); 
