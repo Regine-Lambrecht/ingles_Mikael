@@ -423,7 +423,7 @@
         let currentQuizLevel = null; // Stores the level selected (New, Medium, Advanced, Expert)
         let currentQuizTheme = null;
         let uniqueThemes = new Set();
-        let currentDistractors = []; // NEW GLOBAL VARIABLE to store the distractors for the current question
+        let currentDistractors = []; // MODIFIED: New global variable for distractors
 
 
         // --- UTILITY FUNCTIONS ---
@@ -804,7 +804,7 @@
                 // Start the Interactive Spelling Game
                 renderSpellingGame(currentQuestion);
                 // Clear distractors since they are not used for Advanced level
-                currentDistractors = [];
+                currentDistractors = []; // MODIFIED: Clear currentDistractors for Advanced level
 
             } else {
                 // New / Medium Level: Standard Multiple Choice
@@ -817,7 +817,7 @@
 
                 // 3. Get Distractors (only needed for New/Medium)
                 const distractors = getDistractors(level, currentQuestion);
-                currentDistractors = distractors; // <--- MODIFIED: Save distractors globally
+                currentDistractors = distractors; // MODIFIED: Store distractors globally
 
                 // 4. Render standard multiple choice
                 renderQuizChoices(currentQuestion, distractors);
@@ -1026,7 +1026,7 @@
                     // Only Medium level needs special handling for timeout submission
                     if (currentQuizLevel === 'Medium') {
                         // For Medium, submit wrong answer (null chosen item)
-                        submitAnswer(null, currentDistractors); // <--- MODIFIED: Use global variable
+                        submitAnswer(null, currentDistractors); // MODIFIED: Use stored global distractors
                     }
                 }
             }, 100);
@@ -1178,7 +1178,7 @@
                 distractorDetailsContainer.style.display = 'flex';
                 
                 // Get distractors again for the display
-                const relevantDistractors = distractors;
+                const relevantDistractors = distractors; // MODIFIED: Use the passed distractors list
 
                 // Set Distractor 1
                 if (relevantDistractors[0]) {
