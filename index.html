@@ -31,7 +31,7 @@
             100% { opacity: 0; transform: scale(0.9); }
         }
         .promotion-animate {
-            animation: none; /* Temporarily set to none, as the JS will not trigger the fade-out */
+            animation: none; /* Not used anymore */
         }
         
         body {
@@ -540,6 +540,8 @@
         let currentQuizTheme = null;
         let uniqueThemes = new Set();
         let currentDistractors = []; // Global variable for distractors
+        // Global variable to track if a promotion just occurred
+        let PROMOTION_INFO = null; // Stores: { oldLevel: 'Medium', newLevel: 'Advanced' }
 
 
         // --- MODAL LOGIC (New Functions) ---
@@ -1201,28 +1203,24 @@
             // Determine if the answer was correct (handles both standard quiz and spelling)
             const isCorrect = chosenItem && chosenItem.term === currentQuestion.term;
             
+            // Store old level before promotion logic runs
+            const oldLevel = currentQuestion.level; 
+            
             processProgress(isCorrect);
-            showFeedback(isCorrect, currentQuestion, distractors, chosenItem);
-
-            // MODIFIED: Check for promotion and display animation message
-            const promotionMessage = document.getElementById('promotion-message');
+            
+            // Get new level after promotion logic runs
             const updatedItem = gameData.find(d => d.term === currentQuestion.term);
-            const oldLevel = currentQuestion.level;
             const newLevel = updatedItem ? updatedItem.level : oldLevel;
-
+            
+            // MODIFIED: Store promotion info globally
             if (isCorrect && oldLevel !== newLevel) {
-                let messagePrefix = "Well done! This term goes to the";
-                if (newLevel === 'Expert') {
-                    messagePrefix = "You rock! This term goes to the";
-                }
-                promotionMessage.textContent = `${messagePrefix} ${newLevel} level`;
-                promotionMessage.style.display = 'block';
-                promotionMessage.classList.remove('promotion-animate'); // Remove animation class as requested
+                 PROMOTION_INFO = { oldLevel: oldLevel, newLevel: newLevel };
             } else {
-                 promotionMessage.style.display = 'none';
-                 promotionMessage.classList.remove('promotion-animate');
-                 promotionMessage.textContent = '';
+                 PROMOTION_INFO = null;
             }
+
+
+            showFeedback(isCorrect, currentQuestion, distractors, chosenItem);
 
 
             saveState(); // Save progress after every question
@@ -1386,6 +1384,27 @@
             } else {
                  // Hide distractors for Advanced and Expert
                  distractorDetailsContainer.style.display = 'none';
+            }
+
+            // ADDED LOGIC: Handle Promotion Message Display (last step, stays visible)
+            const promotionMessageElement = document.getElementById('promotion-message');
+            if (PROMOTION_INFO) {
+                const { newLevel } = PROMOTION_INFO;
+                let messagePrefix = "Well done! This term goes to the";
+                
+                if (newLevel === 'Expert') {
+                    messagePrefix = "You rock! This term goes to the";
+                }
+
+                promotionMessageElement.textContent = `${messagePrefix} ${newLevel} level`;
+                promotionMessageElement.style.display = 'block';
+
+                // Clear state so the message doesn't reappear on subsequent screen views
+                PROMOTION_INFO = null;
+            } else {
+                // Ensure message is hidden if no promotion occurred
+                promotionMessageElement.style.display = 'none';
+                promotionMessageElement.textContent = '';
             }
             
             switchScreen('feedback-screen');
