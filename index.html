@@ -120,15 +120,42 @@
             background-color: #793397;
         }
 
-        /* ADDED: New styling for the logout button */
+        /* MODIFIED: New styling for the logout button */
         .logout-button-styled {
             background-color: var(--color-light-text) !important; /* White BG */
             color: var(--color-primary) !important; /* Blue text */
             border: 1px solid var(--color-primary) !important; /* Blue border */
         }
-        /* Reverting hover behavior to avoid clash with original .study-again-button hover */
+        /* MODIFIED: Reverting hover behavior to avoid clash with original .study-again-button hover */
         .logout-button-styled:hover {
             background-color: var(--color-bg) !important; /* Slight grey hover */
+        }
+
+        /* ADDED: Custom Modal Button Styles for Reset Confirmation */
+        .modal-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            width: 45%; /* To control button layout */
+        }
+        /* Primary button (Cancel - Keep progress) -> Green BG */
+        #modal-cancel-btn {
+            background-color: var(--color-secondary); /* Green */
+            color: var(--color-light-text);
+        }
+        #modal-cancel-btn:hover {
+            opacity: 0.9;
+        }
+        /* Secondary button (Confirm - Reset progress) -> Red BG */
+        #modal-confirm-btn {
+            background-color: var(--color-wrong); /* Red */
+            color: var(--color-light-text);
+        }
+        #modal-confirm-btn:hover {
+            opacity: 0.9;
         }
 
 
@@ -409,6 +436,18 @@
 
     </div>
 
+    <div id="custom-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100;">
+        <div id="custom-modal-content" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); max-width: 400px; width: 90%; text-align: center;">
+            <h3 id="modal-heading" style="color:var(--color-text); margin-top:0;">Reset the progress counter</h3>
+            <p id="modal-text">If you confirm, you will loose all your progress in the Medium, Advanced and Expert list.</p>
+            <div style="display:flex; justify-content: space-around; margin-top: 20px;">
+                <button id="modal-cancel-btn" class="modal-btn">Don't reset progress</button>
+                <button id="modal-confirm-btn" class="modal-btn">Reset progress</button>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         /* --- JAVASCRIPT LOGIC --- */
 
@@ -438,6 +477,48 @@
         let uniqueThemes = new Set();
         let currentDistractors = []; // Global variable for distractors
 
+
+        // --- MODAL LOGIC (New Functions) ---
+
+        function showCustomModal() {
+            const overlay = document.getElementById('custom-modal-overlay');
+            const cancelButton = document.getElementById('modal-cancel-btn');
+            const confirmButton = document.getElementById('modal-confirm-btn');
+
+            overlay.style.display = 'block';
+
+            // Set focus to the "Don't reset progress" button
+            cancelButton.focus();
+
+            // Ensure handlers are applied only once
+            confirmButton.onclick = () => handleResetConfirmation(true);
+            cancelButton.onclick = () => handleResetConfirmation(false);
+
+            // Handle Escape key to cancel (like a standard dialog)
+            overlay.onkeydown = (e) => {
+                if (e.key === 'Escape') {
+                    handleResetConfirmation(false);
+                }
+            };
+        }
+
+        function handleResetConfirmation(confirmed) {
+            const overlay = document.getElementById('custom-modal-overlay');
+            overlay.style.display = 'none';
+            overlay.onkeydown = null; // Clear escape handler
+
+            if (confirmed) {
+                // Reset logic
+                gameData.forEach(item => {
+                    item.level = 'New';
+                    item.correctCount = 0;
+                    item.failCount = 0;
+                });
+                saveState();
+                goToHome();
+            }
+            // If not confirmed, do nothing (stay on home screen)
+        }
 
         // --- UTILITY FUNCTIONS ---
 
@@ -614,7 +695,7 @@
                 avatarElement.src = BASE_IMAGE_URL + "Mikael.png";
                 avatarElement.style.display = 'block';
             } else if (CURRENT_USER_ID === 'Marcia') { 
-                avatarElement.src = BASE_IMAGE_URL + "Marcia.jpg"; // MODIFIED: Corrected filename capitalization
+                avatarElement.src = BASE_IMAGE_URL + "Marcia.jpg"; 
                 avatarElement.style.display = 'block';
             } else {
                 avatarElement.style.display = 'none';
@@ -707,29 +788,10 @@
         }
 
         /**
-         * MODIFIED: Resets all terms after confirmation.
+         * MODIFIED: Calls the custom modal for confirmation.
          */
         function resetProgress() {
-            // MODIFIED: Custom confirmation dialog text structure
-            const title = "Reset the progress counter";
-            const message = "If you confirm, you will loose all your progress in the Medium, Advanced and Expert list.";
-            
-            // Standard JS confirmation dialog. The specific button text, colors (green/red),
-            // and keyboard focus requested cannot be achieved with standard confirm(),
-            // but the functional warning and reset logic is implemented here.
-            if (window.confirm(`${title}\n\n${message}`)) { 
-                // Reset logic
-                gameData.forEach(item => {
-                    item.level = 'New';
-                    item.correctCount = 0;
-                    item.failCount = 0; // Reset fail count
-                });
-                saveState(); // Save the reset state
-                goToHome(); // Refresh the home screen counters
-            } else {
-                 // User clicked Cancel / 'Don't reset progress'
-                 return;
-            }
+            showCustomModal();
         }
 
         // --- QUIZ SETUP AND START ---
