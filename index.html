@@ -120,6 +120,8 @@
             background-color: var(--color-gray);
             cursor: not-allowed;
             opacity: 0.6;
+            /* MODIFIED: Change font color for better contrast on gray background */
+            color: #676767 !important; 
         }
         .medium-button, .expert-button {
             background-color: var(--color-secondary);
@@ -813,6 +815,7 @@
             const mediumButton = document.createElement('button');
             mediumButton.id = 'medium-button';
             mediumButton.className = 'theme-button medium-button';
+            // Corrected: Using innerHTML to insert icon (switching to FAS for better reliability)
             mediumButton.innerHTML = `Medium (${mediumCount}) <i class="fas fa-trophy"></i>`;
             mediumButton.onclick = () => startQuiz('Medium');
             mediumButton.disabled = mediumCount === 0;
@@ -822,6 +825,7 @@
             const advancedButton = document.createElement('button');
             advancedButton.id = 'advanced-button';
             advancedButton.className = 'theme-button advanced-button';
+            // Corrected: Using innerHTML to insert icons (switching to FAS for better reliability)
             advancedButton.innerHTML = `Advanced (${advancedCount}) <i class="fas fa-trophy"></i><i class="fas fa-trophy"></i>`;
             advancedButton.onclick = () => startQuiz('Advanced');
             advancedButton.disabled = advancedCount === 0;
@@ -832,6 +836,7 @@
             const expertButton = document.createElement('button');
             expertButton.id = 'expert-button';
             expertButton.className = 'theme-button expert-button';
+            // Corrected: Using innerHTML to insert icon (switching to FAS for better reliability)
             expertButton.innerHTML = `Expert (${expertCount}/${totalTerms}) <i class="fas fa-award"></i>`;
             expertButton.onclick = () => startQuiz('Expert');
             expertButton.disabled = expertCount === 0;
