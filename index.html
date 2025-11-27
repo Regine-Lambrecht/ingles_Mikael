@@ -784,7 +784,7 @@
             choicesContainer.innerHTML = '';
             currentAnswer = [];
             // Reset the distractors for the new question cycle
-            currentDistractors = [];
+            currentDistractors = []; // Global reset
 
 
             // 2. Expert level is just review
@@ -1180,8 +1180,8 @@
             if (currentLevel === 'New' || currentLevel === 'Medium') {
                 distractorDetailsContainer.style.display = 'flex';
                 
-                // FIX: Use the 'distractors' parameter which contains the correct, initial distractors
-                const relevantDistractors = distractors; 
+                // FIX: Use the *GLOBAL* currentDistractors for the display logic
+                const relevantDistractors = currentDistractors; 
 
                 // Set Distractor 1
                 if (relevantDistractors[0]) {
