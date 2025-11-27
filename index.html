@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mastery Quiz</title>
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* --- CSS STYLES (Mobile-First Responsive Design) --- */
         :root {
@@ -14,7 +14,14 @@
             --color-bg: #ecf0f1;
             --color-text: #2c3e50;
             --color-light-text: #fefefe;
+            /* MODIFIED: New, more contrasted green color */
+            --color-secondary-contrast: #2EA771; 
             --color-gray: #bdc3c7;
+        }
+        /* ADDED: General icon spacing for buttons using new FA version */
+        .theme-button i, .study-again-button i {
+             margin-left: 5px;
+             margin-right: 0;
         }
 
         body {
@@ -51,7 +58,8 @@
         }
 
         /* --- Login Screen --- */
-        #login-screen input[type="text"],
+        /* MODIFIED: Updated styles for the new select field */
+        #login-screen select,
         #login-screen button {
             padding: 10px;
             margin: 10px 0;
@@ -59,9 +67,13 @@
             max-width: 300px;
             box-sizing: border-box;
             border-radius: 5px;
+            /* Added margin-bottom to separate from the button */
+            margin-bottom: 20px; 
         }
-        #login-screen input[type="text"] {
+        #login-screen select {
             border: 1px solid var(--color-gray);
+            /* Added height for better visual alignment */
+            height: 40px; 
         }
         #login-screen button {
             background-color: var(--color-primary);
@@ -142,10 +154,14 @@
             transition: opacity 0.2s;
             width: 45%; /* To control button layout */
         }
-        /* Primary button (Cancel - Keep progress) -> Green BG (Keep as primary action/default focus) */
+        /* Primary button (Cancel - Keep progress) -> Green BG (Contrast color used) */
         #modal-cancel-btn {
-            background-color: var(--color-secondary); /* Green */
+            background-color: var(--color-secondary-contrast); /* Used #2EA771 */
             color: var(--color-light-text);
+        }
+        #modal-cancel-btn:focus {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 2px;
         }
         #modal-cancel-btn:hover {
             opacity: 0.9;
@@ -162,6 +178,10 @@
             /* Added underline hover hint for text button */
             text-decoration: underline; 
         }
+        #modal-confirm-btn:focus {
+             outline: none; /* Keep the reset button looking like text even when focused */
+        }
+
 
         /* MODIFIED: Reverse order of buttons in the modal for Reset on Left */
         #custom-modal-content > div {
@@ -171,14 +191,7 @@
         #modal-heading i {
              margin-right: 8px;
         }
-        /* ADDED: Visible focus styling for better UX/accessibility */
-        #modal-cancel-btn:focus {
-            outline: 3px solid var(--color-primary);
-            outline-offset: 2px;
-        }
-        #modal-confirm-btn:focus {
-             outline: none; /* Keep the reset button looking like text even when focused */
-        }
+        
 
 
         /* --- Quiz Screen / Feedback Screen Common --- */
@@ -190,8 +203,10 @@
             border: none;
             font-size: 1.5em;
             cursor: pointer;
-            color: var(--color-wrong);
+            color: var(--color-wrong); /* Set color to red for the times icon */
             z-index: 10;
+            padding: 0; /* Ensures the button boundary is tight around the icon */
+            line-height: 1; /* Ensures the icon is centered */
         }
         #question-screen h3 {
             margin-bottom: 0;
@@ -348,9 +363,11 @@
             color: var(--color-light-text);
             border: none;
             border-radius: 5px;
-            font-size: 1.5em; /* Larger arrow */
+            font-size: 1.5em; /* Larger icon */
             cursor: pointer;
             margin-left: 15px;
+            /* Ensure icon is white */
+            color: white; 
         }
         
         .study-again-button {
@@ -389,7 +406,12 @@
 
         <div id="login-screen" class="screen">
             <h2>What is your name?</h2>
-            <input type="text" id="username-input">
+            <select id="username-select">
+                <option value="Mikael">Mikael</option>
+                <option value="Marcia">Marcia</option>
+                <option value="Mariane">Mariane</option>
+                <option value="Regine">Regine</option>
+            </select>
             <button onclick="attemptLogin()">Start Game</button>
             <p id="login-message" style="color: var(--color-wrong);"></p>
         </div>
@@ -414,7 +436,7 @@
         </div>
 
         <div id="question-screen" class="screen">
-            <button class="exit-button" onclick="goToHome()">❌</button>
+            <button class="exit-button" onclick="goToHome()"><i class="fa fa-times"></i></button>
             <h2 id="quiz-title">What is this?</h2>
             <div class="timer-container" id="timer-container" style="display:none;">
                 <div id="timer-bar"></div>
@@ -428,7 +450,7 @@
         </div>
 
         <div id="feedback-screen" class="screen">
-            <button class="exit-button" onclick="goToHome()">❌</button>
+            <button class="exit-button" onclick="goToHome()"><i class="fa fa-times"></i></button>
             <h2 class="feedback-message" id="feedback-message"></h2>
             
             <div class="main-question-area">
@@ -449,7 +471,7 @@
                     </div>
                 </div>
                 <div class="continue-button-container">
-                    <button class="next-button" onclick="loadQuestion()">▶️</button>
+                    <button class="next-button" onclick="loadQuestion()"><i class="fas fa-step-forward"></i></button>
                 </div>
             </div>
 
@@ -474,7 +496,7 @@
         /* --- JAVASCRIPT LOGIC --- */
 
         // --- CONFIGURATION ---
-        // UPDATED: Added Marcia and Mariane
+        // MODIFIED: Corrected spelling of Mariane
         const VALID_IDS = ["Mikael", "Regine", "Marcia", "Mariane"]; 
         let CURRENT_USER_ID = null; // Will store the currently logged-in user ID
         const STORAGE_PREFIX = `MasteryQuiz_State_`; // Prefix state key with user ID for segregation
@@ -679,9 +701,13 @@
         // --- LOGIN / SESSION MANAGEMENT ---
 
         function attemptLogin() {
-            const input = document.getElementById('username-input').value.trim();
+            // MODIFIED: Get selected value from the dropdown list
+            const selectElement = document.getElementById('username-select');
+            const input = selectElement.value.trim();
             const message = document.getElementById('login-message');
 
+            // The list already contains the valid IDs, so no explicit check against VALID_IDS is strictly necessary.
+            
             if (VALID_IDS.includes(input)) {
                 CURRENT_USER_ID = input;
                 loadState(); // Load state after successful login (uses ID)
@@ -690,7 +716,8 @@
                 // Console warning about local storage limitation
                 console.warn("PROGRESS NOTE: Progress is saved locally in this browser only. It will not transfer to other devices or browsers.");
             } else {
-                message.textContent = `Access denied. Valid IDs are: ${VALID_IDS.join(', ')}`;
+                // This branch should not be reached with a dropdown.
+                message.textContent = `Access denied. Please select a valid name.`;
             }
         }
 
@@ -698,7 +725,8 @@
             saveState(); // Ensure last state is saved (uses ID)
             CURRENT_USER_ID = null;
             switchScreen('login-screen');
-            document.getElementById('username-input').value = '';
+            // Clear the selection back to default/first option if desired (optional)
+            // document.getElementById('username-select').selectedIndex = 0; 
             document.getElementById('login-message').textContent = 'Progress saved.';
         }
 
@@ -712,7 +740,7 @@
             // Set Greeting for all users
             greetingElement.textContent = `Hello ${CURRENT_USER_ID}!`;
 
-            // MODIFIED: Check for Mikael OR Marcia and set the avatar source
+            // Check for Mikael OR Marcia and set the avatar source
             if (CURRENT_USER_ID === 'Mikael') {
                 avatarElement.src = BASE_IMAGE_URL + "Mikael.png";
                 avatarElement.style.display = 'block';
@@ -780,30 +808,30 @@
             separator.style.margin = '20px 0';
             container.appendChild(separator);
 
-            // Medium Button
+            // Medium Button - MODIFIED: Add trophy icon
             const mediumButton = document.createElement('button');
             mediumButton.id = 'medium-button';
             mediumButton.className = 'theme-button medium-button';
-            mediumButton.textContent = `Medium (${mediumCount})`;
+            mediumButton.innerHTML = `Medium (${mediumCount}) <i class="far fa-trophy"></i>`;
             mediumButton.onclick = () => startQuiz('Medium');
             mediumButton.disabled = mediumCount === 0;
             container.appendChild(mediumButton);
             
-            // Advanced Button
+            // Advanced Button - MODIFIED: Add two trophy icons
             const advancedButton = document.createElement('button');
             advancedButton.id = 'advanced-button';
             advancedButton.className = 'theme-button advanced-button';
-            advancedButton.textContent = `Advanced (${advancedCount})`;
+            advancedButton.innerHTML = `Advanced (${advancedCount}) <i class="far fa-trophy"></i><i class="far fa-trophy"></i>`;
             advancedButton.onclick = () => startQuiz('Advanced');
             advancedButton.disabled = advancedCount === 0;
             container.appendChild(advancedButton);
 
 
-            // Expert Button
+            // Expert Button - MODIFIED: Add award icon
             const expertButton = document.createElement('button');
             expertButton.id = 'expert-button';
             expertButton.className = 'theme-button expert-button';
-            expertButton.textContent = `Expert (${expertCount}/${totalTerms})`;
+            expertButton.innerHTML = `Expert (${expertCount}/${totalTerms}) <i class="far fa-award"></i>`;
             expertButton.onclick = () => startQuiz('Expert');
             expertButton.disabled = expertCount === 0;
             container.appendChild(expertButton);
@@ -1235,16 +1263,19 @@
             
             // 1. Message
             const messageElement = document.getElementById('feedback-message');
-            messageElement.textContent = isCorrect ? "You are right! 🎉" : "You are wrong! 😞";
+            // MODIFIED: Use new Font Awesome 5/6 icons for feedback
+            const iconClass = isCorrect ? 'fas fa-face-grin-stars' : 'fas fa-meh-rolling-eyes'; 
+            const messageText = isCorrect ? "You are right!" : "You are wrong!";
+            
+            messageElement.innerHTML = `${messageText} <i class="${iconClass}"></i>`;
             messageElement.className = `feedback-message ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
 
             // Only show "Time's up" if the quiz was running at Medium level and failed 
             // due to null answer (timeout). Advanced level's null answer is a wrong submission.
             if (!isCorrect && !chosenItem) {
                  if (currentQuizLevel === 'Medium') {
-                      messageElement.textContent = "Time's up! 😞";
+                      messageElement.innerHTML = `Time's up! <i class="${iconClass}"></i>`;
                  }
-                 // If it's Advanced, the message remains "You are wrong! 😞", which is correct.
             }
 
             // 2. Question Detail (Always Shown)
