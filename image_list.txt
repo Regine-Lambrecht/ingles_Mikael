@@ -189,6 +189,8 @@ Others_Swimming pool.png
 Others_Train.jpg
 Others_Under.jpg
 Others_Wendy.png
+Others_With.png
+Others_Without.png
 Time_Monday.png
 Time_Tuesday.png
 Time_Wednesday.png
