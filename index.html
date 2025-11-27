@@ -404,8 +404,11 @@
         const VALID_IDS = ["Mikael", "Regine", "Marcia", "Mariane"]; 
         let CURRENT_USER_ID = null; // Will store the currently logged-in user ID
         const STORAGE_PREFIX = `MasteryQuiz_State_`; // Prefix state key with user ID for segregation
-        const LIST_URL = "https://regine-lambrecht.github.io/ingles_Mikael/image_list.txt";
-        const BASE_IMAGE_URL = "https://regine-lambrecht.github.io/ingles_Mikael/images/";
+        
+        // !!! FIX: CHANGED TO RELATIVE PATHS FOR LOCAL/STATIC HOSTING !!!
+        const LIST_URL = "image_list.txt";
+        const BASE_IMAGE_URL = "images/";
+        
         const MEDIUM_TIMER_SECONDS = 5;
 
         // --- ADVANCED LEVEL STATE ---
