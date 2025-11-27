@@ -238,29 +238,29 @@
         }
         
         /* MODIFIED: Anagram Game Specific Styles (Bigger letters and space) */
-        .anagram-controls-wrapper {
-             /* New wrapper for flexible layout */
+        
+        /* New wrapper for flexible alignment of slots and refresh button */
+        .answer-area-row {
              display: flex;
-             align-items: flex-start;
+             align-items: center; /* Vertically center slots and button */
              justify-content: center;
              width: 100%;
-             margin-top: 15px;
+             margin: 10px 0;
         }
+
         .answer-slots {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            margin: 0; /* Remove margin from the component itself */
+            /* Allow slots to take space but stop them from overflowing */
+            flex-shrink: 1; 
+            margin: 0; 
             gap: 8px; 
+            /* Added margin-right to separate slots from the refresh button */
+            margin-right: 15px; 
         }
-        .letter-slots-container {
-             /* Wrapper for just the slots to contain the answer area */
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-             flex-grow: 1;
-             padding-right: 15px; /* Spacing before the refresh button */
-        }
+        /* letter-choices margin is already defined */
+        
         .letter-slot {
             /* Increased size */
             width: 40px; 
@@ -271,14 +271,6 @@
             font-size: 1.5em; /* Bigger font */
             font-weight: bold;
             color: var(--color-text);
-        }
-        .letter-choices {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 10px 0;
-            gap: 8px;
-            width: 100%;
         }
         .letter-button {
             /* Increased padding/size */
@@ -303,14 +295,16 @@
         /* END MODIFIED ANAGRAM STYLES */
 
         #reset-spelling-button {
-             /* New positioning for refresh button */
-             position: static !important; /* Override absolute positioning from .exit-button */
-             margin-top: 5px;
-             font-size: 1.2em;
-             width: auto;
-             height: auto;
-             align-self: flex-start; /* Align to the top of the container */
-             padding: 5px 8px;
+             /* Overrides previous absolute positioning from .exit-button class */
+             position: static; 
+             background: none; 
+             border: none;
+             font-size: 1.5em; /* Use normal icon size */
+             cursor: pointer;
+             color: var(--color-primary); /* Blue color, looks less like a fatal exit button */
+             padding: 0;
+             margin-top: 0;
+             flex-shrink: 0; /* Keep the button from shrinking */
         }
 
 
@@ -500,15 +494,13 @@
             </div>
             <img id="question-image" src="" alt="Quiz Image">
 
-            <div class="anagram-controls-wrapper">
-                 <div class="letter-slots-container">
-                    <div id="answer-slots-container" class="answer-slots"></div>
-                 </div>
+            <div class="answer-area-row"> 
+                <div id="answer-slots-container" class="answer-slots"></div>
                 <button id="reset-spelling-button" class="exit-button" onclick="resetSpelling()" style="display: none;">
                     <i class="fas fa-redo-alt"></i>
                 </button>
             </div>
-
+            
             <div id="letter-choices-container" class="letter-choices"></div>
             <div id="choices-container" style="width: 100%;">
                 </div>
@@ -1264,6 +1256,8 @@
                     clearInterval(timer);
                     // Disable letters/choices on timeout
                     document.querySelectorAll('.letter-button, .choice-button').forEach(btn => btn.disabled = true);
+                    document.getElementById('reset-spelling-button').style.display = 'none'; // Hide refresh button on timeout
+
                     
                     // Only Medium level needs special handling for timeout submission
                     if (currentQuizLevel === 'Medium') {
