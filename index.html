@@ -9,7 +9,6 @@
         /* --- CSS STYLES (Mobile-First Responsive Design) --- */
         :root {
             --color-primary: #217bb8; 
-            /* FIXED: Changed color-secondary to the enhanced green #25855a */
             --color-secondary: #25855a; 
             --color-wrong: #e12e1c; 
             --color-bg: #ecf0f1;
@@ -24,7 +23,6 @@
         }
 
         /* ADDED: CSS for promotion animation */
-        /* Animation is preserved in CSS but disabled in JS */
         @keyframes fadeOut {
             0% { opacity: 1; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.05); }
@@ -239,11 +237,11 @@
         
         /* MODIFIED: Anagram Game Specific Styles (Bigger letters and space) */
         
-        /* New wrapper for flexible alignment of slots and refresh button */
+        /* FIX: Main wrapper uses space-between to push slot group left and button wrapper right */
         .answer-area-row {
              display: flex;
-             align-items: center; /* Vertically center slots and button */
-             justify-content: center;
+             align-items: center; 
+             justify-content: space-between; /* Ensures maximum separation */
              width: 100%;
              margin: 10px 0;
         }
@@ -251,50 +249,56 @@
         .answer-slots {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center; /* Center the slots within their own container */
+            justify-content: center; 
             flex-shrink: 1; 
             margin: 0; 
             gap: 8px; 
         }
         
-        /* This wrapper ensures the refresh button and its spacer are handled together */
-        .refresh-button-wrapper {
-             /* We reserve space for the refresh button on the right */
-             width: 35px; 
+        /* FIX: Wrapper containing only the slots for left-side centering. 
+           This container will be flex-centered inside a larger wrapper. */
+        .answer-slots-container-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1; /* Allows it to occupy central space */
+        }
+
+        /* FIX: Wrapper for the refresh button. This wrapper ensures the button
+           takes up the same space when hidden (using the spacer). */
+        .refresh-button-area {
+             /* Define a fixed width that matches the refresh button's visual space + margins */
+             width: 40px; 
              display: flex;
-             justify-content: flex-end;
+             justify-content: flex-end; 
              align-items: center;
+             height: 1.5em; /* Match icon height */
         }
 
         #reset-spelling-button {
              position: static; 
              background: none; 
              border: none;
-             font-size: 1.5em; /* Use normal icon size */
+             font-size: 1.5em; 
              cursor: pointer;
-             color: var(--color-primary); /* Blue color */
+             color: var(--color-primary); 
              padding: 0;
              margin-top: 0;
              flex-shrink: 0;
-             /* We assume the refresh button's visual width is ~35px */
-             width: 100%;
         }
-
-        /* This spacer will take up the same space as the button when the button is hidden */
         .refresh-button-spacer {
-             width: 100%; /* Takes up space reserved by wrapper */
-             height: 1.5em; 
-             display: none; 
+             width: 100%; 
+             height: 100%; 
+             display: block; 
         }
 
         .letter-slot {
-            /* Increased size */
             width: 40px; 
             height: 40px; 
             line-height: 40px;
             border-bottom: 2px solid var(--color-text);
-            margin: 0 4px; /* Increased margin */
-            font-size: 1.5em; /* Bigger font */
+            margin: 0 4px; 
+            font-size: 1.5em; 
             font-weight: bold;
             color: var(--color-text);
         }
@@ -307,16 +311,15 @@
             width: 100%;
         }
         .letter-button {
-            /* Increased padding/size */
             padding: 10px 15px; 
             background-color: var(--color-primary);
             color: var(--color-light-text);
             border: none;
             border-radius: 5px;
-            font-size: 1.3em; /* Bigger font */
+            font-size: 1.3em; 
             cursor: pointer;
             transition: background-color 0.2s;
-            margin: 4px; /* Increased margin */
+            margin: 4px; 
         }
         .letter-button:hover:not(:disabled) {
             background-color: #2980b9;
@@ -327,20 +330,6 @@
             opacity: 0.6;
         }
         /* END MODIFIED ANAGRAM STYLES */
-
-        #reset-spelling-button {
-             /* Overrides previous absolute positioning from .exit-button class */
-             position: static; 
-             background: none; 
-             border: none;
-             font-size: 1.5em; /* Use normal icon size */
-             cursor: pointer;
-             color: var(--color-primary); /* Blue color, looks less like a fatal exit button */
-             padding: 0;
-             margin-top: 0;
-             flex-shrink: 0;
-        }
-
 
         /* Standard Choice Buttons (Used for New/Medium levels) */
         .choice-button {
@@ -529,8 +518,11 @@
             <img id="question-image" src="" alt="Quiz Image">
 
             <div class="answer-area-row"> 
-                <div id="answer-slots-container" class="answer-slots"></div>
-                <div class="refresh-button-wrapper">
+                <div class="answer-slots-container-center">
+                    <div id="answer-slots-container" class="answer-slots"></div>
+                </div>
+                
+                <div class="refresh-button-area">
                     <button id="reset-spelling-button" class="exit-button" onclick="resetSpelling()" style="display: none;">
                         <i class="fas fa-redo-alt"></i>
                     </button>
