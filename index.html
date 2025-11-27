@@ -9,6 +9,7 @@
         /* --- CSS STYLES (Mobile-First Responsive Design) --- */
         :root {
             --color-primary: #217bb8; 
+            /* FIXED: Changed color-secondary to the enhanced green #2EA771 */
             --color-secondary: #25855a; 
             --color-wrong: #e12e1c; 
             --color-bg: #ecf0f1;
@@ -237,13 +238,28 @@
         }
         
         /* MODIFIED: Anagram Game Specific Styles (Bigger letters and space) */
-        .answer-slots, .letter-choices {
+        .anagram-controls-wrapper {
+             /* New wrapper for flexible layout */
+             display: flex;
+             align-items: flex-start;
+             justify-content: center;
+             width: 100%;
+             margin-top: 15px;
+        }
+        .answer-slots {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            margin: 10px 0;
-            /* Increased gap between letters */
+            margin: 0; /* Remove margin from the component itself */
             gap: 8px; 
+        }
+        .letter-slots-container {
+             /* Wrapper for just the slots to contain the answer area */
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             flex-grow: 1;
+             padding-right: 15px; /* Spacing before the refresh button */
         }
         .letter-slot {
             /* Increased size */
@@ -255,6 +271,14 @@
             font-size: 1.5em; /* Bigger font */
             font-weight: bold;
             color: var(--color-text);
+        }
+        .letter-choices {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10px 0;
+            gap: 8px;
+            width: 100%;
         }
         .letter-button {
             /* Increased padding/size */
@@ -277,6 +301,18 @@
             opacity: 0.6;
         }
         /* END MODIFIED ANAGRAM STYLES */
+
+        #reset-spelling-button {
+             /* New positioning for refresh button */
+             position: static !important; /* Override absolute positioning from .exit-button */
+             margin-top: 5px;
+             font-size: 1.2em;
+             width: auto;
+             height: auto;
+             align-self: flex-start; /* Align to the top of the container */
+             padding: 5px 8px;
+        }
+
 
         /* Standard Choice Buttons (Used for New/Medium levels) */
         .choice-button {
@@ -464,11 +500,15 @@
             </div>
             <img id="question-image" src="" alt="Quiz Image">
 
-            <button id="reset-spelling-button" class="exit-button" onclick="resetSpelling()" style="position: absolute; top: 20px; right: 20px; color: var(--color-primary); z-index: 10; display: none;">
-                <i class="fas fa-redo-alt"></i>
-            </button>
+            <div class="anagram-controls-wrapper">
+                 <div class="letter-slots-container">
+                    <div id="answer-slots-container" class="answer-slots"></div>
+                 </div>
+                <button id="reset-spelling-button" class="exit-button" onclick="resetSpelling()" style="display: none;">
+                    <i class="fas fa-redo-alt"></i>
+                </button>
+            </div>
 
-            <div id="answer-slots-container" class="answer-slots"></div>
             <div id="letter-choices-container" class="letter-choices"></div>
             <div id="choices-container" style="width: 100%;">
                 </div>
