@@ -171,7 +171,6 @@
             font-size: 1.1em;
             cursor: pointer;
             transition: background-color 0.2s;
-            margin: 2px;
         }
         .letter-button:hover:not(:disabled) {
             background-color: #2980b9;
@@ -179,7 +178,6 @@
         .letter-button:disabled {
             background-color: var(--color-gray);
             cursor: not-allowed;
-            opacity: 0.6;
         }
 
         /* Standard Choice Buttons (Used for New/Medium levels) */
@@ -383,7 +381,6 @@
                     </div>
                     <div class="distractor-item">
                         <img id="distractor2-image" src="" alt="Distractor 2 Image">
-                        <div id="distractor2-term"></div>
                     </div>
                 </div>
                 <div class="continue-button-container">
@@ -865,7 +862,7 @@
             // SECONDARY POOL: All 'New' terms globally.
             if (level === 'Medium' || availableTerms.length < 2) {
                 const globalPool = gameData.filter(item => 
-    1                    item.term !== question.term && item.level === 'New'
+                    item.term !== question.term && item.level === 'New'
                 );
                 
                 availableTerms = globalPool.slice(); 
@@ -880,8 +877,7 @@
 
             // TERTIARY POOL: Fallback to ANY other term if still missing distractors
             if (distractors.length < 2) {
-                const allOtherTerms = gameData.filter(item => item.term !== question.term && 
-                                                              !distractors.some(d => d.term === item.term));
+                const allOtherTerms = gameData.filter(item => item.term !== question.term && !distractors.some(d => d.term === item.term));
                 allOtherTerms.sort(() => Math.random() - 0.5);
                 while (distractors.length < 2 && allOtherTerms.length > 0) {
                     distractors.push(allOtherTerms.pop());
