@@ -133,35 +133,33 @@
             /* MODIFIED: Change font color to var(--color-text) (#2c3e50) for better contrast */
             color: var(--color-text) !important; 
         }
-
+        
         /* MODIFIED: MEDIUM BUTTON STYLE */
         .medium-button {
             /* MODIFIED: Use dark text color (#2c3e50) as background */
             background-color: var(--color-text);
         }
         .medium-button:hover:not(:disabled) {
-            /* Adjusted hover state */
+            /* Adjusted hover state for dark gray */
             background-color: #1c2b3d;
         }
         
-        /* MODIFIED: EXPERT BUTTON STYLE */
+        /* MODIFIED: EXPERT BUTTON STYLE (Purple) */
+        /* Expert and Medium styles were previously grouped, now Expert is separated/redefined */
         .expert-button {
-            /* MODIFIED: Use purple (#8e44ad) as background */
             background-color: #8e44ad;
         }
         .expert-button:hover:not(:disabled) {
-            /* Use the original hover color for the purple button */
             background-color: #793397;
         }
         
-        /* MODIFIED: ADVANCED BUTTON STYLE */
+        /* MODIFIED: ADVANCED BUTTON STYLE (Green) */
         .advanced-button {
-            /* MODIFIED: Use green color-secondary as background */
+            /* MODIFIED: Use the updated var(--color-secondary) */
             background-color: var(--color-secondary); 
         }
         .advanced-button:hover:not(:disabled) {
-             /* Use the hover color defined for the previous secondary button */
-            background-color: #27ae60;
+             background-color: #27ae60;
         }
         
         /* MODIFIED: New styling for the logout button */
