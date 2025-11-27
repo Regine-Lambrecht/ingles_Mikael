@@ -236,7 +236,7 @@ Verbs_Play.png
 Verbs_Drink.png
 Verbs_Eat.png
 Verbs_Speak.png
-Verbs_Spell.png
+Verbs_Put.png
 Verbs_Add.png
 Verbs_Travel.png
 Verbs_Arrive.png
