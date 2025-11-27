@@ -588,26 +588,32 @@
 
     // --- GAME FLOW / NAVIGATION ---
 
-    function goToHome() {
-        // 1. Set Greeting and Avatar visibility
-        const greetingElement = document.getElementById('user-greeting');
-        const avatarElement = document.getElementById('user-avatar');
-        
-        // Set Greeting for all users
-        greetingElement.textContent = `Hello ${CURRENT_USER_ID}!`;
+// Inside function goToHome() { ... }
 
-        if (CURRENT_USER_ID === 'Mikael') {
-            avatarElement.src = BASE_IMAGE_URL + "Mikael.png";
-            avatarElement.style.display = 'block';
-        } else {
-            avatarElement.style.display = 'none';
-            avatarElement.src = ''; // Clear source
+        function goToHome() {
+            // 1. Set Greeting and Avatar visibility
+            const greetingElement = document.getElementById('user-greeting');
+            const avatarElement = document.getElementById('user-avatar');
+            
+            // Set Greeting for all users
+            greetingElement.textContent = `Hello ${CURRENT_USER_ID}!`;
+
+            // MODIFIED: Check for Mikael OR Marcia and set the avatar source
+            if (CURRENT_USER_ID === 'Mikael') {
+                avatarElement.src = BASE_IMAGE_URL + "Mikael.png";
+                avatarElement.style.display = 'block';
+            } else if (CURRENT_USER_ID === 'Marcia') { // <-- NEW LOGIC FOR MARCIA
+                avatarElement.src = BASE_IMAGE_URL + "marcia.jpg"; // <-- Set image name to marcia.jpg
+                avatarElement.style.display = 'block';
+            } else {
+                avatarElement.style.display = 'none';
+                avatarElement.src = ''; // Clear source
+            }
+            
+            updateHomeCounters();
+            clearInterval(timer); // Stop any running timer
+            switchScreen('home-screen');
         }
-        
-        updateHomeCounters();
-        clearInterval(timer); // Stop any running timer
-        switchScreen('home-screen');
-    }
 
     // --- HOME SCREEN LOGIC ---
 
