@@ -427,7 +427,7 @@
             
             <div class="home-actions-container">
                 <button id="reset-button" class="study-again-button" onclick="resetProgress()">
-                    Study all over again <i class="fa fa-refresh"></i> 
+                    Study all over again <i class="fas fa-sync-alt"></i> 
                 </button>
                 <button id="logout-button" class="study-again-button logout-button-styled" onclick="logout()">
                     Log Out <i class="fas fa-sign-out-alt"></i>
@@ -482,7 +482,7 @@
 
     <div id="custom-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100;">
         <div id="custom-modal-content" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); max-width: 400px; width: 90%; text-align: center;">
-            <h3 id="modal-heading" style="color:var(--color-text); margin-top:0;"><i class="fa fa-refresh"></i> Reset the progress counter</h3>
+            <h3 id="modal-heading" style="color:var(--color-text); margin-top:0;"><i class="fas fa-sync-alt"></i> Reset the progress counter</h3>
             <p id="modal-text">If you confirm, you will loose all your progress in the Medium, Advanced and Expert list.</p>
             <div style="display:flex; justify-content: space-around; margin-top: 20px;">
                 <button id="modal-cancel-btn" class="modal-btn">Don't reset progress</button>
@@ -812,6 +812,7 @@
             const mediumButton = document.createElement('button');
             mediumButton.id = 'medium-button';
             mediumButton.className = 'theme-button medium-button';
+            // Corrected: Using innerHTML to insert icon
             mediumButton.innerHTML = `Medium (${mediumCount}) <i class="far fa-trophy"></i>`;
             mediumButton.onclick = () => startQuiz('Medium');
             mediumButton.disabled = mediumCount === 0;
@@ -821,6 +822,7 @@
             const advancedButton = document.createElement('button');
             advancedButton.id = 'advanced-button';
             advancedButton.className = 'theme-button advanced-button';
+            // Corrected: Using innerHTML to insert icons
             advancedButton.innerHTML = `Advanced (${advancedCount}) <i class="far fa-trophy"></i><i class="far fa-trophy"></i>`;
             advancedButton.onclick = () => startQuiz('Advanced');
             advancedButton.disabled = advancedCount === 0;
@@ -831,6 +833,7 @@
             const expertButton = document.createElement('button');
             expertButton.id = 'expert-button';
             expertButton.className = 'theme-button expert-button';
+            // Corrected: Using innerHTML to insert icon
             expertButton.innerHTML = `Expert (${expertCount}/${totalTerms}) <i class="far fa-award"></i>`;
             expertButton.onclick = () => startQuiz('Expert');
             expertButton.disabled = expertCount === 0;
