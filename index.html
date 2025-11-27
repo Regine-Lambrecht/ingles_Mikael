@@ -9,7 +9,7 @@
         /* --- CSS STYLES (Mobile-First Responsive Design) --- */
         :root {
             --color-primary: #217bb8; 
-            /* FIXED: Changed color-secondary to the enhanced green #2EA771 */
+            /* FIXED: Changed color-secondary to the enhanced green #25855a */
             --color-secondary: #25855a; 
             --color-wrong: #e12e1c; 
             --color-bg: #ecf0f1;
@@ -251,16 +251,42 @@
         .answer-slots {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            /* Allow slots to take space but stop them from overflowing */
+            justify-content: center; /* Center the slots within their own container */
             flex-shrink: 1; 
             margin: 0; 
             gap: 8px; 
-            /* Added margin-right to separate slots from the refresh button */
-            margin-right: 15px; 
         }
-        /* letter-choices margin is already defined */
         
+        /* This wrapper ensures the refresh button and its spacer are handled together */
+        .refresh-button-wrapper {
+             /* We reserve space for the refresh button on the right */
+             width: 35px; 
+             display: flex;
+             justify-content: flex-end;
+             align-items: center;
+        }
+
+        #reset-spelling-button {
+             position: static; 
+             background: none; 
+             border: none;
+             font-size: 1.5em; /* Use normal icon size */
+             cursor: pointer;
+             color: var(--color-primary); /* Blue color */
+             padding: 0;
+             margin-top: 0;
+             flex-shrink: 0;
+             /* We assume the refresh button's visual width is ~35px */
+             width: 100%;
+        }
+
+        /* This spacer will take up the same space as the button when the button is hidden */
+        .refresh-button-spacer {
+             width: 100%; /* Takes up space reserved by wrapper */
+             height: 1.5em; 
+             display: none; 
+        }
+
         .letter-slot {
             /* Increased size */
             width: 40px; 
@@ -271,6 +297,14 @@
             font-size: 1.5em; /* Bigger font */
             font-weight: bold;
             color: var(--color-text);
+        }
+        .letter-choices {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 10px 0;
+            gap: 8px;
+            width: 100%;
         }
         .letter-button {
             /* Increased padding/size */
@@ -304,7 +338,7 @@
              color: var(--color-primary); /* Blue color, looks less like a fatal exit button */
              padding: 0;
              margin-top: 0;
-             flex-shrink: 0; /* Keep the button from shrinking */
+             flex-shrink: 0;
         }
 
 
@@ -496,9 +530,12 @@
 
             <div class="answer-area-row"> 
                 <div id="answer-slots-container" class="answer-slots"></div>
-                <button id="reset-spelling-button" class="exit-button" onclick="resetSpelling()" style="display: none;">
-                    <i class="fas fa-redo-alt"></i>
-                </button>
+                <div class="refresh-button-wrapper">
+                    <button id="reset-spelling-button" class="exit-button" onclick="resetSpelling()" style="display: none;">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <div id="refresh-button-spacer" class="refresh-button-spacer" style="display: block;"></div>
+                </div>
             </div>
             
             <div id="letter-choices-container" class="letter-choices"></div>
@@ -987,10 +1024,15 @@
             
             // Show/Hide refresh button for Advanced level only
             const refreshButton = document.getElementById('reset-spelling-button');
+            const refreshSpacer = document.getElementById('refresh-button-spacer'); // Get the spacer
+            
             if (level === 'Advanced') {
                  refreshButton.style.display = 'block';
+                 refreshSpacer.style.display = 'none'; // Hide spacer when button is shown
             } else {
                  refreshButton.style.display = 'none';
+                 // Ensure the spacer is visible when the refresh button is hidden to maintain centering
+                 refreshSpacer.style.display = 'block'; 
             }
 
 
@@ -1165,7 +1207,10 @@
             });
             currentAnswer = [];
             
-            // If timer was running (which it isn't for Advanced), it would need restarting here.
+            // Ensure the refresh button is visible after reset
+            document.getElementById('reset-spelling-button').style.display = 'block'; 
+            document.getElementById('refresh-button-spacer').style.display = 'none';
+
         }
 
         /**
@@ -1189,6 +1234,8 @@
                 if (currentAnswer.length === correctTermLetters.length) {
                     // Hide the refresh button once submission is complete
                     document.getElementById('reset-spelling-button').style.display = 'none';
+                    document.getElementById('refresh-button-spacer').style.display = 'block'; // Show spacer
+                    
                     clearInterval(timer);
                     checkAnswer();
                 }
@@ -1256,7 +1303,10 @@
                     clearInterval(timer);
                     // Disable letters/choices on timeout
                     document.querySelectorAll('.letter-button, .choice-button').forEach(btn => btn.disabled = true);
-                    document.getElementById('reset-spelling-button').style.display = 'none'; // Hide refresh button on timeout
+                    
+                    // Hide the refresh button/show spacer on timeout
+                    document.getElementById('reset-spelling-button').style.display = 'none'; 
+                    document.getElementById('refresh-button-spacer').style.display = 'block'; 
 
                     
                     // Only Medium level needs special handling for timeout submission
@@ -1272,7 +1322,11 @@
             clearInterval(timer);
             // Disable all buttons immediately after submission or timeout
             document.querySelectorAll('.letter-button, .choice-button').forEach(btn => btn.disabled = true);
-            document.getElementById('reset-spelling-button').style.display = 'none'; // Hide refresh button on submission
+            
+            // Hide the refresh button/show spacer on submission
+            document.getElementById('reset-spelling-button').style.display = 'none';
+            document.getElementById('refresh-button-spacer').style.display = 'block';
+
 
             // Determine if the answer was correct (handles both standard quiz and spelling)
             const isCorrect = chosenItem && chosenItem.term === currentQuestion.term;
