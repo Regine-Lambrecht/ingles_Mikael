@@ -423,6 +423,7 @@
         let currentQuizLevel = null; // Stores the level selected (New, Medium, Advanced, Expert)
         let currentQuizTheme = null;
         let uniqueThemes = new Set();
+        let currentDistractors = []; // NEW GLOBAL VARIABLE to store the distractors for the current question
 
 
         // --- UTILITY FUNCTIONS ---
@@ -529,7 +530,7 @@
                         theme = cleanName.substring(0, firstUnderscoreIndex).trim().replace(/_/g, ' ');
                         term = cleanName.substring(firstUnderscoreIndex + 1).trim().replace(/_/g, ' ');
                     } else {
-                          console.warn(`Filename ${filename} does not contain an underscore. Assigned to 'Others'.`);
+                        console.warn(`Filename ${filename} does not contain an underscore. Assigned to 'Others'.`);
                     }
                     
                     if (!theme || theme.length === 0) {
@@ -747,18 +748,18 @@
         function loadQuestion() {
             // 1. Filter the quiz pool to remove promoted/demoted items
             quizPool = quizPool.filter(item => {
-                   const currentState = gameData.find(d => d.term === item.term);
-                   let isValid = false;
-                   if (currentQuizLevel === 'New' && currentState.level === 'New' && currentState.theme === currentQuizTheme) {
-                       isValid = true;
-                   } else if (currentQuizLevel === 'Medium' && currentState.level === 'Medium') {
-                       isValid = true;
-                   } else if (currentQuizLevel === 'Advanced' && currentState.level === 'Advanced') {
-                       isValid = true;
-                   } else if (currentQuizLevel === 'Expert' && currentState.level === 'Expert') {
-                       isValid = true;
-                   }
-                   return isValid;
+                     const currentState = gameData.find(d => d.term === item.term);
+                     let isValid = false;
+                     if (currentQuizLevel === 'New' && currentState.level === 'New' && currentState.theme === currentQuizTheme) {
+                         isValid = true;
+                     } else if (currentQuizLevel === 'Medium' && currentState.level === 'Medium') {
+                         isValid = true;
+                     } else if (currentQuizLevel === 'Advanced' && currentState.level === 'Advanced') {
+                         isValid = true;
+                     } else if (currentQuizLevel === 'Expert' && currentState.level === 'Expert') {
+                         isValid = true;
+                     }
+                     return isValid;
             });
 
             if (quizPool.length === 0) {
@@ -802,6 +803,8 @@
 
                 // Start the Interactive Spelling Game
                 renderSpellingGame(currentQuestion);
+                // Clear distractors since they are not used for Advanced level
+                currentDistractors = [];
 
             } else {
                 // New / Medium Level: Standard Multiple Choice
@@ -814,6 +817,7 @@
 
                 // 3. Get Distractors (only needed for New/Medium)
                 const distractors = getDistractors(level, currentQuestion);
+                currentDistractors = distractors; // <--- MODIFIED: Save distractors globally
 
                 // 4. Render standard multiple choice
                 renderQuizChoices(currentQuestion, distractors);
@@ -872,7 +876,7 @@
             // TERTIARY POOL: Fallback to ANY other term if still missing distractors
             if (distractors.length < 2) {
                 const allOtherTerms = gameData.filter(item => item.term !== question.term && 
-                                                              !distractors.some(d => d.term === item.term));
+                                                             !distractors.some(d => d.term === item.term));
                 allOtherTerms.sort(() => Math.random() - 0.5);
                 while (distractors.length < 2 && allOtherTerms.length > 0) {
                     distractors.push(allOtherTerms.pop());
@@ -1022,7 +1026,7 @@
                     // Only Medium level needs special handling for timeout submission
                     if (currentQuizLevel === 'Medium') {
                         // For Medium, submit wrong answer (null chosen item)
-                        submitAnswer(null, getDistractors(currentQuizLevel, currentQuestion));
+                        submitAnswer(null, currentDistractors); // <--- MODIFIED: Use global variable
                     }
                 }
             }, 100);
@@ -1126,7 +1130,7 @@
             // due to null answer (timeout). Advanced level's null answer is a wrong submission.
             if (!isCorrect && !chosenItem) {
                  if (currentQuizLevel === 'Medium') {
-                     messageElement.textContent = "Time's up! 😞";
+                      messageElement.textContent = "Time's up! 😞";
                  }
                  // If it's Advanced, the message remains "You are wrong! 😞", which is correct.
             }
@@ -1170,11 +1174,11 @@
             document.querySelector('.continue-button-container').style.display = 'block';
 
             // Distractor details are only relevant for New/Medium quizzes
-            if (currentLevel === 'New' || currentLevel === 'Medium') {
+            if (currentQuizLevel === 'New' || currentQuizLevel === 'Medium') {
                 distractorDetailsContainer.style.display = 'flex';
                 
                 // Get distractors again for the display
-                const relevantDistractors = getDistractors(currentLevel, question);
+                const relevantDistractors = distractors;
 
                 // Set Distractor 1
                 if (relevantDistractors[0]) {
