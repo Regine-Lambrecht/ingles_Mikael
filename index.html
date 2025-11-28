@@ -462,11 +462,11 @@
 
     <div id="app">
         
-                <div id="loading-screen" class="screen">
+                <div id="loading-screen" class="screen active" style="display: flex;">
             Loading data... Please wait.
         </div>
 
-        <div id="login-screen" class="screen">
+                <div id="login-screen" class="screen" style="display: none;">
             <h2>What is your name?</h2>
             <select id="username-select">
                 <option value="Mikael">Mikael</option>
@@ -478,7 +478,7 @@
             <p id="login-message" style="color: var(--color-wrong);"></p>
         </div>
 
-        <div id="home-screen" class="screen">
+                <div id="home-screen" class="screen" style="display: none;">
             <h2 id="user-greeting" style="color: var(--color-text); margin-bottom: 5px;"></h2>
             <img id="user-avatar" src="" alt="User Avatar" style="display: none;">
             
@@ -497,7 +497,7 @@
             </div>
         </div>
 
-        <div id="question-screen" class="screen">
+                <div id="question-screen" class="screen" style="display: none;">
             <button class="exit-button" onclick="goToHome()"><i class="fas fa-times"></i></button>
             <h2 id="quiz-title">What is this?</h2>
             <div class="timer-container" id="timer-container" style="display:none;">
@@ -525,7 +525,7 @@
                             </div>
         </div>
 
-        <div id="feedback-screen" class="screen">
+                <div id="feedback-screen" class="screen" style="display: none;">
             <button class="exit-button" onclick="goToHome()"><i class="fas fa-times"></i></button>
             <h2 class="feedback-message" id="feedback-message"></h2>
             
@@ -656,7 +656,7 @@
         function switchScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.style.display = 'none'; // Ensure all are hidden
-                screen.classList.remove('active'); // Remove active class
+                screen.classList.remove('active'); 
             });
             // Show the target screen
             const targetScreen = document.getElementById(screenId);
@@ -776,6 +776,7 @@
                     });
                     
                     totalTerms = gameData.length;
+                    // Initial switch to login screen after data is loaded
                     switchScreen('login-screen');
                 } catch (error) {
                     console.error("Error loading or parsing image list:", error);
@@ -1578,7 +1579,7 @@
 
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Display loading screen immediately
+            // Manually force the loading screen active for initial display robustness
             document.getElementById('loading-screen').style.display = 'flex';
             document.getElementById('loading-screen').classList.add('active');
 
