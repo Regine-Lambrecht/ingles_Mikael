@@ -22,6 +22,16 @@
              margin-right: 0;
         }
 
+        /* ADDED: CSS for promotion animation */
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+        .promotion-animate {
+            animation: none; /* Not used anymore */
+        }
+        
         body {
             font-family: sans-serif;
             margin: 0;
@@ -96,7 +106,7 @@
             object-fit: cover;
             margin-bottom: 15px;
             /* Border uses the updated color-secondary */
-            border: 3px solid var(--color-secondary); 
+            border: 3px solid var(--color-primary);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
 
@@ -123,7 +133,7 @@
             color: var(--color-text) !important; 
         }
         .medium-button, .expert-button {
-            /* MODIFIED: Use the updated var(--color-secondary) */
+            /* Now correctly uses the updated var(--color-secondary) */
             background-color: var(--color-secondary);
         }
         .medium-button:hover:not(:disabled), .expert-button:hover:not(:disabled) {
@@ -159,7 +169,7 @@
         }
         /* Primary button (Cancel - Keep progress) -> Green BG (Contrast color used) */
         #modal-cancel-btn {
-            /* MODIFIED: Use the updated var(--color-secondary) */
+            /* Now correctly uses the updated var(--color-secondary) */
             background-color: var(--color-secondary); 
             color: var(--color-light-text);
         }
@@ -225,34 +235,91 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
-        /* Anagram Game Specific Styles */
-        .answer-slots, .letter-choices {
+        /* MODIFIED: Anagram Game Specific Styles (Bigger letters and space) */
+        
+        /* FIX: Main wrapper uses space-between to push slot group left and button wrapper right */
+        .answer-area-row {
+             display: flex;
+             align-items: center; 
+             justify-content: space-between; /* Ensures maximum separation */
+             width: 100%;
+             margin: 10px 0;
+        }
+
+        .answer-slots {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; 
+            flex-shrink: 1; 
+            margin: 0; 
+            gap: 8px; 
+        }
+        
+        /* FIX: Wrapper containing only the slots for left-side centering. 
+           This container will be flex-centered inside a larger wrapper. */
+        .answer-slots-container-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1; /* Allows it to occupy central space */
+        }
+
+        /* FIX: Wrapper for the refresh button. This wrapper ensures the button
+           takes up the same space when hidden (using the spacer). */
+        .refresh-button-area {
+             /* Define a fixed width that matches the refresh button's visual space + margins */
+             width: 40px; 
+             display: flex;
+             justify-content: flex-end; 
+             align-items: center;
+             height: 1.5em; /* Match icon height */
+        }
+
+        #reset-spelling-button {
+             position: static; 
+             background: none; 
+             border: none;
+             font-size: 1.5em; 
+             cursor: pointer;
+             color: var(--color-primary); 
+             padding: 0;
+             margin-top: 0;
+             flex-shrink: 0;
+        }
+        .refresh-button-spacer {
+             width: 100%; 
+             height: 100%; 
+             display: block; 
+        }
+
+        .letter-slot {
+            width: 40px; 
+            height: 40px; 
+            line-height: 40px;
+            border-bottom: 2px solid var(--color-text);
+            margin: 0 4px; 
+            font-size: 1.5em; 
+            font-weight: bold;
+            color: var(--color-text);
+        }
+        .letter-choices {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             margin: 10px 0;
-            gap: 5px;
-        }
-        .letter-slot {
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            border-bottom: 2px solid var(--color-text);
-            margin: 0 2px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: var(--color-text);
+            gap: 8px;
+            width: 100%;
         }
         .letter-button {
-            padding: 8px 12px;
+            padding: 10px 15px; 
             background-color: var(--color-primary);
             color: var(--color-light-text);
             border: none;
             border-radius: 5px;
-            font-size: 1.1em;
+            font-size: 1.3em; 
             cursor: pointer;
             transition: background-color 0.2s;
-            margin: 2px;
+            margin: 4px; 
         }
         .letter-button:hover:not(:disabled) {
             background-color: #2980b9;
@@ -262,6 +329,7 @@
             cursor: not-allowed;
             opacity: 0.6;
         }
+        /* END MODIFIED ANAGRAM STYLES */
 
         /* Standard Choice Buttons (Used for New/Medium levels) */
         .choice-button {
@@ -305,8 +373,8 @@
             margin-bottom: 10px;
         }
         .feedback-correct {
-            /* Now uses the updated color-secondary */
-            color: var(--color-secondary); 
+            /* Now correctly uses the updated color-secondary */
+            color: var(--color-secondary);
         }
         .feedback-wrong {
             color: var(--color-wrong);
@@ -449,7 +517,19 @@
             </div>
             <img id="question-image" src="" alt="Quiz Image">
 
-            <div id="answer-slots-container" class="answer-slots"></div>
+            <div class="answer-area-row"> 
+                <div class="answer-slots-container-center">
+                    <div id="answer-slots-container" class="answer-slots"></div>
+                </div>
+                
+                <div class="refresh-button-area">
+                    <button id="reset-spelling-button" class="exit-button" onclick="resetSpelling()" style="display: none;">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <div id="refresh-button-spacer" class="refresh-button-spacer" style="display: block;"></div>
+                </div>
+            </div>
+            
             <div id="letter-choices-container" class="letter-choices"></div>
             <div id="choices-container" style="width: 100%;">
                 </div>
@@ -458,6 +538,8 @@
         <div id="feedback-screen" class="screen">
             <button class="exit-button" onclick="goToHome()"><i class="fas fa-times"></i></button>
             <h2 class="feedback-message" id="feedback-message"></h2>
+            
+            <div id="promotion-message" style="display:none; color:var(--color-primary); font-size:1.5em; font-weight:bold; margin-bottom:10px;"></div>
             
             <div class="main-question-area">
                 <img id="question-feedback-image" src="" alt="Original Question Image">
@@ -508,7 +590,8 @@
         const STORAGE_PREFIX = `MasteryQuiz_State_`; // Prefix state key with user ID for segregation
         const LIST_URL = "https://regine-lambrecht.github.io/ingles_Mikael/image_list.txt";
         const BASE_IMAGE_URL = "https://regine-lambrecht.github.io/ingles_Mikael/images/";
-        const MEDIUM_TIMER_SECONDS = 5;
+        // NOTE: Timer remains 5 seconds as requested. Change this value to adjust duration.
+        const MEDIUM_TIMER_SECONDS = 5; 
 
         // --- ADVANCED LEVEL STATE ---
         let currentAnswer = []; // Stores letters clicked by user
@@ -526,6 +609,8 @@
         let currentQuizTheme = null;
         let uniqueThemes = new Set();
         let currentDistractors = []; // Global variable for distractors
+        // Global variable to track if a promotion just occurred
+        let PROMOTION_INFO = null; // Stores: { oldLevel: 'Medium', newLevel: 'Advanced' }
 
 
         // --- MODAL LOGIC (New Functions) ---
@@ -928,6 +1013,19 @@
             letterContainer.innerHTML = '';
             choicesContainer.innerHTML = '';
             currentAnswer = [];
+            
+            // Show/Hide refresh button for Advanced level only
+            const refreshButton = document.getElementById('reset-spelling-button');
+            const refreshSpacer = document.getElementById('refresh-button-spacer'); // Get the spacer
+            
+            if (level === 'Advanced') {
+                 refreshButton.style.display = 'block';
+                 refreshSpacer.style.display = 'none'; // Hide spacer when button is shown
+            } else {
+                 refreshButton.style.display = 'none';
+                 // Ensure the spacer is visible when the refresh button is hidden to maintain centering
+                 refreshSpacer.style.display = 'block'; 
+            }
 
 
             // 2. Expert level is just review
@@ -1082,6 +1180,30 @@
                 letterContainer.appendChild(button);
             });
         }
+        
+        /**
+         * ADDED: Resets the current spelling attempt in the Advanced level.
+         */
+        function resetSpelling() {
+            // Re-enable all letter buttons
+            document.querySelectorAll('#letter-choices-container .letter-button').forEach(btn => {
+                btn.disabled = false;
+            });
+            
+            // Clear all answer slots visually and clear the logic array
+            document.querySelectorAll('#answer-slots-container .letter-slot').forEach(slot => {
+                slot.textContent = '';
+                // Ensure default color is restored if checkAnswer was run previously
+                slot.style.color = 'var(--color-text)';
+                slot.style.borderBottomColor = 'var(--color-text)'; 
+            });
+            currentAnswer = [];
+            
+            // Ensure the refresh button is visible after reset
+            document.getElementById('reset-spelling-button').style.display = 'block'; 
+            document.getElementById('refresh-button-spacer').style.display = 'none';
+
+        }
 
         /**
          * Handles the user clicking a letter button.
@@ -1099,9 +1221,13 @@
                 
                 // 2. Disable the clicked button
                 button.disabled = true;
-
+                
                 // 3. Check if the word is complete
                 if (currentAnswer.length === correctTermLetters.length) {
+                    // Hide the refresh button once submission is complete
+                    document.getElementById('reset-spelling-button').style.display = 'none';
+                    document.getElementById('refresh-button-spacer').style.display = 'block'; // Show spacer
+                    
                     clearInterval(timer);
                     checkAnswer();
                 }
@@ -1170,6 +1296,11 @@
                     // Disable letters/choices on timeout
                     document.querySelectorAll('.letter-button, .choice-button').forEach(btn => btn.disabled = true);
                     
+                    // Hide the refresh button/show spacer on timeout
+                    document.getElementById('reset-spelling-button').style.display = 'none'; 
+                    document.getElementById('refresh-button-spacer').style.display = 'block'; 
+
+                    
                     // Only Medium level needs special handling for timeout submission
                     if (currentQuizLevel === 'Medium') {
                         // For Medium, submit wrong answer (null chosen item)
@@ -1183,12 +1314,34 @@
             clearInterval(timer);
             // Disable all buttons immediately after submission or timeout
             document.querySelectorAll('.letter-button, .choice-button').forEach(btn => btn.disabled = true);
+            
+            // Hide the refresh button/show spacer on submission
+            document.getElementById('reset-spelling-button').style.display = 'none';
+            document.getElementById('refresh-button-spacer').style.display = 'block';
+
 
             // Determine if the answer was correct (handles both standard quiz and spelling)
             const isCorrect = chosenItem && chosenItem.term === currentQuestion.term;
             
+            // Store old level before promotion logic runs
+            const oldLevel = currentQuestion.level; 
+            
             processProgress(isCorrect);
+            
+            // Get new level after promotion logic runs
+            const updatedItem = gameData.find(d => d.term === currentQuestion.term);
+            const newLevel = updatedItem ? updatedItem.level : oldLevel;
+            
+            // MODIFIED: Store promotion info globally
+            if (isCorrect && oldLevel !== newLevel) {
+                 PROMOTION_INFO = { oldLevel: oldLevel, newLevel: newLevel };
+            } else {
+                 PROMOTION_INFO = null;
+            }
+
+
             showFeedback(isCorrect, currentQuestion, distractors, chosenItem);
+
 
             saveState(); // Save progress after every question
         }
@@ -1287,6 +1440,7 @@
 
             // 2. Question Detail (Always Shown)
             document.getElementById('question-feedback-image').src = question.url;
+            document.getElementById('question-feedback-image').style.display = 'block';
             document.getElementById('question-feedback-term').textContent = question.term;
             
             // Show image if it was hidden for Advanced level
@@ -1351,6 +1505,27 @@
             } else {
                  // Hide distractors for Advanced and Expert
                  distractorDetailsContainer.style.display = 'none';
+            }
+
+            // ADDED LOGIC: Handle Promotion Message Display (last step, stays visible)
+            const promotionMessageElement = document.getElementById('promotion-message');
+            if (PROMOTION_INFO) {
+                const { newLevel } = PROMOTION_INFO;
+                let messagePrefix = "Well done! This term goes to the";
+                
+                if (newLevel === 'Expert') {
+                    messagePrefix = "You rock! This term goes to the";
+                }
+
+                promotionMessageElement.textContent = `${messagePrefix} ${newLevel} level`;
+                promotionMessageElement.style.display = 'block';
+
+                // Clear state so the message doesn't reappear on subsequent screen views
+                PROMOTION_INFO = null;
+            } else {
+                // Ensure message is hidden if no promotion occurred
+                promotionMessageElement.style.display = 'none';
+                promotionMessageElement.textContent = '';
             }
             
             switchScreen('feedback-screen');
