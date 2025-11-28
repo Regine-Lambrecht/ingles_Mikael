@@ -1476,7 +1476,7 @@
         // 3. Audio Button Visibility (NEW LOGIC)
         const audioBtn = document.getElementById('audio-button');
         // Only show the audio button for the 'New' level
-        if (currentQuizLevel === 'New') {
+        if (currentQuizLevel === 'New' || currentQuizLevel === 'Medium') {
             audioBtn.style.display = 'inline-block';
         } else {
             audioBtn.style.display = 'none';
