@@ -56,28 +56,32 @@
 
         /* --- Screens --- */
         .screen {
-            display: none; /* Default hidden state */
-            flex-direction: column; /* Ensure content stacks vertically */
-            align-items: center; /* Center horizontally */
+            display: none;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
         }
         .screen.active {
-            display: flex !important; /* Force visibility and flex layout */
+            display: flex;
         }
 
         /* --- Login Screen --- */
+        /* MODIFIED: Updated styles for the new select field and button (reduced max-width) */
         #login-screen select,
         #login-screen button {
             padding: 10px;
             margin: 10px 0;
             width: 100%;
+            /* MODIFIED: Reduced max-width for smaller size */
             max-width: 200px; 
             box-sizing: border-box;
             border-radius: 5px;
+            /* Added margin-bottom to separate from the button */
             margin-bottom: 20px; 
         }
         #login-screen select {
             border: 1px solid var(--color-gray);
+            /* Added height for better visual alignment */
             height: 40px; 
         }
         #login-screen button {
@@ -101,6 +105,7 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 15px;
+            /* Border uses the updated color-secondary */
             border: 3px solid var(--color-primary);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         }
@@ -124,9 +129,11 @@
             background-color: var(--color-gray);
             cursor: not-allowed;
             opacity: 0.6;
+            /* MODIFIED: Change font color to var(--color-text) (#2c3e50) for better contrast */
             color: var(--color-text) !important; 
         }
         .medium-button, .expert-button {
+            /* Now correctly uses the updated var(--color-secondary) */
             background-color: var(--color-secondary);
         }
         .medium-button:hover:not(:disabled), .expert-button:hover:not(:disabled) {
@@ -162,6 +169,7 @@
         }
         /* Primary button (Cancel - Keep progress) -> Green BG (Contrast color used) */
         #modal-cancel-btn {
+            /* Now correctly uses the updated var(--color-secondary) */
             background-color: var(--color-secondary); 
             color: var(--color-light-text);
         }
@@ -198,6 +206,7 @@
              margin-right: 8px;
         }
         
+
 
         /* --- Quiz Screen / Feedback Screen Common --- */
         .exit-button {
@@ -322,7 +331,7 @@
         }
         /* END MODIFIED ANAGRAM STYLES */
 
-        /* Standard Choice Buttons (Used for New/Intermediate levels) */
+        /* Standard Choice Buttons (Used for New/Medium levels) */
         .choice-button {
             width: 100%;
             padding: 12px;
@@ -338,8 +347,8 @@
         .choice-button:hover {
             background-color: #2980b9;
         }
-        
-        /* Timer styles */
+        /* End Anagram Game Specific Styles */
+
         #timer-bar {
             width: 100%;
             height: 10px;
@@ -364,6 +373,7 @@
             margin-bottom: 10px;
         }
         .feedback-correct {
+            /* Now correctly uses the updated color-secondary */
             color: var(--color-secondary);
         }
         .feedback-wrong {
@@ -377,6 +387,7 @@
             max-width: 100%;
             max-height: 150px;
             margin: 10px 0;
+            /* Border uses the updated color-secondary */
             border: 3px solid var(--color-secondary); 
             border-radius: 5px;
         }
@@ -429,6 +440,7 @@
             font-size: 1.5em; /* Larger icon */
             cursor: pointer;
             margin-left: 15px;
+            /* Ensure icon is white */
             color: white; 
         }
         
@@ -462,11 +474,11 @@
 
     <div id="app">
         
-                <div id="loading-screen" class="screen active" style="display: flex;">
+        <div id="loading-screen" class="screen active">
             Loading data... Please wait.
         </div>
 
-                <div id="login-screen" class="screen" style="display: none;">
+        <div id="login-screen" class="screen">
             <h2>What is your name?</h2>
             <select id="username-select">
                 <option value="Mikael">Mikael</option>
@@ -478,7 +490,7 @@
             <p id="login-message" style="color: var(--color-wrong);"></p>
         </div>
 
-                <div id="home-screen" class="screen" style="display: none;">
+        <div id="home-screen" class="screen">
             <h2 id="user-greeting" style="color: var(--color-text); margin-bottom: 5px;"></h2>
             <img id="user-avatar" src="" alt="User Avatar" style="display: none;">
             
@@ -497,7 +509,7 @@
             </div>
         </div>
 
-                <div id="question-screen" class="screen" style="display: none;">
+        <div id="question-screen" class="screen">
             <button class="exit-button" onclick="goToHome()"><i class="fas fa-times"></i></button>
             <h2 id="quiz-title">What is this?</h2>
             <div class="timer-container" id="timer-container" style="display:none;">
@@ -519,26 +531,24 @@
             </div>
             
             <div id="letter-choices-container" class="letter-choices"></div>
-            <div id="choice-buttons-container" style="width: 100%;">
+            <div id="choices-container" style="width: 100%;">
                 </div>
-            <div id="image-choices-container" class="distractor-details" style="display: none; width: 100%; margin-top: 15px;">
-                            </div>
         </div>
 
-                <div id="feedback-screen" class="screen" style="display: none;">
+        <div id="feedback-screen" class="screen">
             <button class="exit-button" onclick="goToHome()"><i class="fas fa-times"></i></button>
             <h2 class="feedback-message" id="feedback-message"></h2>
             
             <div id="promotion-message" style="display:none; color:var(--color-primary); font-size:1.5em; font-weight:bold; margin-bottom:10px;"></div>
             
-            <div class="main-question-area">
-                <img id="question-feedback-image" src="" alt="Original Question Image">
-                <div class="term" id="question-feedback-term"></div>
-                <button id="audio-button" class="study-again-button" style="margin-right: 10px; background-color: var(--color-primary);" onclick="playAudio()">
-                    Pronounce <i class="fas fa-volume-up"></i>
-                </button>
-                <button class="study-again-button" id="demote-button" onclick="demoteTerm()">Study this again</button>
-            </div>
+<div class="main-question-area">
+    <img id="question-feedback-image" src="" alt="Original Question Image">
+    <div class="term" id="question-feedback-term"></div>
+    <button id="audio-button" class="study-again-button" style="margin-right: 10px; background-color: var(--color-primary);" onclick="playAudio()">
+        Pronounce <i class="fas fa-volume-up"></i>
+    </button>
+    <button class="study-again-button" id="demote-button" onclick="demoteTerm()">Study this again</button>
+</div>
 
             <div class="distractor-area-wrapper">
                 <div class="distractor-details">
@@ -564,1027 +574,1130 @@
     <div id="custom-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100;">
         <div id="custom-modal-content" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); max-width: 400px; width: 90%; text-align: center;">
             <h3 id="modal-heading" style="color:var(--color-text); margin-top:0;"><i class="fas fa-sync-alt"></i> Reset the progress counter</h3>
-            <p id="modal-text">If you confirm, you will loose all your progress in the Intermediate, Advanced, Expert, and Master lists.</p>
+            <p id="modal-text">If you confirm, you will loose all your progress in the Medium, Advanced and Expert list.</p>
             <div style="display:flex; justify-content: space-around; margin-top: 20px;">
                 <button id="modal-cancel-btn" class="modal-btn">Don't reset progress</button>
                 <button id="modal-confirm-btn" class="modal-btn">Reset progress anyway</button>
             </div>
         </div>
-      </div>
+    </div>
 
 
-    <script>
-        /* --- JAVASCRIPT LOGIC --- */
+    <script>
+    /* --- JAVASCRIPT LOGIC --- */
 
-        // --- CONFIGURATION ---
-        const VALID_IDS = ["Mikael", "Regine", "Marcia", "Mariane"]; 
-        let CURRENT_USER_ID = null; 
-        const STORAGE_PREFIX = `MasteryQuiz_State_`; 
-        const LIST_URL = "https://regine-lambrecht.github.io/ingles_Mikael/image_list.txt";
-        const BASE_IMAGE_URL = "https://regine-lambrecht.github.io/ingles_Mikael/images/";
-        const MEDIUM_TIMER_SECONDS = 5; 
+    // --- CONFIGURATION ---
+    // NEW: Level definitions for the 5-tier system
+    const LEVELS = {
+        'New': { count: 3, promoteTo: 'Intermediate', buttonClass: '' },
+        'Intermediate': { count: 3, promoteTo: 'Advanced', buttonClass: 'medium-button' },
+        'Advanced': { count: 3, demoteTo: 'Intermediate', promoteTo: 'Expert', buttonClass: 'advanced-button' },
+        'Expert': { count: 3, promoteTo: 'Master', demoteTo: 'Advanced', buttonClass: 'expert-button' }, 
+        'Master': { count: 0, buttonClass: 'expert-button' }
+    };
+    const LEVEL_ORDER = ['New', 'Intermediate', 'Advanced', 'Expert', 'Master'];
 
-        // --- LEVEL DEFINITIONS (UPDATED) ---
-        const LEVELS = {
-            'New': { count: 3, promoteTo: 'Intermediate', buttonClass: '' },
-            'Intermediate': { count: 3, promoteTo: 'Advanced', buttonClass: 'medium-button' },
-            'Advanced': { count: 3, demoteTo: 'Intermediate', promoteTo: 'Expert', buttonClass: 'advanced-button' },
-            'Expert': { count: 3, promoteTo: 'Master', demoteTo: 'Advanced', buttonClass: 'expert-button' }, 
-            'Master': { count: 0, buttonClass: 'expert-button' }
-        };
-        const LEVEL_ORDER = ['New', 'Intermediate', 'Advanced', 'Expert', 'Master'];
+    // MODIFIED: Corrected spelling of Mariane
+    const VALID_IDS = ["Mikael", "Regine", "Marcia", "Mariane"]; 
+    let CURRENT_USER_ID = null; // Will store the currently logged-in user ID
+    const STORAGE_PREFIX = `MasteryQuiz_State_`; // Prefix state key with user ID for segregation
+    const LIST_URL = "https://regine-lambrecht.github.io/ingles_Mikael/image_list.txt";
+    const BASE_IMAGE_URL = "https://regine-lambrecht.github.io/ingles_Mikael/images/";
+    // NOTE: Timer remains 5 seconds as requested. Change this value to adjust duration.
+    const MEDIUM_TIMER_SECONDS = 5; 
 
-        // --- ADVANCED LEVEL STATE ---
-        let currentAnswer = []; 
-        let correctTermLetters = []; 
-
-
-        // --- STATE VARIABLES ---
-        let gameData = []; 
-        let quizPool = []; 
-        let currentQuizIndex = 0;
-        let currentQuestion = null;
-        let timer = null;
-        let totalTerms = 0;
-        let currentQuizLevel = null;
-        let currentQuizTheme = null;
-        let uniqueThemes = new Set();
-        let currentDistractors = []; 
-        let PROMOTION_INFO = null; 
+    // --- ADVANCED LEVEL STATE ---
+    let currentAnswer = []; // Stores letters clicked by user
+    let correctTermLetters = []; // Stores the correct term letters for comparison
 
 
-        // --- MODAL LOGIC ---
-
-        function showCustomModal() {
-            const overlay = document.getElementById('custom-modal-overlay');
-            const cancelButton = document.getElementById('modal-cancel-btn');
-            const confirmButton = document.getElementById('modal-confirm-btn');
-
-            overlay.style.display = 'block';
-
-            cancelButton.focus();
-
-            confirmButton.onclick = () => handleResetConfirmation(true);
-            cancelButton.onclick = () => handleResetConfirmation(false);
-
-            overlay.onkeydown = (e) => {
-                if (e.key === 'Escape') {
-                    handleResetConfirmation(false);
-                }
-            };
-        }
-
-        function handleResetConfirmation(confirmed) {
-            const overlay = document.getElementById('custom-modal-overlay');
-            overlay.style.display = 'none';
-            overlay.onkeydown = null; 
-
-            if (confirmed) {
-                // Reset logic
-                gameData.forEach(item => {
-                    item.level = 'New';
-                    item.correctCount = 0;
-                    item.failCount = 0;
-                });
-                saveState();
-                goToHome();
-            }
-        }
-
-        // --- UTILITY FUNCTIONS ---
-
-        function switchScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.style.display = 'none'; // Ensure all are hidden
-                screen.classList.remove('active'); 
-            });
-            // Show the target screen
-            const targetScreen = document.getElementById(screenId);
-            if (targetScreen) {
-                 targetScreen.style.display = 'flex';
-                 targetScreen.classList.add('active');
-            }
-           
-        }
-
-        /**
-         * Loads the game state from localStorage, handling level renames.
-         */
-        function loadState() {
-            if (!CURRENT_USER_ID) return;
-            const STORAGE_KEY = STORAGE_PREFIX + CURRENT_USER_ID;
-            try {
-                const storedState = localStorage.getItem(STORAGE_KEY);
-                if (storedState) {
-                    const savedData = JSON.parse(storedState);
-                    
-                    // Helper to map old level names to new level names
-                    const mapOldLevel = (oldLevel) => {
-                        if (oldLevel === 'Medium') return 'Intermediate';
-                        if (oldLevel === 'Expert') return 'Master'; // Old Expert -> New Master
-                        return oldLevel;
-                    };
-
-                    gameData = gameData.map(item => {
-                        const savedItem = savedData.find(s => s.term === item.term);
-                        if (savedItem) {
-                            let savedLevel = mapOldLevel(savedItem.level || 'New');
-                            
-                            return { 
-                                ...item, 
-                                level: savedLevel, 
-                                correctCount: savedItem.correctCount || 0,
-                                failCount: savedItem.failCount || 0
-                            };
-                        }
-                        return item;
-                    });
-                }
-            } catch (e) {
-                console.error("Could not load state:", e);
-                gameData.forEach(item => { item.level = 'New'; item.correctCount = 0; item.failCount = 0; });
-            }
-        }
-
-        function saveState() {
-            if (!CURRENT_USER_ID) return;
-            const STORAGE_KEY = STORAGE_PREFIX + CURRENT_USER_ID;
-            try {
-                const stateToSave = gameData.map(item => ({
-                    term: item.term,
-                    level: item.level,
-                    correctCount: item.correctCount,
-                    failCount: item.failCount || 0
-                }));
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
-                console.log("State saved successfully for " + CURRENT_USER_ID);
-            } catch (e) {
-                console.error("Could not save state:", e);
-            }
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        function shuffleString(str) {
-            return shuffleArray(str.split('')).join('');
-        }
-
-        function initializeData() {
-            async function fetchAndParseData() {
-                try {
-                    const response = await fetch(LIST_URL);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const text = await response.text();
-                    const filenames = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-
-                    gameData = filenames.map(filename => {
-                        const cleanName = filename.substring(0, filename.lastIndexOf('.')).replace(/\.(?=[^.]*$)/, '');
-                        const firstUnderscoreIndex = cleanName.indexOf('_');
-                        
-                        let theme = 'Others';
-                        let term = cleanName;
-
-                        if (firstUnderscoreIndex !== -1) {
-                            theme = cleanName.substring(0, firstUnderscoreIndex).trim().replace(/_/g, ' ');
-                            term = cleanName.substring(firstUnderscoreIndex + 1).trim().replace(/_/g, ' ');
-                        } else {
-                            console.warn(`Filename ${filename} does not contain an underscore. Assigned to 'Others'.`);
-                        }
-                        
-                        if (!theme || theme.length === 0) {
-                            theme = 'Others';
-                        }
-
-                        const url = BASE_IMAGE_URL + filename;
-                        uniqueThemes.add(theme);
-
-                        return {
-                            filename,
-                            url,
-                            theme,
-                            term,
-                            level: 'New', // Default
-                            correctCount: 0,
-                            failCount: 0
-                        };
-                    });
-                    
-                    totalTerms = gameData.length;
-                    // Initial switch to login screen after data is loaded
-                    switchScreen('login-screen');
-                } catch (error) {
-                    console.error("Error loading or parsing image list:", error);
-                    document.getElementById('loading-screen').innerHTML = `Error loading data: ${error.message}. Check the console for details.`;
-                }
-            }
-            fetchAndParseData();
-        }
-        
-        // --- LOGIN / SESSION MANAGEMENT ---
-
-        function attemptLogin() {
-            const selectElement = document.getElementById('username-select');
-            const input = selectElement.value.trim();
-            const message = document.getElementById('login-message');
-
-            if (VALID_IDS.includes(input)) {
-                CURRENT_USER_ID = input;
-                loadState(); 
-                goToHome();
-                message.textContent = "";
-                console.warn("PROGRESS NOTE: Progress is saved locally in this browser only. It will not transfer to other devices or browsers.");
-            } else {
-                message.textContent = `Access denied. Please select a valid name.`;
-            }
-        }
-
-        function logout() {
-            saveState(); 
-            CURRENT_USER_ID = null;
-            switchScreen('login-screen');
-            document.getElementById('login-message').textContent = 'Progress saved.';
-        }
-
-        // --- GAME FLOW / NAVIGATION ---
-
-        function goToHome() {
-            const greetingElement = document.getElementById('user-greeting');
-            const avatarElement = document.getElementById('user-avatar');
-            
-            greetingElement.textContent = `Hello ${CURRENT_USER_ID}!`;
-
-            if (CURRENT_USER_ID === 'Mikael') {
-                avatarElement.src = BASE_IMAGE_URL + "Mikael.png";
-                avatarElement.style.display = 'block';
-            } else if (CURRENT_USER_ID === 'Marcia') { 
-                avatarElement.src = BASE_IMAGE_URL + "Marcia.jpg"; 
-                avatarElement.style.display = 'block';
-            } else {
-                avatarElement.style.display = 'none';
-                avatarElement.src = ''; 
-            }
-            
-            updateHomeCounters();
-            clearInterval(timer); 
-            switchScreen('home-screen');
-        }
-
-        // --- HOME SCREEN LOGIC ---
-
-        function updateHomeCounters() {
-            const container = document.getElementById('theme-buttons-container');
-            container.innerHTML = '';
-
-            const themeCounts = {};
-            let intermediateCount = 0;
-            let advancedCount = 0;
-            let expertCount = 0;
-            let masterCount = 0;
-
-            uniqueThemes.forEach(theme => {
-                themeCounts[theme] = 0;
-            });
-
-            gameData.forEach(item => {
-                if (item.level === 'New' && item.theme && item.theme.length > 0) {
-                    themeCounts[item.theme] = (themeCounts[item.theme] || 0) + 1;
-                } else if (item.level === 'Intermediate') { 
-                    intermediateCount++;
-                } else if (item.level === 'Advanced') {
-                    advancedCount++;
-                } else if (item.level === 'Expert') { 
-                    expertCount++;
-                } else if (item.level === 'Master') { 
-                    masterCount++;
-                }
-            });
-
-            // 3. Inject Theme Buttons (New Level)
-            Object.entries(themeCounts)
-                .sort(([themeA], [themeB]) => {
-                    if (themeA === 'Others') return 1;
-                    if (themeB === 'Others') return -1;
-                    return themeA.localeCompare(themeB); 
-                })
-                .forEach(([theme, count]) => {
-                    const button = document.createElement('button');
-                    button.className = 'theme-button';
-                    button.textContent = `${theme} (${count})`;
-                    button.onclick = () => startQuiz('New', theme);
-                    button.disabled = count === 0; 
-                    container.appendChild(button);
-                });
-
-            // 4. Add Separator and Level Buttons
-            const separator = document.createElement('hr');
-            separator.style.margin = '20px 0';
-            container.appendChild(separator);
-
-            // Intermediate Button (RENAMED)
-            const intermediateButton = document.createElement('button');
-            intermediateButton.id = 'intermediate-button';
-            intermediateButton.className = 'theme-button medium-button'; 
-            intermediateButton.innerHTML = `Intermediate (${intermediateCount}) <i class="fas fa-trophy"></i>`;
-            intermediateButton.onclick = () => startQuiz('Intermediate');
-            intermediateButton.disabled = intermediateCount === 0;
-            container.appendChild(intermediateButton);
-            
-            // Advanced Button 
-            const advancedButton = document.createElement('button');
-            advancedButton.id = 'advanced-button';
-            advancedButton.className = 'theme-button advanced-button';
-            advancedButton.innerHTML = `Advanced (${advancedCount}) <i class="fas fa-trophy"></i><i class="fas fa-trophy"></i>`;
-            advancedButton.onclick = () => startQuiz('Advanced');
-            advancedButton.disabled = advancedCount === 0;
-            container.appendChild(advancedButton);
-
-            // Expert Button (NEW AUDIO GAME LEVEL)
-            const expertButton = document.createElement('button');
-            expertButton.id = 'expert-button';
-            expertButton.className = 'theme-button expert-button'; 
-            expertButton.innerHTML = `Expert (${expertCount}) <i class="fas fa-headphones"></i>`;
-            expertButton.onclick = () => startQuiz('Expert');
-            expertButton.disabled = expertCount === 0;
-            container.appendChild(expertButton);
+    // --- STATE VARIABLES ---
+    let gameData = []; // Main array of all terms
+    let quizPool = []; // Terms for the current quiz session
+    let currentQuizIndex = 0;
+    let currentQuestion = null;
+    let timer = null;
+    let totalTerms = 0;
+    let currentQuizLevel = null; // Stores the level selected (New, Medium, Advanced, Expert)
+    let currentQuizTheme = null;
+    let uniqueThemes = new Set();
+    let currentDistractors = []; // Global variable for distractors
+    // Global variable to track if a promotion just occurred
+    let PROMOTION_INFO = null; // Stores: { oldLevel: 'Medium', newLevel: 'Advanced' }
 
 
-            // Master Button (RENAMED from Expert, Review Level)
-            const masterButton = document.createElement('button');
-            masterButton.id = 'master-button';
-            masterButton.className = 'theme-button expert-button';
-            masterButton.innerHTML = `Master (${masterCount}/${totalTerms}) <i class="fas fa-award"></i>`;
-            masterButton.onclick = () => startQuiz('Master');
-            masterButton.disabled = masterCount === 0;
-            container.appendChild(masterButton);
-        }
+    // --- MODAL LOGIC (Modified text for 5 levels) ---
 
-        function resetProgress() {
-            showCustomModal();
-        }
+    function showCustomModal() {
+        const overlay = document.getElementById('custom-modal-overlay');
+        const cancelButton = document.getElementById('modal-cancel-btn');
+        const confirmButton = document.getElementById('modal-confirm-btn');
 
-        // --- QUIZ SETUP AND START ---
+        overlay.style.display = 'block';
 
-        function startQuiz(level, theme = null) {
-            currentQuizLevel = level;
-            currentQuizTheme = theme;
+        // Set focus to the "Don't reset progress" button
+        cancelButton.focus();
 
-            quizPool = gameData.filter(item => {
-                if (level === 'New') {
-                    return item.level === 'New' && item.theme === theme;
-                }
-                return item.level === level;
-            });
+        // Ensure handlers are applied only once
+        confirmButton.onclick = () => handleResetConfirmation(true);
+        cancelButton.onclick = () => handleResetConfirmation(false);
 
-            if (quizPool.length === 0) {
-                goToHome();
-                return;
-            }
+        // Handle Escape key to cancel (like a standard dialog)
+        overlay.onkeydown = (e) => {
+            if (e.key === 'Escape') {
+                handleResetConfirmation(false);
+            }
+        };
+    }
 
-            quizPool.sort(() => Math.random() - 0.5);
-            currentQuizIndex = 0; 
-            
-            const timerContainer = document.getElementById('timer-container');
-            // Only Intermediate level uses the timer
-            const timerShouldBeActive = (level === 'Intermediate'); 
+    function handleResetConfirmation(confirmed) {
+        const overlay = document.getElementById('custom-modal-overlay');
+        overlay.style.display = 'none';
+        overlay.onkeydown = null; // Clear escape handler
 
-            if (timerShouldBeActive) {
-                timerContainer.style.display = 'block';
-            } else {
-                clearInterval(timer); 
-                timerContainer.style.display = 'none';
-            }
+        if (confirmed) {
+            // Reset logic
+            gameData.forEach(item => {
+                item.level = 'New';
+                item.correctCount = 0;
+                item.failCount = 0;
+            });
+            saveState();
+            goToHome();
+        }
+        // If not confirmed, do nothing (stay on home screen)
+    }
 
-            // Clear choices containers before starting the next question
-            document.getElementById('answer-slots-container').innerHTML = '';
-            document.getElementById('letter-choices-container').innerHTML = '';
-            document.getElementById('choice-buttons-container').innerHTML = '';
-            document.getElementById('image-choices-container').innerHTML = '';
-            document.getElementById('image-choices-container').style.pointerEvents = 'auto'; // Re-enable interaction
+    // --- UTILITY FUNCTIONS ---
 
-            switchScreen('question-screen');
-            loadQuestion();
-        }
+    /**
+     * Switches the active screen.
+     * @param {string} screenId - The ID of the screen to activate.
+     */
+    function switchScreen(screenId) {
+        // FIX: Ensure correct class removal for robust switching
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        document.getElementById(screenId).classList.add('active');
+    }
 
-        // --- QUESTION HANDLING ---
-
-        function loadQuestion() {
-            // 1. Filter the quiz pool (to ensure we only quiz on available items)
-            quizPool = quizPool.filter(item => {
-                const currentState = gameData.find(d => d.term === item.term);
-                return currentState && currentState.level === currentQuizLevel && 
-                       (currentQuizLevel !== 'New' || currentState.theme === currentQuizTheme);
-            });
-
-            if (quizPool.length === 0) {
-                goToHome();
-                return;
-            }
-
-            let itemIndex = currentQuizIndex % quizPool.length;
-            currentQuestion = gameData.find(item => item.term === quizPool[itemIndex].term);
-
-            const level = currentQuestion.level;
-            const questionImage = document.getElementById('question-image');
-            const choiceButtonsContainer = document.getElementById('choice-buttons-container');
-            const slotsContainer = document.getElementById('answer-slots-container');
-            const letterContainer = document.getElementById('letter-choices-container');
-            const imageChoicesContainer = document.getElementById('image-choices-container');
-            
-            // --- RESET UI ---
-            slotsContainer.style.display = 'none';
-            letterContainer.style.display = 'none';
-            choiceButtonsContainer.style.display = 'none';
-            imageChoicesContainer.style.display = 'none';
-            questionImage.style.display = 'none'; 
-
-            choiceButtonsContainer.innerHTML = '';
-            imageChoicesContainer.innerHTML = '';
-            slotsContainer.innerHTML = '';
-            letterContainer.innerHTML = '';
-            currentAnswer = [];
-            
-            const refreshButton = document.getElementById('reset-spelling-button');
-            const refreshSpacer = document.getElementById('refresh-button-spacer'); 
-            refreshButton.style.display = 'none';
-            refreshSpacer.style.display = 'block'; 
-
-            // --- RENDER BASED ON LEVEL ---
-
-            if (level === 'Master') { // RENAMED: Master level is now just review
-                showMasterReview();
-                currentQuizIndex++; 
-                currentDistractors = []; 
-                return;
-            } 
-            
-            if (level === 'Expert') { // NEW EXPERT LEVEL: Audio Game
-                questionImage.style.display = 'none'; 
-                imageChoicesContainer.style.display = 'flex'; 
-                document.getElementById('quiz-title').textContent = "Listen and identify:";
-
-                renderAudioQuiz(currentQuestion);
-                currentDistractors = []; 
+    /**
+     * Loads the game state from localStorage (Modified to handle level renames)
+     */
+    function loadState() {
+        if (!CURRENT_USER_ID) return;
+        const STORAGE_KEY = STORAGE_PREFIX + CURRENT_USER_ID;
+        try {
+            const storedState = localStorage.getItem(STORAGE_KEY);
+            if (storedState) {
+                const savedData = JSON.parse(storedState);
                 
-            } else if (level === 'Advanced') {
-                // Advanced Level: Interactive Spelling
-                questionImage.style.display = 'block';
-                questionImage.src = currentQuestion.url;
-                slotsContainer.style.display = 'flex';
-                letterContainer.style.display = 'flex';
-                document.getElementById('quiz-title').textContent = "Spell the word:";
-                refreshButton.style.display = 'block';
-                refreshSpacer.style.display = 'none'; 
+                // Helper to map old level names to new level names
+                const mapOldLevel = (oldLevel) => {
+                    if (oldLevel === 'Medium') return 'Intermediate';
+                    if (oldLevel === 'Expert') return 'Master'; // Old Expert -> New Master
+                    return oldLevel;
+                };
 
-                renderSpellingGame(currentQuestion);
-                currentDistractors = []; 
+                // Merge saved state into current data structure
+                gameData = gameData.map(item => {
+                    const savedItem = savedData.find(s => s.term === item.term);
+                    if (savedItem) {
+                        let savedLevel = mapOldLevel(savedItem.level || 'New');
+                        return { 
+                            ...item, 
+                            level: savedLevel, 
+                            correctCount: savedItem.correctCount || 0,
+                            failCount: savedItem.failCount || 0 // Load fail count for Advanced demotion
+                        };
+                    }
+                    return item;
+                });
+            }
+        } catch (e) {
+            console.error("Could not load state:", e);
+            // Reset state to initial if loading fails
+            gameData.forEach(item => { item.level = 'New'; item.correctCount = 0; item.failCount = 0; });
+        }
+    }
 
-            } else {
-                // New / Intermediate Level: Standard Multiple Choice (Text Buttons)
-                questionImage.style.display = 'block';
-                questionImage.src = currentQuestion.url;
-                choiceButtonsContainer.style.display = 'block';
-                document.getElementById('quiz-title').textContent = "What is this?";
+    /**
+     * Saves the game state to localStorage.
+     */
+    function saveState() {
+        if (!CURRENT_USER_ID) return;
+        const STORAGE_KEY = STORAGE_PREFIX + CURRENT_USER_ID;
+        try {
+            const stateToSave = gameData.map(item => ({
+                term: item.term,
+                level: item.level,
+                correctCount: item.correctCount,
+                failCount: item.failCount || 0 // Save fail count
+            }));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+            console.log("State saved successfully for " + CURRENT_USER_ID);
+        } catch (e) {
+            console.error("Could not save state:", e);
+        }
+    }
 
-                const distractors = getDistractors(level, currentQuestion);
-                currentDistractors = distractors; 
+    /**
+     * Helper function to shuffle an array (used for anagrams/letters)
+     */
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
 
-                renderQuizChoices(currentQuestion, distractors);
+    /**
+     * Helper function to shuffle a string (used for anagrams)
+     */
+    function shuffleString(str) {
+        return shuffleArray(str.split('')).join('');
+    }
+
+    /**
+     * Initializes the game data by fetching the list.
+     */
+    async function initializeData() {
+        try {
+            const response = await fetch(LIST_URL);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const text = await response.text();
+            const filenames = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+            gameData = filenames.map(filename => {
+                const cleanName = filename.substring(0, filename.lastIndexOf('.')).replace(/\.(?=[^.]*$)/, ''); // Remove extension
+                const firstUnderscoreIndex = cleanName.indexOf('_');
+                
+                let theme = 'Others'; // Default theme if no underscore is found
+                let term = cleanName;
+
+                if (firstUnderscoreIndex !== -1) {
+                    theme = cleanName.substring(0, firstUnderscoreIndex).trim().replace(/_/g, ' ');
+                    term = cleanName.substring(firstUnderscoreIndex + 1).trim().replace(/_/g, ' ');
+                } else {
+                    console.warn(`Filename ${filename} does not contain an underscore. Assigned to 'Others'.`);
+                }
+                
+                if (!theme || theme.length === 0) {
+                    // Fallback in case theme parsing results in empty string
+                    theme = 'Others';
+                }
+
+                const url = BASE_IMAGE_URL + filename;
+                uniqueThemes.add(theme); // Collect all unique themes
+
+                return {
+                    filename,
+                    url,
+                    theme,
+                    term,
+                    level: 'New', // Default
+                    correctCount: 0, // Default
+                    failCount: 0 // Default
+                };
+            });
+            
+            totalTerms = gameData.length;
+            switchScreen('login-screen');
+        } catch (error) {
+            console.error("Error loading or parsing image list:", error);
+            document.getElementById('loading-screen').innerHTML = `Error loading data: ${error.message}. Check the console for details.`;
+        }
+    }
+    
+    // --- LOGIN / SESSION MANAGEMENT ---
+
+    function attemptLogin() {
+        // MODIFIED: Get selected value from the dropdown list
+        const selectElement = document.getElementById('username-select');
+        const input = selectElement.value.trim();
+        const message = document.getElementById('login-message');
+
+        // The list already contains the valid IDs, so no explicit check against VALID_IDS is strictly necessary.
+        
+        if (VALID_IDS.includes(input)) {
+            CURRENT_USER_ID = input;
+            loadState(); // Load state after successful login (uses ID)
+            goToHome();
+            message.textContent = "";
+            // Console warning about local storage limitation
+            console.warn("PROGRESS NOTE: Progress is saved locally in this browser only. It will not transfer to other devices or browsers.");
+        } else {
+            // This branch should not be reached with a dropdown.
+            message.textContent = `Access denied. Please select a valid name.`;
+        }
+    }
+
+    function logout() {
+        saveState(); // Ensure last state is saved (uses ID)
+        CURRENT_USER_ID = null;
+        switchScreen('login-screen');
+        // Clear the selection back to default/first option if desired (optional)
+        // document.getElementById('username-select').selectedIndex = 0; 
+        document.getElementById('login-message').textContent = 'Progress saved.';
+    }
+
+    // --- GAME FLOW / NAVIGATION ---
+
+    function goToHome() {
+        // 1. Set Greeting and Avatar visibility
+        const greetingElement = document.getElementById('user-greeting');
+        const avatarElement = document.getElementById('user-avatar');
+        
+        // Set Greeting for all users
+        greetingElement.textContent = `Hello ${CURRENT_USER_ID}!`;
+
+        // Check for Mikael OR Marcia and set the avatar source
+        if (CURRENT_USER_ID === 'Mikael') {
+            avatarElement.src = BASE_IMAGE_URL + "Mikael.png";
+            avatarElement.style.display = 'block';
+        } else if (CURRENT_USER_ID === 'Marcia') { 
+            avatarElement.src = BASE_IMAGE_URL + "Marcia.jpg"; 
+            avatarElement.style.display = 'block';
+        } else {
+            avatarElement.style.display = 'none';
+            avatarElement.src = ''; // Clear source
+        }
+        
+        updateHomeCounters();
+        clearInterval(timer); // Stop any running timer
+        switchScreen('home-screen');
+    }
+
+    // --- HOME SCREEN LOGIC (MODIFIED for 5 levels) ---
+
+    function updateHomeCounters() {
+        const container = document.getElementById('theme-buttons-container');
+        container.innerHTML = '';
+
+        const themeCounts = {};
+        let intermediateCount = 0; // RENAMED from mediumCount
+        let advancedCount = 0;
+        let expertCount = 0; // NEW: Expert is the audio game
+        let masterCount = 0; // NEW: Master is the review level
+
+        // 1. Initialize counts for all known themes to 0
+        uniqueThemes.forEach(theme => {
+            themeCounts[theme] = 0;
+        });
+
+        // 2. Count terms by level and theme
+        gameData.forEach(item => {
+            if (item.level === 'New' && item.theme && item.theme.length > 0) {
+                themeCounts[item.theme] = (themeCounts[item.theme] || 0) + 1;
+            } else if (item.level === 'Intermediate' || item.level === 'Medium') { // Handle old 'Medium' state
+                intermediateCount++;
+            } else if (item.level === 'Advanced') {
+                advancedCount++;
+            } else if (item.level === 'Expert') {
+                expertCount++;
+            } else if (item.level === 'Master') {
+                masterCount++;
             }
+        });
 
-            // Start Timer (Only Intermediate level)
-            if (level === 'Intermediate') {
-                startTimer();
-            } else {
-                clearInterval(timer);
-            }
+        // 3. Inject Theme Buttons (New Level)
+        Object.entries(themeCounts)
+            .sort(([themeA], [themeB]) => {
+                // Logic to put 'Others' last
+                if (themeA === 'Others') return 1;
+                if (themeB === 'Others') return -1;
+                return themeA.localeCompare(themeB); // Alphabetical sort for all others
+            })
+            .forEach(([theme, count]) => {
+                const button = document.createElement('button');
+                button.className = 'theme-button';
+                button.textContent = `${theme} (${count})`;
+                button.onclick = () => startQuiz('New', theme);
+                button.disabled = count === 0; // Disabled if count is 0
+                container.appendChild(button);
+            });
+
+        // 4. Add Separator and Level Buttons
+        const separator = document.createElement('hr');
+        separator.style.margin = '20px 0';
+        container.appendChild(separator);
+
+        // Intermediate Button (RENAMED)
+        const intermediateButton = document.createElement('button');
+        intermediateButton.id = 'intermediate-button';
+        intermediateButton.className = 'theme-button medium-button'; // Uses medium-button CSS class
+        intermediateButton.innerHTML = `Intermediate (${intermediateCount}) <i class="fas fa-trophy"></i>`;
+        intermediateButton.onclick = () => startQuiz('Intermediate');
+        intermediateButton.disabled = intermediateCount === 0;
+        container.appendChild(intermediateButton);
+        
+        // Advanced Button
+        const advancedButton = document.createElement('button');
+        advancedButton.id = 'advanced-button';
+        advancedButton.className = 'theme-button advanced-button';
+        advancedButton.innerHTML = `Advanced (${advancedCount}) <i class="fas fa-trophy"></i><i class="fas fa-trophy"></i>`;
+        advancedButton.onclick = () => startQuiz('Advanced');
+        advancedButton.disabled = advancedCount === 0;
+        container.appendChild(advancedButton);
+
+        // Expert Button (NEW Audio Game Level)
+        const expertButton = document.createElement('button');
+        expertButton.id = 'expert-button';
+        expertButton.className = 'theme-button expert-button';
+        expertButton.innerHTML = `Expert (${expertCount}) <i class="fas fa-headphones"></i>`;
+        expertButton.onclick = () => startQuiz('Expert');
+        expertButton.disabled = expertCount === 0;
+        container.appendChild(expertButton);
+
+        // Master Button (RENAMED from Expert, Review Level)
+        const masterButton = document.createElement('button');
+        masterButton.id = 'master-button';
+        masterButton.className = 'theme-button expert-button';
+        masterButton.innerHTML = `Master (${masterCount}/${totalTerms}) <i class="fas fa-award"></i>`;
+        masterButton.onclick = () => startQuiz('Master');
+        masterButton.disabled = masterCount === 0;
+        container.appendChild(masterButton);
+    }
+
+    /**
+     * MODIFIED: Calls the custom modal for confirmation.
+     */
+    function resetProgress() {
+        showCustomModal();
+    }
+
+    // --- QUIZ SETUP AND START ---
+
+    function startQuiz(level, theme = null) {
+        currentQuizLevel = level;
+        currentQuizTheme = theme;
+
+        // Rebuild the quiz pool based on the CURRENT state of gameData
+        quizPool = gameData.filter(item => {
+            const currentLevelName = item.level === 'Medium' ? 'Intermediate' : item.level === 'Expert' ? 'Master' : item.level;
             
+            if (level === 'New') {
+                return currentLevelName === 'New' && item.theme === theme;
+            }
+            return currentLevelName === level;
+        });
+
+        if (quizPool.length === 0) {
+            goToHome();
+            return;
+        }
+
+        // Shuffle the pool to randomize question order
+        quizPool.sort(() => Math.random() - 0.5);
+        currentQuizIndex = 0; // Start at the beginning of the shuffled pool
+        
+        // Set up timer visibility (Only Intermediate uses the timer now)
+        const timerContainer = document.getElementById('timer-container');
+        const timerShouldBeActive = (level === 'Intermediate'); 
+
+        if (timerShouldBeActive) {
+            timerContainer.style.display = 'block';
+        } else {
+            clearInterval(timer); // Ensure timer is stopped
+            timerContainer.style.display = 'none';
+        }
+
+        switchScreen('question-screen');
+        loadQuestion();
+    }
+
+    // --- QUESTION HANDLING (MODIFIED for 5 levels) ---
+
+    function loadQuestion() {
+        // 1. Filter the quiz pool to remove promoted/demoted items (using the latest level name)
+        quizPool = quizPool.filter(item => {
+            const currentState = gameData.find(d => d.term === item.term);
+            if (!currentState) return false;
+            
+            // Map old state names to new ones for comparison (handles loadState lag)
+            const currentLevelName = currentState.level === 'Medium' ? 'Intermediate' : currentState.level === 'Expert' ? 'Master' : currentState.level;
+
+            return currentLevelName === currentQuizLevel && (currentQuizLevel !== 'New' || currentState.theme === currentQuizTheme);
+        });
+
+        if (quizPool.length === 0) {
+            goToHome();
+            return;
+        }
+
+        // Select the next question
+        let itemIndex = currentQuizIndex % quizPool.length;
+        currentQuestion = gameData.find(item => item.term === quizPool[itemIndex].term);
+
+        const level = currentQuestion.level;
+        const questionImage = document.getElementById('question-image');
+        const choiceButtonsContainer = document.getElementById('choices-container'); // Original ID is reused for text buttons
+        const imageChoicesContainer = document.getElementById('image-choices-container'); // NEW container ID
+        const slotsContainer = document.getElementById('answer-slots-container');
+        const letterContainer = document.getElementById('letter-choices-container');
+
+        // --- RESET UI ---
+        slotsContainer.innerHTML = '';
+        letterContainer.innerHTML = '';
+        choiceButtonsContainer.innerHTML = '';
+        
+        slotsContainer.style.display = 'none';
+        letterContainer.style.display = 'none';
+        choiceButtonsContainer.style.display = 'none';
+        imageChoicesContainer.style.display = 'none';
+        questionImage.style.display = 'none'; 
+        imageChoicesContainer.style.pointerEvents = 'auto'; // Re-enable for expert game
+
+        currentAnswer = [];
+        
+        // Show/Hide refresh button for Advanced level only
+        const refreshButton = document.getElementById('reset-spelling-button');
+        const refreshSpacer = document.getElementById('refresh-button-spacer'); // Get the spacer
+        refreshButton.style.display = 'none';
+        refreshSpacer.style.display = 'block'; 
+
+        // --- RENDER BASED ON LEVEL (5 TIERS) ---
+
+        if (level === 'Master') { 
+            showMasterReview();
             currentQuizIndex++; 
-            if (currentQuizIndex >= quizPool.length && quizPool.length > 0) {
-                quizPool.sort(() => Math.random() - 0.5);
-                currentQuizIndex = 0;
-            }
-            
-            switchScreen('question-screen');
+            currentDistractors = []; 
+            return;
         }
 
-        /**
-         * NEW FUNCTION: Renders the audio pronunciation quiz (Expert level).
-         */
-        function renderAudioQuiz(question) {
-            const imageChoicesContainer = document.getElementById('image-choices-container');
+        if (level === 'Expert') { // NEW: Audio Game
+            imageChoicesContainer.style.display = 'flex'; 
+            document.getElementById('quiz-title').textContent = "Listen and identify:";
 
-            // 1. Get 2 Distractors (Must be items with images)
-            const distractors = getDistractors(question.level, question, 2); 
-            currentDistractors = distractors; 
-            const choices = [question, ...distractors];
-            shuffleArray(choices); // Randomize image positions
+            renderAudioQuiz(currentQuestion);
+            currentDistractors = []; 
+        } 
+        else if (level === 'Advanced') {
+            // Advanced Level: Interactive Spelling
+            questionImage.style.display = 'block';
+            questionImage.src = currentQuestion.url;
+            choiceButtonsContainer.style.display = 'none'; // Ensure text buttons hidden
+            slotsContainer.style.display = 'flex';
+            letterContainer.style.display = 'flex';
+            document.getElementById('quiz-title').textContent = "Spell the word:";
+            refreshButton.style.display = 'block';
+            refreshSpacer.style.display = 'none';
 
-            // 2. Clear and render the choice images
-            imageChoicesContainer.innerHTML = '';
+            renderSpellingGame(currentQuestion);
+            currentDistractors = []; 
 
-            choices.forEach(item => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'distractor-item'; 
-                wrapper.style.cursor = 'pointer';
-                wrapper.style.border = '3px solid var(--color-gray)';
-                wrapper.onclick = () => submitAnswer(item, distractors);
+        } else {
+            // New / Intermediate Level: Standard Multiple Choice
+            questionImage.style.display = 'block';
+            questionImage.src = currentQuestion.url;
+            choiceButtonsContainer.style.display = 'block';
+            document.getElementById('quiz-title').textContent = "What is this?";
 
-                const img = document.createElement('img');
-                img.src = item.url;
-                img.alt = item.term;
-                
-                // Add a temporary term for access/logic
-                const term = document.createElement('div');
-                term.textContent = item.term;
-                term.style.display = 'none'; 
+            // 3. Get Distractors (only needed for New/Intermediate)
+            const distractors = getDistractors(level, currentQuestion);
+            currentDistractors = distractors; // Store distractors globally
 
-                wrapper.appendChild(img);
-                wrapper.appendChild(term);
-                imageChoicesContainer.appendChild(wrapper);
-            });
+            // 4. Render standard multiple choice
+            renderQuizChoices(currentQuestion, distractors);
+        }
 
-            // 3. Play the audio immediately upon loading the question
-            playAudio(question.term);
+
+        // 5. Start Timer (Only Intermediate level)
+        if (level === 'Intermediate') {
+            startTimer();
+        } else {
+            clearInterval(timer);
+        }
+        
+        // 6. Advance the index
+        currentQuizIndex++; 
+        if (currentQuizIndex >= quizPool.length && quizPool.length > 0) {
+            // Re-shuffle and reset index if we've cycled through all available questions
+            quizPool.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+        }
+        
+        switchScreen('question-screen');
+    }
+
+    // --- NEW EXPERT AUDIO QUIZ RENDERER ---
+
+    function renderAudioQuiz(question) {
+        const imageChoicesContainer = document.getElementById('image-choices-container');
+
+        // 1. Get 2 Distractors (Must be items with images)
+        // Using 'Expert' level in getDistractors will pull from Advanced/Intermediate/New
+        const distractors = getDistractors('Expert', question, 2); 
+        currentDistractors = distractors; 
+        const choices = [question, ...distractors];
+        shuffleArray(choices); // Randomize image positions
+
+        // 2. Clear and render the choice images
+        imageChoicesContainer.innerHTML = '';
+
+        choices.forEach(item => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'distractor-item'; 
+            wrapper.style.cursor = 'pointer';
+            wrapper.style.border = '3px solid var(--color-gray)';
+            wrapper.onclick = () => submitAnswer(item, distractors);
+
+            const img = document.createElement('img');
+            img.src = item.url;
+            img.alt = item.term;
             
-            // 4. Show the audio button to allow replay
-            const audioBtn = document.getElementById('audio-button');
-            audioBtn.style.display = 'inline-block';
-            audioBtn.onclick = () => playAudio(question.term); 
+            // Add a temporary term for access/logic
+            const term = document.createElement('div');
+            term.textContent = item.term;
+            term.style.display = 'none'; 
 
-            // 5. Hide the demote button on the question screen 
-            document.getElementById('demote-button').style.display = 'none';
-        }
+            wrapper.appendChild(img);
+            wrapper.appendChild(term);
+            imageChoicesContainer.appendChild(wrapper);
+        });
 
-        // --- REST OF THE FUNCTIONS (Updated where necessary) ---
-
-        function getDistractors(level, question, count = 2) {
-            const distractors = [];
-            let availableTerms = [];
-            
-            // Expert level needs 2 distractors from Advanced, Intermediate, or New.
-            if (level === 'Expert') {
-                 availableTerms = gameData.filter(item => 
-                     item.term !== question.term && 
-                     (item.level === 'Advanced' || item.level === 'Intermediate' || item.level === 'New')
-                 );
-            } else if (level === 'New') {
-                // For 'New', prioritize other 'New' terms within the SAME theme
-                availableTerms = gameData.filter(item => 
-                    item.level === 'New' && item.theme === question.theme && item.term !== question.term
-                );
-            } 
-            
-            // SECONDARY POOL: All 'Intermediate' or 'New' terms globally for Intermediate level.
-            if (level === 'Intermediate' || availableTerms.length < count) {
-                const globalPool = gameData.filter(item => 
-                    item.term !== question.term && (item.level === 'Intermediate' || item.level === 'New')
-                );
-                
-                if (distractors.length > 0) {
-                    availableTerms = [...new Set([...availableTerms, ...globalPool])];
-                } else {
-                     availableTerms = globalPool.slice();
-                }
-            }
-            
-            // Draw initial distractors from the available pool
-            shuffleArray(availableTerms); 
-            
-            while (distractors.length < count && availableTerms.length > 0) {
-                 const potentialDistractor = availableTerms.shift();
-                 if (!distractors.some(d => d.term === potentialDistractor.term)) {
-                     distractors.push(potentialDistractor);
-                 }
-            }
-
-            // TERTIARY POOL: Fallback to ANY other term if still missing distractors
-            if (distractors.length < count) {
-                const allOtherTerms = gameData.filter(item => item.term !== question.term && 
-                                                !distractors.some(d => d.term === item.term));
-                shuffleArray(allOtherTerms);
-                while (distractors.length < count && allOtherTerms.length > 0) {
-                    distractors.push(allOtherTerms.shift());
-                }
-            }
-            return distractors;
-        }
+        // 3. Play the audio immediately upon loading the question
+        playAudio(question.term);
         
-        /**
-         * Renders standard multiple choice buttons (New and Intermediate levels).
-         */
-        function renderQuizChoices(question, distractors) {
-            const choicesContainer = document.getElementById('choice-buttons-container');
-            
-            const choices = [question, ...distractors];
-            shuffleArray(choices); 
+        // 4. Show the audio button to allow replay
+        const audioBtn = document.getElementById('audio-button');
+        audioBtn.style.display = 'inline-block';
+        audioBtn.onclick = () => playAudio(question.term); 
+    }
 
-            choices.forEach(item => {
-                const button = document.createElement('button');
-                button.className = 'choice-button';
-                button.textContent = item.term;
-                button.onclick = () => submitAnswer(item, distractors); 
-                choicesContainer.appendChild(button);
-            });
-        }
 
-        /**
-         * Renders the interactive spelling game (Advanced level).
-         */
-        function renderSpellingGame(question) {
-            const slotsContainer = document.getElementById('answer-slots-container');
-            const letterContainer = document.getElementById('letter-choices-container');
-            
-            const cleanTerm = question.term.replace(/\s/g, '').toUpperCase(); 
-            correctTermLetters = cleanTerm.split('');
-
-            correctTermLetters.forEach((letter, index) => {
-                const slot = document.createElement('div');
-                slot.className = 'letter-slot';
-                slot.id = `slot-${index}`;
-                slotsContainer.appendChild(slot);
-            });
-
-            const shuffledLetters = shuffleArray(correctTermLetters.slice()); 
-            
-            shuffledLetters.forEach((letter, index) => {
-                const button = document.createElement('button');
-                button.className = 'letter-button';
-                button.textContent = letter;
-                button.dataset.letter = letter;
-                button.dataset.index = index; 
-                button.onclick = () => clickLetter(button);
-                letterContainer.appendChild(button);
-            });
-        }
+    /**
+     * Logic to find distractors for New/Intermediate/Expert levels.
+     * (Modified for 5 levels)
+     */
+    function getDistractors(level, question, count = 2) {
+        const distractors = [];
+        let availableTerms = [];
+        const questionTerm = question.term;
         
-        function resetSpelling() {
-            document.querySelectorAll('#letter-choices-container .letter-button').forEach(btn => {
-                btn.disabled = false;
+        if (level === 'Expert') {
+            // For Expert audio game, pool from Advanced/Intermediate/New
+            availableTerms = gameData.filter(item => 
+                 item.term !== questionTerm && 
+                 (item.level === 'Advanced' || item.level === 'Intermediate' || item.level === 'New')
+             );
+        } else if (level === 'New') {
+            // For 'New', prioritize other 'New' terms within the SAME theme
+            availableTerms = gameData.filter(item => 
+                item.level === 'New' && item.theme === question.theme && item.term !== questionTerm
+            );
+        } 
+        
+        // SECONDARY POOL: All 'New' or 'Intermediate' terms globally for Intermediate/fallback
+        if (level === 'Intermediate' || availableTerms.length < count) {
+            let globalPool = [];
+            
+            if (level === 'Intermediate') {
+                globalPool = gameData.filter(item => item.term !== questionTerm && (item.level === 'Intermediate' || item.level === 'New'));
+            } else if (availableTerms.length < count) {
+                // Tertiary fallback for New/Expert if not enough distractors found
+                globalPool = gameData.filter(item => item.term !== questionTerm);
+            }
+            availableTerms = [...new Set([...availableTerms, ...globalPool])];
+        }
+        
+        // Draw initial distractors from the available pool
+        shuffleArray(availableTerms); 
+        
+        while (distractors.length < count && availableTerms.length > 0) {
+            const potentialDistractor = availableTerms.shift();
+             if (!distractors.some(d => d.term === potentialDistractor.term)) {
+                distractors.push(potentialDistractor);
+             }
+        }
+        return distractors;
+    }
+    
+    /**
+     * Renders standard multiple choice buttons (New and Intermediate levels).
+     * Renamed choicesContainer to choiceButtonsContainer
+     */
+    function renderQuizChoices(question, distractors) {
+        const choiceButtonsContainer = document.getElementById('choices-container'); // Original ID
+        
+        const choices = [question, ...distractors];
+        choices.sort(() => Math.random() - 0.5); // Randomize button order
+
+        choices.forEach(item => {
+            const button = document.createElement('button');
+            button.className = 'choice-button';
+            button.textContent = item.term;
+            button.onclick = () => submitAnswer(item, distractors); 
+            choiceButtonsContainer.appendChild(button);
+        });
+    }
+
+    /**
+     * Renders the interactive spelling game (Advanced level).
+     */
+    function renderSpellingGame(question) {
+        const slotsContainer = document.getElementById('answer-slots-container');
+        const letterContainer = document.getElementById('letter-choices-container');
+        
+        // 1. Prepare correct term (Remove spaces and capitalize for consistency)
+        const cleanTerm = question.term.replace(/\s/g, '').toUpperCase(); 
+        correctTermLetters = cleanTerm.split('');
+
+        // 2. Create answer slots
+        correctTermLetters.forEach((letter, index) => {
+            const slot = document.createElement('div');
+            slot.className = 'letter-slot';
+            slot.id = `slot-${index}`;
+            slotsContainer.appendChild(slot);
+        });
+
+        // 3. Create shuffled letter buttons
+        const shuffledLetters = shuffleArray(correctTermLetters.slice()); // Clone and shuffle
+        
+        shuffledLetters.forEach((letter, index) => {
+            const button = document.createElement('button');
+            button.className = 'letter-button';
+            button.textContent = letter;
+            button.dataset.letter = letter;
+            button.dataset.index = index; // Use unique index for tracking
+            button.onclick = () => clickLetter(button);
+            letterContainer.appendChild(button);
+        });
+    }
+    
+    /**
+     * ADDED: Resets the current spelling attempt in the Advanced level.
+     */
+    function resetSpelling() {
+        // Re-enable all letter buttons
+        document.querySelectorAll('#letter-choices-container .letter-button').forEach(btn => {
+            btn.disabled = false;
+        });
+        
+        // Clear all answer slots visually and clear the logic array
+        document.querySelectorAll('#answer-slots-container .letter-slot').forEach(slot => {
+            slot.textContent = '';
+            // Ensure default color is restored if checkAnswer was run previously
+            slot.style.color = 'var(--color-text)';
+            slot.style.borderBottomColor = 'var(--color-text)'; 
+        });
+        currentAnswer = [];
+        
+        // Ensure the refresh button is visible after reset
+        document.getElementById('reset-spelling-button').style.display = 'block'; 
+        document.getElementById('refresh-button-spacer').style.display = 'none';
+
+    }
+
+    /**
+     * Handles the user clicking a letter button.
+     */
+    function clickLetter(button) {
+        const slots = document.getElementById('answer-slots-container').children;
+        const currentIndex = currentAnswer.length;
+
+        if (currentIndex < correctTermLetters.length) {
+            const letter = button.dataset.letter;
+            
+            // 1. Fill the current open slot
+            slots[currentIndex].textContent = letter;
+            currentAnswer.push(letter);
+            
+            // 2. Disable the clicked button
+            button.disabled = true;
+            
+            // 3. Check if the word is complete
+            if (currentAnswer.length === correctTermLetters.length) {
+                // Hide the refresh button once submission is complete
+                document.getElementById('reset-spelling-button').style.display = 'none';
+                document.getElementById('refresh-button-spacer').style.display = 'block'; // Show spacer
+                
+                clearInterval(timer);
+                checkAnswer();
+            }
+        }
+    }
+
+    /**
+     * Compares the user's input with the correct answer.
+     */
+    function checkAnswer() {
+        const userAnswer = currentAnswer.join('');
+        const correctAnswer = correctTermLetters.join('');
+        const isCorrect = userAnswer === correctAnswer;
+        
+        // Visually mark slots green/red (optional but helpful)
+        const slots = document.getElementById('answer-slots-container').children;
+        for(let i = 0; i < slots.length; i++) {
+            // These colors rely on the updated :root variables
+            slots[i].style.color = isCorrect ? 'var(--color-secondary)' : 'var(--color-wrong)';
+            slots[i].style.borderBottomColor = isCorrect ? 'var(--color-secondary)' : 'var(--color-wrong)';
+        }
+
+        // Submit with an empty distractor array. Chosen item is null if incorrect.
+        submitAnswer(isCorrect ? currentQuestion : null, []); 
+    }
+
+    // NEW: showMasterReview (Renamed from ExpertReview)
+    function showMasterReview() {
+        clearInterval(timer);
+        
+        document.getElementById('feedback-message').textContent = "Review: Master";
+        document.getElementById('feedback-message').className = 'feedback-message';
+
+        // Display question details
+        document.getElementById('question-feedback-image').src = currentQuestion.url;
+        document.getElementById('question-feedback-image').style.display = 'block';
+        document.getElementById('question-feedback-term').textContent = currentQuestion.term;
+        
+        // Hide distractor details as there was no quiz
+        document.querySelector('.distractor-details').style.display = 'none';
+        document.querySelector('.continue-button-container').style.display = 'block';
+
+
+        // Show demote button (allows demotion from Expert for revision)
+        const demoteBtn = document.getElementById('demote-button');
+        demoteBtn.style.display = 'block';
+        demoteBtn.textContent = "Demote to Expert"; // New level structure demotion
+        
+        // Hide Audio Button on Master review
+        document.getElementById('audio-button').style.display = 'none';
+
+        switchScreen('feedback-screen');
+    }
+
+
+    function startTimer() {
+        clearInterval(timer);
+        const totalTime = MEDIUM_TIMER_SECONDS * 1000;
+        let timeRemaining = totalTime;
+        const bar = document.getElementById('timer-bar');
+
+        bar.style.width = '100%';
+
+        timer = setInterval(() => {
+            timeRemaining -= 100;
+            const percentage = (timeRemaining / totalTime) * 100;
+            bar.style.width = percentage + '%';
+
+            if (timeRemaining <= 0) {
+                clearInterval(timer);
+                // Disable letters/choices on timeout
+                document.querySelectorAll('.letter-button, .choice-button').forEach(btn => btn.disabled = true);
+                
+                // Hide the refresh button/show spacer on timeout
+                document.getElementById('reset-spelling-button').style.display = 'none'; 
+                document.getElementById('refresh-button-spacer').style.display = 'block'; 
+
+                
+                // Only Intermediate level needs special handling for timeout submission
+                if (currentQuizLevel === 'Intermediate') {
+                    // For Intermediate, submit wrong answer (null chosen item)
+                    submitAnswer(null, currentDistractors); // Use stored global distractors
+                }
+            }
+        }, 100);
+    }
+
+    function submitAnswer(chosenItem, distractors) {
+        clearInterval(timer);
+        // Disable all buttons immediately after submission or timeout
+        document.querySelectorAll('.letter-button, .choice-button').forEach(btn => btn.disabled = true);
+        // Disable image clicks in Expert mode
+        document.querySelectorAll('#image-choices-container .distractor-item').forEach(btn => btn.style.pointerEvents = 'none');
+        
+        // Hide the refresh button/show spacer on submission
+        document.getElementById('reset-spelling-button').style.display = 'none';
+        document.getElementById('refresh-button-spacer').style.display = 'block';
+
+
+        // Determine if the answer was correct (handles both standard quiz and spelling)
+        const isCorrect = chosenItem && chosenItem.term === currentQuestion.term;
+        
+        // Expert Mode Visual Feedback
+        if (currentQuizLevel === 'Expert') {
+            document.querySelectorAll('#image-choices-container .distractor-item').forEach(item => {
+                const termElement = item.querySelector('div');
+                const isThisItem = termElement.textContent === (chosenItem ? chosenItem.term : null);
+                const isCorrectAnswer = termElement.textContent === currentQuestion.term;
+                
+                if (isThisItem) {
+                    item.style.border = `3px solid ${isCorrect ? 'var(--color-secondary)' : 'var(--color-wrong)'}`;
+                } else if (isCorrectAnswer) {
+                    // Highlight the correct answer if the user was wrong
+                    if (!isCorrect) {
+                        item.style.border = '3px solid var(--color-secondary)';
+                    }
+                }
             });
-            
-            document.querySelectorAll('#answer-slots-container .letter-slot').forEach(slot => {
-                slot.textContent = '';
-                slot.style.color = 'var(--color-text)';
-                slot.style.borderBottomColor = 'var(--color-text)'; 
-            });
-            currentAnswer = [];
-            
-            document.getElementById('reset-spelling-button').style.display = 'block'; 
-            document.getElementById('refresh-button-spacer').style.display = 'none';
-
         }
 
-        function clickLetter(button) {
-            const slots = document.getElementById('answer-slots-container').children;
-            const currentIndex = currentAnswer.length;
 
-            if (currentIndex < correctTermLetters.length) {
-                const letter = button.dataset.letter;
+        // Store old level before promotion logic runs
+        const oldLevel = currentQuestion.level; 
+        
+        processProgress(isCorrect);
+        
+        // Get new level after promotion logic runs
+        const updatedItem = gameData.find(d => d.term === currentQuestion.term);
+        const newLevel = updatedItem ? updatedItem.level : oldLevel;
+        
+        // MODIFIED: Store promotion info globally
+        if (isCorrect && oldLevel !== newLevel) {
+             PROMOTION_INFO = { oldLevel: oldLevel, newLevel: newLevel };
+        } else {
+             PROMOTION_INFO = null;
+        }
+
+
+        showFeedback(isCorrect, currentQuestion, distractors, chosenItem);
+
+
+        saveState(); // Save progress after every question
+    }
+
+    // --- PROGRESS MANAGEMENT (MODIFIED for 5 levels) ---
+
+    function processProgress(isCorrect) {
+        const item = currentQuestion;
+        const currentLevel = item.level;
+
+        if (isCorrect) {
+            item.correctCount++;
+            item.failCount = 0; // Reset fail count on success
+            
+            if (currentLevel === 'New' && item.correctCount >= LEVELS.New.count) {
+                item.level = LEVELS.New.promoteTo; // Intermediate
+                item.correctCount = 0;
+            } else if (currentLevel === 'Intermediate' && item.correctCount >= LEVELS.Intermediate.count) {
+                item.level = LEVELS.Intermediate.promoteTo; // Advanced
+                item.correctCount = 0;
+            } else if (currentLevel === 'Advanced' && item.correctCount >= LEVELS.Advanced.count) {
+                item.level = LEVELS.Advanced.promoteTo; // Expert (Audio Game)
+                item.correctCount = 0;
+            } else if (currentLevel === 'Expert' && item.correctCount >= LEVELS.Expert.count) {
+                item.level = LEVELS.Expert.promoteTo; // Master (Review)
+                item.correctCount = 0;
+            }
+        } else {
+            // Wrong answer / Time's up
+            item.correctCount = 0; // Reset correct count immediately
+            
+            if (currentLevel === 'Advanced') {
+                item.failCount = (item.failCount || 0) + 1; // Track consecutive fails
+                
+                if (item.failCount >= 3) {
+                    item.level = LEVELS.Advanced.demoteTo; // Intermediate
+                    item.failCount = 0;
+                }
+            } else if (currentLevel === 'Expert') { 
+                item.failCount = (item.failCount || 0) + 1; // Track consecutive fails
                 
-                slots[currentIndex].textContent = letter;
-                currentAnswer.push(letter);
-                
-                button.disabled = true;
-                
-                if (currentAnswer.length === correctTermLetters.length) {
-                    document.getElementById('reset-spelling-button').style.display = 'none';
-                    document.getElementById('refresh-button-spacer').style.display = 'block'; 
-                    
-                    clearInterval(timer);
-                    checkAnswer();
-                }
-            }
-        }
-
-        function checkAnswer() {
-            const userAnswer = currentAnswer.join('');
-            const correctAnswer = correctTermLetters.join('');
-            const isCorrect = userAnswer === correctAnswer;
-            
-            const slots = document.getElementById('answer-slots-container').children;
-            for(let i = 0; i < slots.length; i++) {
-                slots[i].style.color = isCorrect ? 'var(--color-secondary)' : 'var(--color-wrong)';
-                slots[i].style.borderBottomColor = isCorrect ? 'var(--color-secondary)' : 'var(--color-wrong)';
-            }
-
-            submitAnswer(isCorrect ? currentQuestion : null, []); 
-        }
-
-        /**
-         * NEW FUNCTION: Master level is now the review screen.
-         */
-        function showMasterReview() {
-            clearInterval(timer);
-            
-            document.getElementById('feedback-message').textContent = "Review: Master";
-            document.getElementById('feedback-message').className = 'feedback-message';
-
-            document.getElementById('question-feedback-image').src = currentQuestion.url;
-            document.getElementById('question-feedback-image').style.display = 'block';
-            document.getElementById('question-feedback-term').textContent = currentQuestion.term;
-            
-            document.querySelector('.distractor-details').style.display = 'none';
-            document.querySelector('.continue-button-container').style.display = 'block';
-
-            const demoteBtn = document.getElementById('demote-button');
-            demoteBtn.style.display = 'block';
-            demoteBtn.textContent = "Demote to Expert"; 
-
-            switchScreen('feedback-screen');
-        }
-
-        function startTimer() {
-            clearInterval(timer);
-            const totalTime = MEDIUM_TIMER_SECONDS * 1000;
-            let timeRemaining = totalTime;
-            const bar = document.getElementById('timer-bar');
-
-            bar.style.width = '100%';
-
-            timer = setInterval(() => {
-                timeRemaining -= 100;
-                const percentage = (timeRemaining / totalTime) * 100;
-                bar.style.width = percentage + '%';
-
-                if (timeRemaining <= 0) {
-                    clearInterval(timer);
-                    document.querySelectorAll('.letter-button, .choice-button, #image-choices-container .distractor-item').forEach(btn => btn.style.pointerEvents = 'none');
-                    
-                    document.getElementById('reset-spelling-button').style.display = 'none'; 
-                    document.getElementById('refresh-button-spacer').style.display = 'block'; 
-
-                    if (currentQuizLevel === 'Intermediate') {
-                        submitAnswer(null, currentDistractors); 
-                    }
-                }
-            }, 100);
-        }
-
-        function submitAnswer(chosenItem, distractors) {
-            clearInterval(timer);
-            
-            // Disable all buttons/interactions immediately after submission
-            document.querySelectorAll('.letter-button, .choice-button, #image-choices-container .distractor-item').forEach(btn => btn.style.pointerEvents = 'none');
-            
-            document.getElementById('reset-spelling-button').style.display = 'none';
-            document.getElementById('refresh-button-spacer').style.display = 'block';
-
-            const isCorrect = chosenItem && chosenItem.term === currentQuestion.term;
-            
-            // Highlight chosen image for Expert level feedback
-            if (currentQuizLevel === 'Expert') {
-                document.querySelectorAll('#image-choices-container .distractor-item').forEach(item => {
-                    const termElement = item.querySelector('div');
-                    const isThisItem = termElement.textContent === chosenItem.term;
-                    
-                    if (isThisItem) {
-                        item.style.border = `3px solid ${isCorrect ? 'var(--color-secondary)' : 'var(--color-wrong)'}`;
-                    } else if (termElement.textContent === currentQuestion.term) {
-                        // Highlight the correct answer if the user was wrong
-                        if (!isCorrect) {
-                            item.style.border = '3px solid var(--color-secondary)';
-                        }
-                    }
-                });
-            }
-            
-            const oldLevel = currentQuestion.level; 
-            
-            processProgress(isCorrect);
-            
-            const updatedItem = gameData.find(d => d.term === currentQuestion.term);
-            const newLevel = updatedItem ? updatedItem.level : oldLevel;
-            
-            if (isCorrect && oldLevel !== newLevel) {
-                 PROMOTION_INFO = { oldLevel: oldLevel, newLevel: newLevel };
-            } else {
-                 PROMOTION_INFO = null;
-            }
-
-            showFeedback(isCorrect, currentQuestion, distractors, chosenItem);
-
-            saveState(); 
-        }
-
-        // --- PROGRESS MANAGEMENT (MODIFIED to use new level names) ---
-
-        function processProgress(isCorrect) {
-            const item = currentQuestion;
-            const currentLevel = item.level;
-
-            if (isCorrect) {
-                item.correctCount++;
-                item.failCount = 0; 
-                
-                if (currentLevel === 'New' && item.correctCount >= LEVELS.New.count) {
-                    item.level = LEVELS.New.promoteTo; 
-                    item.correctCount = 0;
-                } else if (currentLevel === 'Intermediate' && item.correctCount >= LEVELS.Intermediate.count) {
-                    item.level = LEVELS.Intermediate.promoteTo; 
-                    item.correctCount = 0;
-                } else if (currentLevel === 'Advanced' && item.correctCount >= LEVELS.Advanced.count) {
-                    item.level = LEVELS.Advanced.promoteTo; 
-                    item.correctCount = 0;
-                } else if (currentLevel === 'Expert' && item.correctCount >= LEVELS.Expert.count) {
-                    item.level = LEVELS.Expert.promoteTo; 
-                    item.correctCount = 0;
-                }
-            } else {
-                item.correctCount = 0; 
-                
-                if (currentLevel === 'Advanced') {
-                    item.failCount = (item.failCount || 0) + 1; 
-                    
-                    if (item.failCount >= 3) {
-                        item.level = LEVELS.Advanced.demoteTo; 
-                        item.failCount = 0;
-                    }
-                } else if (currentLevel === 'Expert') { 
-                    item.failCount = (item.failCount || 0) + 1; 
-                    
-                    if (item.failCount >= 3) {
-                        item.level = LEVELS.Expert.demoteTo; 
-                        item.failCount = 0;
-                    }
-                } else {
+                if (item.failCount >= 3) {
+                    item.level = LEVELS.Expert.demoteTo; // Advanced
                     item.failCount = 0;
                 }
-            }
-            // Update the main gameData array
-            const index = gameData.findIndex(d => d.term === item.term);
-            if (index !== -1) {
-                gameData[index].level = item.level;
-                gameData[index].correctCount = item.correctCount;
-                gameData[index].failCount = item.failCount || 0; 
-            }
+            } else {
+                // Reset fail count for other levels if not used for demotion
+                item.failCount = 0;
+            }
+        }
+        // Update the main gameData array
+        const index = gameData.findIndex(d => d.term === item.term);
+        if (index !== -1) {
+            gameData[index].level = item.level;
+            gameData[index].correctCount = item.correctCount;
+            gameData[index].failCount = item.failCount || 0; 
+        }
+    }
+    
+    // DEMOTION LOGIC (MODIFIED for 5 levels)
+    function demoteTerm() {
+        const item = currentQuestion;
+        
+        if (item.level === 'Master') {
+            item.level = 'Expert'; 
+            item.correctCount = 0;
+        } else if (item.level === 'Expert') {
+            item.level = 'Advanced'; // Demote from Expert to Advanced
+            item.correctCount = 0;
+        } else if (item.level === 'Advanced') {
+            item.level = 'Intermediate'; // Demote from Advanced to Intermediate
+            item.correctCount = 0;
+        } else if (item.level === 'Intermediate' || item.level === 'Medium') { // Also handles old 'Medium'
+            item.level = 'New'; 
+            item.correctCount = 0;
+        }
+        
+        // Update the main gameData array
+        const index = gameData.findIndex(d => d.term === item.term);
+        if (index !== -1) {
+            gameData[index].level = item.level;
+            gameData[index].correctCount = 0;
+            gameData[index].failCount = 0; // Reset fail count on manual demotion
+        }
+
+        saveState();
+        goToHome(); // Go to home after demoting
+    }
+
+    // --- AUDIO/TTS FUNCTIONALITY (MODIFIED to accept term for Expert Replay) ---
+
+    /**
+     * Uses the Web Speech API (if supported) to pronounce the current term.
+     */
+    function playAudio(termToSpeak) {
+        const textToSpeak = termToSpeak || (currentQuestion ? currentQuestion.term : ''); 
+            
+        if (!textToSpeak) return;
+
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            
+            // Set language to English (default)
+            utterance.lang = 'en-US'; 
+            
+            // Stop any currently speaking audio and start the new one
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+            
+            console.log(`Speaking: ${textToSpeak}`);
+        } else {
+            alert("Text-to-Speech is not supported in this browser.");
+            console.error("SpeechSynthesis API not available.");
+        }
+    }
+
+    // --- FEEDBACK SCREEN (MODIFIED for 5 levels and Expert feedback) ---
+
+    function showFeedback(isCorrect, question, distractors, chosenItem) {
+        
+        // 1. Message
+        const messageElement = document.getElementById('feedback-message');
+        const iconClass = isCorrect ? 'fas fa-face-grin-stars' : 'fas fa-meh-rolling-eyes'; 
+        let messageText = isCorrect ? "You are right!" : "You are wrong!";
+        
+        if (currentQuizLevel === 'Expert') {
+            messageText = isCorrect ? "Correct identification!" : "Incorrect identification!";
         }
-        
-        // --- DEMOTION LOGIC (MODIFIED to use new level names) ---
+        messageElement.innerHTML = `${messageText} <i class="${iconClass}"></i>`;
+        messageElement.className = `feedback-message ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
 
-        function demoteTerm() {
-            const item = currentQuestion;
-            
-            if (item.level === 'Master') {
-                item.level = 'Expert'; 
-            } else if (item.level === 'Expert') {
-                item.level = 'Advanced'; 
-            } else if (item.level === 'Advanced') {
-                item.level = 'Intermediate'; 
-            } else if (item.level === 'Intermediate') {
-                item.level = 'New'; 
-            }
-            
-            const index = gameData.findIndex(d => d.term === item.term);
-            if (index !== -1) {
-                gameData[index].level = item.level;
-                gameData[index].correctCount = 0;
-                gameData[index].failCount = 0; 
-            }
+        // Only show "Time's up" if the quiz was running at Intermediate level and failed 
+        if (!isCorrect && !chosenItem) {
+             if (currentQuizLevel === 'Intermediate') {
+                 messageElement.innerHTML = `Time's up! <i class="${iconClass}"></i>`;
+             }
+        }
 
-            saveState();
-            goToHome(); 
-        }
+        // 2. Question Detail (Always Shown)
+        document.getElementById('question-feedback-image').src = question.url;
+        document.getElementById('question-feedback-image').style.display = 'block';
+        document.getElementById('question-feedback-term').textContent = question.term;
+        
+        // Show image if it was hidden for Advanced level
+        document.getElementById('question-feedback-image').style.display = 'block';
 
-        // --- AUDIO/TTS FUNCTIONALITY (MODIFIED) ---
+        // 3. Audio Button Visibility (NEW LOGIC for 5 tiers)
+        const audioBtn = document.getElementById('audio-button');
+        // Show the audio button for New, Intermediate, and Expert
+        if (currentQuizLevel === 'New' || currentQuizLevel === 'Intermediate' || currentQuizLevel === 'Expert') {
+            audioBtn.style.display = 'inline-block';
+            audioBtn.onclick = () => playAudio(question.term); // Ensure it plays the correct term
+        } else {
+            audioBtn.style.display = 'none';
+        }
 
-        /**
-         * Uses the Web Speech API (if supported) to pronounce the current term.
-         */
-        function playAudio(termToSpeak) {
-            const textToSpeak = termToSpeak || (currentQuestion ? currentQuestion.term : ''); 
-            
-            if (!textToSpeak) return;
+        // 4. Demote Button
+        const demoteBtn = document.getElementById('demote-button');
+        const currentLevel = question.level;
+        
+        // Get current level name from gameData (might have been auto-promoted)
+        const updatedItem = gameData.find(d => d.term === question.term);
+        const updatedLevel = updatedItem ? updatedItem.level : currentLevel;
+        
+        if (updatedLevel === 'Master') {
+            demoteBtn.style.display = 'block';
+            demoteBtn.textContent = "Demote to Expert";
+        } else if (updatedLevel === 'Expert' && !isCorrect) {
+            demoteBtn.style.display = 'block';
+            demoteBtn.textContent = "Study this again (Demote to Advanced)";
+        } else if (updatedLevel === 'Advanced' && !isCorrect) {
+            demoteBtn.style.display = 'block';
+            demoteBtn.textContent = "Study this again (Demote to Intermediate)";
+        } else if ((updatedLevel === 'Intermediate' || updatedLevel === 'Medium') && !isCorrect) {
+            demoteBtn.style.display = 'block';
+            demoteBtn.textContent = "Study this again (Demote to New)";
+        } else {
+            demoteBtn.style.display = 'none'; 
+        }
+        
+        // 5. Distractor Details (Hide if Expert mode was running)
+        const distractorDetailsContainer = document.querySelector('.distractor-details');
+        const imageChoicesContainer = document.getElementById('image-choices-container'); // Need to ensure this is hidden on feedback
+        
+        imageChoicesContainer.style.display = 'none'; // Ensure Expert game container is hidden
+        document.querySelector('.continue-button-container').style.display = 'block';
 
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                
-                utterance.lang = 'en-US'; 
-                
-                window.speechSynthesis.cancel();
-                window.speechSynthesis.speak(utterance);
-                
-                console.log(`Speaking: ${textToSpeak}`);
-            } else {
-                alert("Text-to-Speech is not supported in this browser.");
-                console.error("SpeechSynthesis API not available.");
-            }
-        }
+        // Show distracting images/text if it was a New/Intermediate quiz
+        if (currentQuizLevel === 'New' || currentQuizLevel === 'Intermediate') {
+            distractorDetailsContainer.style.display = 'flex';
+            
+            const relevantDistractors = distractors; 
 
-        // --- FEEDBACK SCREEN (MODIFIED for Expert level) ---
+            // Set Distractor 1
+            if (relevantDistractors[0]) {
+                document.getElementById('distractor1-image').src = relevantDistractors[0].url;
+                document.getElementById('distractor1-term').textContent = relevantDistractors[0].term;
+                document.querySelector('.distractor-item:nth-child(1)').style.display = 'block';
+            } else {
+                document.querySelector('.distractor-item:nth-child(1)').style.display = 'none';
+            }
+            
+            // Set Distractor 2
+            if (relevantDistractors[1]) {
+                document.getElementById('distractor2-image').src = relevantDistractors[1].url;
+                document.getElementById('distractor2-term').textContent = relevantDistractors[1].term;
+                document.querySelector('.distractor-item:nth-child(2)').style.display = 'block';
+            } else {
+                document.querySelector('.distractor-item:nth-child(2)').style.display = 'none';
+            }
 
-        function showFeedback(isCorrect, question, distractors, chosenItem) {
-            
-            const messageElement = document.getElementById('feedback-message');
-            const iconClass = isCorrect ? 'fas fa-face-grin-stars' : 'fas fa-meh-rolling-eyes'; 
-            let messageText = isCorrect ? "You are right!" : "You are wrong!";
-            
-            if (currentQuizLevel === 'Expert') {
-                messageText = isCorrect ? "Correct identification!" : "Incorrect identification!";
-            }
-            
-            messageElement.innerHTML = `${messageText} <i class="${iconClass}"></i>`;
-            messageElement.className = `feedback-message ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
+        } else {
+             // Hide distractors for Advanced, Expert, and Master
+             distractorDetailsContainer.style.display = 'none';
+        }
 
-            if (!isCorrect && !chosenItem && currentQuizLevel === 'Intermediate') {
-                messageElement.innerHTML = `Time's up! <i class="${iconClass}"></i>`;
-            }
+        // ADDED LOGIC: Handle Promotion Message Display (last step, stays visible)
+        const promotionMessageElement = document.getElementById('promotion-message');
+        if (PROMOTION_INFO) {
+            const { newLevel } = PROMOTION_INFO;
+            let messagePrefix = "Well done! This term goes to the";
+            
+            if (newLevel === 'Master') {
+                messagePrefix = "You rock! This term goes to the";
+            }
 
-            // 2. Question Detail 
-            document.getElementById('question-feedback-image').src = question.url;
-            document.getElementById('question-feedback-image').style.display = 'block';
-            document.getElementById('question-feedback-term').textContent = question.term;
-            
-            // 3. Audio Button Visibility
-            const audioBtn = document.getElementById('audio-button');
-            
-            if (currentQuizLevel === 'New' || currentQuizLevel === 'Intermediate' || currentQuizLevel === 'Expert') {
-                audioBtn.style.display = 'inline-block';
-                audioBtn.onclick = () => playAudio(question.term); 
-            } else {
-                audioBtn.style.display = 'none';
-            }
+            promotionMessageElement.textContent = `${messagePrefix} ${newLevel} level`;
+            promotionMessageElement.style.display = 'block';
 
-            // 4. Demote Button
-            const demoteBtn = document.getElementById('demote-button');
-            const updatedItem = gameData.find(d => d.term === question.term);
-            const updatedLevel = updatedItem ? updatedItem.level : question.level;
-            
-            if (updatedLevel === 'Master') {
-                demoteBtn.style.display = 'block';
-                demoteBtn.textContent = "Demote to Expert";
-            } else if (updatedLevel === 'Expert' && !isCorrect) {
-                 demoteBtn.style.display = 'block';
-                 demoteBtn.textContent = "Study this again (Demote to Advanced)";
-            } else if (updatedLevel === 'Advanced' && !isCorrect) {
-                 demoteBtn.style.display = 'block';
-                 demoteBtn.textContent = "Study this again (Demote to Intermediate)";
-            } else if (updatedLevel === 'Intermediate' && !isCorrect) {
-                 demoteBtn.style.display = 'block';
-                 demoteBtn.textContent = "Study this again (Demote to New)";
-            } else {
-                 demoteBtn.style.display = 'none';
-            }
-            
-            // 5. Distractor Details 
-            const distractorDetailsContainer = document.querySelector('.distractor-details');
-            document.querySelector('.continue-button-container').style.display = 'block';
-            
-            const imageChoicesContainer = document.getElementById('image-choices-container');
-            imageChoicesContainer.style.display = 'none';
-            
-            if (currentQuizLevel === 'New' || currentQuizLevel === 'Intermediate') {
-                distractorDetailsContainer.style.display = 'flex';
-                
-                const relevantDistractors = distractors; 
+            // Clear state so the message doesn't reappear on subsequent screen views
+            PROMOTION_INFO = null;
+        } else {
+            // Ensure message is hidden if no promotion occurred
+            promotionMessageElement.style.display = 'none';
+            promotionMessageElement.textContent = '';
+        }
+        
+        switchScreen('feedback-screen');
+    }
 
-                document.getElementById('distractor1-image').src = relevantDistractors[0] ? relevantDistractors[0].url : '';
-                document.getElementById('distractor1-term').textContent = relevantDistractors[0] ? relevantDistractors[0].term : '';
-                document.querySelector('.distractor-item:nth-child(1)').style.display = relevantDistractors[0] ? 'block' : 'none';
-                
-                document.getElementById('distractor2-image').src = relevantDistractors[1] ? relevantDistractors[1].url : '';
-                document.getElementById('distractor2-term').textContent = relevantDistractors[1] ? relevantDistractors[1].term : '';
-                document.querySelector('.distractor-item:nth-child(2)').style.display = relevantDistractors[1] ? 'block' : 'none';
-
-            } else {
-                 distractorDetailsContainer.style.display = 'none';
-            }
-
-            // 6. Promotion Message Display
-            const promotionMessageElement = document.getElementById('promotion-message');
-            if (PROMOTION_INFO) {
-                const { newLevel } = PROMOTION_INFO;
-                let messagePrefix = "Well done! This term goes to the";
-                
-                if (newLevel === 'Master') {
-                    messagePrefix = "You rock! This term goes to the";
-                }
-
-                promotionMessageElement.textContent = `${messagePrefix} ${newLevel} level`;
-                promotionMessageElement.style.display = 'block';
-
-                PROMOTION_INFO = null;
-            } else {
-                promotionMessageElement.style.display = 'none';
-                promotionMessageElement.textContent = '';
-            }
-            
-            switchScreen('feedback-screen');
-        }
-
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Manually force the loading screen active for initial display robustness
-            document.getElementById('loading-screen').style.display = 'flex';
-            document.getElementById('loading-screen').classList.add('active');
-
-            initializeData();
-        });
-    </script>
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeData();
+    });
+</script>
 </body>
 </html>
