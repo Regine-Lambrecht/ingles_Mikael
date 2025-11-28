@@ -132,17 +132,25 @@
             /* MODIFIED: Change font color to var(--color-text) (#2c3e50) for better contrast */
             color: var(--color-text) !important; 
         }
-        .medium-button, .expert-button {
+        .medium-button, {
+            background-color: var(--color-text);
+        }
+        .medium-button:hover:not(:disabled), {
+            background-color: #162029;
+        }
+        
+        .advanced-button {
             /* Now correctly uses the updated var(--color-secondary) */
             background-color: var(--color-secondary);
         }
-        .medium-button:hover:not(:disabled), .expert-button:hover:not(:disabled) {
-            background-color: #27ae60;
+        .advanced-button:hover:not(:disabled) {
+            background-color: #154c33;
         }
-        .advanced-button {
+
+         .expert-button {
             background-color: #8e44ad; /* Purple for Advanced */
         }
-        .advanced-button:hover:not(:disabled) {
+        .expert-button:hover:not(:disabled) {
             background-color: #793397;
         }
 
