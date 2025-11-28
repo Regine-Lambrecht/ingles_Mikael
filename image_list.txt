@@ -26,6 +26,18 @@ Body_Neck.png
 Body_Nose.png
 Clothes_Hat.jpg
 Clothes_Shoes.png
+Clothes_T-shirt.png
+Clothes_Belt.png
+Clothes_Boxer.png
+Clothes_Cap.png
+Clothes_Jacket.png
+Clothes_Pants.png
+Clothes_Pijama.png
+Clothes_Shoes.png
+Clothes_Shorts.png
+Clothes_Skirt.png
+Clothes_Socks.png
+Clothes_Sweater.jpg
 Colours_Black.png
 Colours_Dark blue.png
 Colours_Green.png
@@ -160,32 +172,32 @@ Opposites_Turn off.png
 Opposites_Turn on.png
 Opposites_Wrong.png
 Opposites_Young.png
-Others_Bank.png
+Places_Bank.png
 Others_Behind.jpg
 Others_Between.jpg
 Others_Birthday.jpg
 Others_Box.png
-Others_Brazil.jpg
+Places_Brazil.jpg
 Others_Car.jpg
-Others_Church.png
-Others_Cinema.jpg
+Places_Church.png
+Places_Cinema.jpg
 Others_Cloudy.png
 Others_Football.png
 Others_Guitar.png
-Others_Home.jpg
-Others_Hospital.png
+Places_Home.jpg
+Places_Hospital.png
 Others_In.jpg
 Others_In front of.jpg
 Others_Next to.jpg
 Others_On.jpg
 Others_Raining.png
-Others_Restaurant.jpg
-Others_School.jpg
-Others_Station.jpg
+Places_Restaurant.jpg
+Places_School.jpg
+Places_Station.jpg
 Others_Snowing.png
 Others_Sunny.png
-Others_Supermarket.jpg
-Others_Swimming pool.png
+Places_Supermarket.jpg
+Places_Swimming pool.png
 Others_Train.jpg
 Others_Under.jpg
 Others_Wendy.png
@@ -209,6 +221,9 @@ Time_September.png
 Time_October.png
 Time_November.png
 Time_December.png
+Time_Today.png
+Time_Tomorrow.png
+Time_Yesterday.png
 Verbs_Have.png
 Verbs_Do.png
 Verbs_Know.png
