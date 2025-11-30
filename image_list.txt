@@ -183,12 +183,14 @@ Others_Car.jpg
 Places_Church.png
 Places_Cinema.jpg
 Others_Cloudy.png
+Others_Computer.png
 Others_Football.png
 Others_Guitar.png
 Places_Home.jpg
 Places_Hospital.png
 Others_In.jpg
 Others_In front of.jpg
+Others_Mobile phone.png
 Others_Next to.jpg
 Others_On.jpg
 Others_Raining.png
